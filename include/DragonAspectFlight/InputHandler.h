@@ -23,6 +23,7 @@ namespace DragonAspectFlight
 
 		bool HandleButtonEvent(const RE::ButtonEvent* a_event);
 		void HandleThumbstickEvent(const RE::ThumbstickEvent* a_event);
+		bool ProcessFlightShout(const RE::ButtonEvent* a_event);
 		void ResetFlightInputState();
 		void UpdateMovementInput();
 		void UpdateVerticalInput();
@@ -40,6 +41,8 @@ namespace DragonAspectFlight
 		bool _launchHeld{ false };
 		bool _ascendHeld{ false };
 		bool _descendHeld{ false };
+		bool _shoutHeld{ false };
+		std::chrono::steady_clock::time_point _shoutStartedAt{};
 		bool _boostHeld{ false };
 		bool _registered{ false };
 	};

@@ -28,6 +28,8 @@ namespace DragonAspectFlight
 		void TriggerLaunchBoost();
 		void SetBoostHeld(bool a_boostHeld);
 		void NotifyFlightShout();
+		void BeginFlightShoutInput();
+		void EndFlightShoutInput();
 
 		[[nodiscard]] float GetFlightSpeed() const;
 		[[nodiscard]] float GetVerticalSpeed() const;
@@ -55,6 +57,7 @@ namespace DragonAspectFlight
 		bool _isDescending{ false };
 		bool _fightingControlsSuppressed{ false };
 		bool _restoreFightingControls{ false };
+		bool _flightShoutControlsOpen{ false };
 		float _flightSpeed{ 14.0F };
 		float _verticalSpeed{ 24.0F };
 		float _liftScale{ 1.0F };

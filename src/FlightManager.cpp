@@ -23,10 +23,10 @@ namespace
 	constexpr float BoostedMaxHorizontalVelocity = 32.0F;
 	constexpr float BoostedMaxVerticalVelocity = 22.0F;
 	constexpr float VelocitySmoothing = 0.10F;
-	constexpr float BoostVelocitySmoothing = 0.22F;
-	constexpr float TurnVelocitySmoothing = 0.18F;
+	constexpr float BoostVelocitySmoothing = 0.78F;
+	constexpr float TurnVelocitySmoothing = 0.68F;
 	constexpr float CollisionCatchUpBrake = 0.65F;
-	constexpr float MinFlightHoverVelocity = 0.35F;
+	constexpr float MinFlightHoverVelocity = 0.0F;
 	constexpr float StaminaRestorePerUpdate = 6.0F;
 	constexpr float MaxStopDownwardVelocity = -2.0F;
 	constexpr float DescentVerticalVelocity = -4.5F;
@@ -36,7 +36,7 @@ namespace
 	constexpr std::uint32_t MaxStartAfterSheatheAttempts = 8;
 	constexpr auto StartAfterSheatheRetryDelay = 250ms;
 	constexpr auto ShoutGraphOverrideDuration = 1400ms;
-	constexpr std::string_view FlightBuildVersion = "v0.3.2-dragon-aspect";
+	constexpr std::string_view FlightBuildVersion = "v0.8.1-dragon-aspect";
 	constexpr const char* GraphVarDragonAspectActive = "bDAF_DragonAspectActive";
 	constexpr const char* GraphVarFlightActive = "bDAF_FlightActive";
 	constexpr const char* GraphVarLaunchBoost = "bDAF_LaunchBoost";
@@ -333,7 +333,10 @@ namespace
 				verticalControlVelocity :
 				std::max(a_launchBoost, MinFlightHoverVelocity);
 			const RE::hkVector4 idleTargetVelocity{ 0.0F, 0.0F, std::clamp(idleVerticalVelocity, -maxVerticalForMode, maxVerticalForMode), 0.0F };
-			smoothedVelocity = LerpVelocity(smoothedVelocity, idleTargetVelocity);
+			smoothedVelocity = LerpVelocity(smoothedVelocity, idleTargetVelocity, TurnVelocitySmoothing);
+			if (!hasVerticalInput && a_launchBoost <= 0.0F && std::abs(smoothedVelocity.quad.m128_f32[2]) < 0.20F) {
+				smoothedVelocity.quad.m128_f32[2] = 0.0F;
+			}
 			controller->SetLinearVelocityImpl(smoothedVelocity);
 			return;
 		}
@@ -398,12 +401,17 @@ namespace
 
 		smoothedVelocity = LerpVelocity(smoothedVelocity, targetVelocity, activeSmoothing);
 
-		const RE::hkVector4 clampedVelocity{
+		RE::hkVector4 clampedVelocity{
 			ClampMagnitude(smoothedVelocity.quad.m128_f32[0], maxHorizontalForMode),
 			ClampMagnitude(smoothedVelocity.quad.m128_f32[1], maxHorizontalForMode),
 			ClampMagnitude(smoothedVelocity.quad.m128_f32[2], maxVerticalForMode),
 			0.0F
 		};
+
+		if (!hasVerticalInput && a_launchBoost <= 0.0F && std::abs(clampedVelocity.quad.m128_f32[2]) < 0.20F) {
+			clampedVelocity.quad.m128_f32[2] = 0.0F;
+			smoothedVelocity.quad.m128_f32[2] = 0.0F;
+		}
 
 		controller->SetLinearVelocityImpl(clampedVelocity);
 	}
@@ -537,6 +545,7 @@ namespace DragonAspectFlight
 
 			_isFlying = true;
 			_isDescending = false;
+			_flightShoutControlsOpen = false;
 			_startAfterSheathePending = false;
 			_startAfterSheatheAttempts = 0;
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kIdle);
@@ -597,6 +606,7 @@ namespace DragonAspectFlight
 			_verticalInput = 0.0F;
 			_pendingLaunchBoost = 0.0F;
 			_boostHeld = false;
+			_flightShoutControlsOpen = false;
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kDescent);
 			logger::info("Flight descent started - {}", FlightBuildVersion);
 		}
@@ -623,6 +633,7 @@ namespace DragonAspectFlight
 			_strafeInput = 0.0F;
 			_verticalInput = 0.0F;
 			_boostHeld = false;
+			_flightShoutControlsOpen = false;
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kOff);
 			logger::info("Flight stopped - {}", FlightBuildVersion);
 		}
@@ -691,6 +702,60 @@ namespace DragonAspectFlight
 
 		if (applyImmediately) {
 			SetFlightGraphVariables(GetPlayer(), true, true, false, true, FlightGraphState::kMoving);
+		}
+	}
+
+	void FlightManager::BeginFlightShoutInput()
+	{
+		auto* controlMap = RE::ControlMap::GetSingleton();
+
+		if (!controlMap) {
+			return;
+		}
+
+		bool shouldEnable = false;
+
+		{
+			std::unique_lock lock(_mutex);
+
+			if (!_isFlying || _isDescending) {
+				return;
+			}
+
+			if (_fightingControlsSuppressed && !_flightShoutControlsOpen) {
+				_flightShoutControlsOpen = true;
+				shouldEnable = true;
+			}
+		}
+
+		if (shouldEnable && !controlMap->IsFightingControlsEnabled()) {
+			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, true);
+			logger::info("Fighting controls opened for Dragon Aspect flight shout");
+		}
+	}
+
+	void FlightManager::EndFlightShoutInput()
+	{
+		auto* controlMap = RE::ControlMap::GetSingleton();
+
+		if (!controlMap) {
+			return;
+		}
+
+		bool shouldDisable = false;
+
+		{
+			std::unique_lock lock(_mutex);
+
+			if (_flightShoutControlsOpen) {
+				_flightShoutControlsOpen = false;
+				shouldDisable = _isFlying && _fightingControlsSuppressed;
+			}
+		}
+
+		if (shouldDisable && controlMap->IsFightingControlsEnabled()) {
+			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, false);
+			logger::info("Fighting controls closed after Dragon Aspect flight shout");
 		}
 	}
 
@@ -820,7 +885,7 @@ namespace DragonAspectFlight
 		{
 			std::shared_lock lock(_mutex);
 
-			if (!_isFlying || !_fightingControlsSuppressed) {
+			if (!_isFlying || !_fightingControlsSuppressed || _flightShoutControlsOpen) {
 				return;
 			}
 		}
