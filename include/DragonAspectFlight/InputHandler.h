@@ -33,8 +33,6 @@ namespace DragonAspectFlight
 		float _thumbstickForwardInput{ 0.0F };
 		float _thumbstickStrafeInput{ 0.0F };
 
-		bool _flightToggleTapArmed{ false };
-		std::chrono::steady_clock::time_point _flightToggleLastTap{};
 		bool _leftCastHeld{ false };
 		bool _rightCastHeld{ false };
 		bool _dualCastHeld{ false };

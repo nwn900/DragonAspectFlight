@@ -8,6 +8,7 @@
 #include "RE/H/hkVector4.h"
 #include "RE/H/hkpCharacterState.h"
 #include "RE/M/MagicTarget.h"
+#include "RE/T/TES.h"
 
 namespace
 {
@@ -32,11 +33,12 @@ namespace
 	constexpr float DescentVerticalVelocity = -4.5F;
 	constexpr float DescentHorizontalDamping = 0.38F;
 	constexpr float WaterLandingTolerance = 24.0F;
-	constexpr float WaterLandingOffset = 4.0F;
+	constexpr float WaterLandingOffset = 12.0F;
+	constexpr float GroundLandingTolerance = 36.0F;
 	constexpr std::uint32_t MaxStartAfterSheatheAttempts = 8;
 	constexpr auto StartAfterSheatheRetryDelay = 250ms;
 	constexpr auto ShoutGraphOverrideDuration = 1400ms;
-	constexpr std::string_view FlightBuildVersion = "v0.8.1-dragon-aspect";
+	constexpr std::string_view FlightBuildVersion = "v0.8.6-dragon-aspect";
 	constexpr const char* GraphVarDragonAspectActive = "bDAF_DragonAspectActive";
 	constexpr const char* GraphVarFlightActive = "bDAF_FlightActive";
 	constexpr const char* GraphVarLaunchBoost = "bDAF_LaunchBoost";
@@ -52,6 +54,7 @@ namespace
 		kDescent = 4
 	};
 
+	bool IsNearSolidGroundSurface(RE::PlayerCharacter* a_player);
 	bool ResolveWaterLanding(RE::PlayerCharacter* a_player, RE::bhkCharacterController* a_controller);
 
 	// Dragon Aspect magic effect form IDs from Dragonborn.esm.
@@ -301,6 +304,11 @@ namespace
 		return std::abs(a_forwardInput) > InputDeadzone || std::abs(a_strafeInput) > InputDeadzone;
 	}
 
+	bool HasFlightControlInput(float a_forwardInput, float a_strafeInput, float a_verticalInput)
+	{
+		return HasMovementInput(a_forwardInput, a_strafeInput) || std::abs(a_verticalInput) > InputDeadzone;
+	}
+
 	void MovePlayerWithCharacterControllerVelocity(float a_horizontalSpeed, float a_verticalSpeed, float a_liftScale, float a_forwardInput, float a_strafeInput, float a_verticalInput, float a_launchBoost, bool a_boostHeld)
 	{
 		auto player = GetPlayer();
@@ -436,6 +444,17 @@ namespace
 		}
 
 		if (IsControllerGrounded(controller)) {
+			if (!IsNearSolidGroundSurface(player)) {
+				ApplyControlledAirState(controller);
+				ResetFlightFallState(player, controller);
+			} else {
+				logger::info("Flight descent resolved on solid ground");
+				return true;
+			}
+		}
+
+		if (IsNearSolidGroundSurface(player) && controller->context.currentState == RE::hkpCharacterStateType::kOnGround) {
+			logger::info("Flight descent resolved near terrain surface");
 			return true;
 		}
 
@@ -478,6 +497,28 @@ namespace
 		}
 
 		return a_player->GetPositionZ() <= waterHeight + WaterLandingTolerance;
+	}
+
+	bool IsNearSolidGroundSurface(RE::PlayerCharacter* a_player)
+	{
+		if (!a_player) {
+			return false;
+		}
+
+		auto* tes = RE::TES::GetSingleton();
+
+		if (!tes) {
+			return true;
+		}
+
+		const auto position = a_player->GetPosition();
+		float landHeight = 0.0F;
+
+		if (!tes->GetLandHeight(position, landHeight)) {
+			return true;
+		}
+
+		return position.z <= landHeight + GroundLandingTolerance;
 	}
 
 	bool ResolveWaterLanding(RE::PlayerCharacter* a_player, RE::bhkCharacterController* a_controller)
@@ -995,7 +1036,7 @@ namespace DragonAspectFlight
 			_pendingLaunchBoost = 0.0F;
 			shoutOverrideActive = !descending && std::chrono::steady_clock::now() < _shoutGraphOverrideUntil;
 
-			const bool hasMovementInput = !descending && HasMovementInput(forwardInput, strafeInput);
+			const bool hasMovementInput = !descending && HasFlightControlInput(forwardInput, strafeInput, verticalInput);
 			const bool hasLaunchBoost = launchBoost > 0.0F;
 			graphState = descending ?
 				FlightGraphState::kDescent :

@@ -10,7 +10,6 @@
 
 namespace
 {
-	constexpr const char* SprintUserEvent = "Sprint";
 	constexpr const char* ForwardUserEvent = "Forward";
 	constexpr const char* BackUserEvent = "Back";
 	constexpr const char* StrafeLeftUserEvent = "Strafe Left";
@@ -27,20 +26,13 @@ namespace
 	constexpr const char* DualCastUserEvent = "Dual Attack";
 	constexpr const char* ShoutUserEvent = "Shout";
 	constexpr const char* KinectShoutUserEvent = "KinectShout";
+	constexpr std::uint32_t FlightActivationKeyboardScanCode = 0x30;     // DIK_B
 	constexpr std::uint32_t DefaultReadyWeaponKeyboardScanCode = 0x13;  // DIK_R
 	constexpr std::uint32_t SpaceKeyboardScanCode = 0x39;               // DIK_SPACE
 	constexpr std::uint32_t LeftShiftKeyboardScanCode = 0x2A;           // DIK_LSHIFT
 	constexpr float ThumbstickDeadzone = 0.25F;
-	constexpr const char* FlightBuildVersion = "v0.8.1-dragon-aspect";
-	constexpr auto FlightDoubleTapWindow = std::chrono::milliseconds(450);
+	constexpr const char* FlightBuildVersion = "v0.8.6-dragon-aspect";
 	constexpr float MinShoutReleaseHeldSeconds = 0.05F;
-
-	bool IsKeyboardSprint(const RE::ButtonEvent* a_event)
-	{
-		if (!a_event) return false;
-		if (a_event->GetDevice() != RE::INPUT_DEVICE::kKeyboard) return false;
-		return a_event->QUserEvent() == SprintUserEvent;
-	}
 
 	bool IsLaunchAction(const RE::ButtonEvent* a_event)
 	{
@@ -113,7 +105,9 @@ namespace
 
 	bool IsFlightActivationInput(const RE::ButtonEvent* a_event)
 	{
-		return IsKeyboardSprint(a_event);
+		return a_event &&
+			a_event->GetDevice() == RE::INPUT_DEVICE::kKeyboard &&
+			a_event->GetIDCode() == FlightActivationKeyboardScanCode;
 	}
 
 	RE::PlayerCharacter* GetPlayer() { return RE::PlayerCharacter::GetSingleton(); }
@@ -386,53 +380,42 @@ namespace DragonAspectFlight
 
 		const bool dragonAspectActive = fm.IsDragonAspectActive();
 
+		if (!a_event->IsDown() && !a_event->IsUp()) {
+			return true;
+		}
+
 		if (!dragonAspectActive) {
 			if (fm.IsFlying()) {
 				fm.StopFlight();
 			}
 			ResetFlightInputState();
 
-			if (a_event->IsPressed()) {
+			if (a_event->IsDown()) {
 				ShowMessage("Dragon Aspect Flight: Dragon Aspect required");
 			}
 
-			return false;
+			return true;
 		}
 
-		if (a_event->IsPressed()) {
-			const auto now = std::chrono::steady_clock::now();
-
-			if (_flightToggleTapArmed && (now - _flightToggleLastTap) <= FlightDoubleTapWindow) {
-				if (fm.IsFlying()) {
-					fm.BeginDescent();
-					ResetFlightInputState();
-					ShowMessage("Dragon Aspect Flight: descending");
-				} else {
-					ResetFlightInputState();
-					fm.StartFlight();
-					UpdateMovementInput();
-					ShowMessage("Dragon Aspect Flight: flight toggled on");
-				}
-				return true;
+		if (a_event->IsDown()) {
+			if (fm.IsFlying()) {
+				fm.BeginDescent();
+				ResetFlightInputState();
+				ShowMessage("Dragon Aspect Flight: descending");
 			} else {
-				_flightToggleTapArmed = true;
-				_flightToggleLastTap = now;
-
-				if (fm.IsFlying()) {
-					ShowMessage("Dragon Aspect Flight: double tap Sprint/Alt to descend");
-					return true;
-				} else {
-					ShowMessage("Dragon Aspect Flight: double tap Sprint/Alt to toggle flight");
-					return true;
-				}
+				ResetFlightInputState();
+				fm.StartFlight();
+				UpdateMovementInput();
+				ShowMessage("Dragon Aspect Flight: flight toggled on");
 			}
+			return true;
 		}
 
 		if (a_event->IsUp()) {
-			return fm.IsFlying() || _flightToggleTapArmed;
+			return true;
 		}
 
-		return fm.IsFlying();
+		return true;
 	}
 
 	void InputHandler::HandleThumbstickEvent(const RE::ThumbstickEvent* a_event)
@@ -448,7 +431,6 @@ namespace DragonAspectFlight
 		_keyboardStrafeInput = 0.0F;
 		_thumbstickForwardInput = 0.0F;
 		_thumbstickStrafeInput = 0.0F;
-		_flightToggleTapArmed = false;
 		_leftCastHeld = false;
 		_rightCastHeld = false;
 		_dualCastHeld = false;
