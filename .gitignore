@@ -1,0 +1,14 @@
+build/
+out/
+dist/
+*.user
+*.suo
+*.vcxproj*
+*.pdb
+*.ilk
+*.obj
+*.tlog
+*.log
+.vs/
+CMakeUserPresets.json
+

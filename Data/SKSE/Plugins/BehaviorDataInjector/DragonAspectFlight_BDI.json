@@ -1,0 +1,26 @@
+[
+    {
+        "projectPath": "Actors",
+        "type": "kBool",
+        "name": "bDAF_DragonAspectActive",
+        "value": false
+    },
+    {
+        "projectPath": "Actors",
+        "type": "kBool",
+        "name": "bDAF_FlightActive",
+        "value": false
+    },
+    {
+        "projectPath": "Actors",
+        "type": "kBool",
+        "name": "bDAF_LaunchBoost",
+        "value": false
+    },
+    {
+        "projectPath": "Actors",
+        "type": "kInt",
+        "name": "iDAF_FlightState",
+        "value": 0
+    }
+]

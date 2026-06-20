@@ -1,0 +1,49 @@
+{
+  "name": "Bundled Flight - More Draconic Wings Effect",
+  "description": "Human-compatible bundled flight animations for Dragon Aspect Flight when the More Draconic wings effect is active and the SKSE flight state is engaged.",
+  "priority": 696969700,
+  "interruptible": true,
+  "conditions": [
+    {
+      "condition": "IsActorBase",
+      "requiredVersion": "1.0.0.0",
+      "Actor base": {
+        "pluginName": "Skyrim.esm",
+        "formID": "7"
+      }
+    },
+    {
+      "condition": "HasMagicEffect",
+      "requiredVersion": "1.0.0.0",
+      "Magic effect": {
+        "pluginName": "More Draconic Aspect - Become The Dragonborn ESL.esp",
+        "formID": "804"
+      },
+      "Active effects only": true
+    },
+    {
+      "condition": "CompareValues",
+      "requiredVersion": "1.0.0.0",
+      "Value A": {
+        "graphVariable": "bDAF_FlightActive",
+        "graphVariableType": "Bool"
+      },
+      "Comparison": "==",
+      "Value B": {
+        "value": 1.0
+      }
+    },
+    {
+      "condition": "CompareValues",
+      "requiredVersion": "1.0.0.0",
+      "Value A": {
+        "graphVariable": "iDAF_FlightState",
+        "graphVariableType": "Int"
+      },
+      "Comparison": ">",
+      "Value B": {
+        "value": 0.0
+      }
+    }
+  ]
+}
