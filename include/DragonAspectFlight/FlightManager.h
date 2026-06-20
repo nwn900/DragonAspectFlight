@@ -69,6 +69,7 @@ namespace DragonAspectFlight
 		float _pendingLaunchBoost{ 0.0F };
 		bool _boostHeld{ false };
 		std::int32_t _lastGraphState{ 0 };
+		std::uint32_t _landingContactTicks{ 0 };
 		std::chrono::steady_clock::time_point _shoutGraphOverrideUntil{};
 
 		float _originalGravity{ 0.0F };

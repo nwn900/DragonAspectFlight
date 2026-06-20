@@ -32,14 +32,15 @@ namespace
 	constexpr float MaxStopDownwardVelocity = -2.0F;
 	constexpr float DescentVerticalVelocity = -4.5F;
 	constexpr float DescentHorizontalDamping = 0.38F;
-	constexpr float WaterLandingTolerance = 24.0F;
+	constexpr float WaterLandingTolerance = 18.0F;
 	constexpr float WaterLandingOffset = 12.0F;
-	constexpr float GroundLandingTolerance = 36.0F;
+	constexpr float GroundLandingTolerance = 18.0F;
+	constexpr std::uint32_t StableLandingContactTicks = 8;
 	constexpr std::uint32_t MaxStartAfterSheatheAttempts = 8;
 	constexpr auto StartAfterSheatheRetryDelay = 250ms;
 	constexpr auto ShoutGraphOverrideDuration = 1400ms;
 	constexpr auto ShoutControlsCloseDelay = 150ms;
-	constexpr std::string_view FlightBuildVersion = "v0.8.7-dragon-aspect";
+	constexpr std::string_view FlightBuildVersion = "v0.8.8-dragon-aspect";
 	constexpr const char* GraphVarDragonAspectActive = "bDAF_DragonAspectActive";
 	constexpr const char* GraphVarFlightActive = "bDAF_FlightActive";
 	constexpr const char* GraphVarLaunchBoost = "bDAF_LaunchBoost";
@@ -55,7 +56,8 @@ namespace
 		kDescent = 4
 	};
 
-	bool IsNearSolidGroundSurface(RE::PlayerCharacter* a_player);
+	bool IsNearSolidGroundSurface(RE::PlayerCharacter* a_player, float a_tolerance = GroundLandingTolerance);
+	bool IsNearWaterSurface(RE::PlayerCharacter* a_player, float a_tolerance = WaterLandingTolerance);
 	bool ResolveWaterLanding(RE::PlayerCharacter* a_player, RE::bhkCharacterController* a_controller);
 
 	// Dragon Aspect magic effect form IDs from Dragonborn.esm.
@@ -176,15 +178,19 @@ namespace
 		a_controller->fallTime = 0.0F;
 	}
 
-	void ApplyControlledAirState(RE::bhkCharacterController* a_controller)
+	void ApplyControlledAirState(RE::PlayerCharacter* a_player, RE::bhkCharacterController* a_controller)
 	{
+		(void)a_player;
+
 		if (!a_controller) {
 			return;
 		}
 
 		a_controller->gravity = 0.0F;
 		a_controller->flags.set(RE::CHARACTER_FLAGS::kNoFriction);
-		if (a_controller->wantState == RE::hkpCharacterStateType::kSwimming ||
+		if (a_controller->wantState == RE::hkpCharacterStateType::kOnGround ||
+			a_controller->context.currentState == RE::hkpCharacterStateType::kOnGround ||
+			a_controller->wantState == RE::hkpCharacterStateType::kSwimming ||
 			a_controller->context.currentState == RE::hkpCharacterStateType::kSwimming) {
 			a_controller->wantState = RE::hkpCharacterStateType::kInAir;
 			a_controller->context.currentState = RE::hkpCharacterStateType::kInAir;
@@ -194,7 +200,7 @@ namespace
 	void HoldContinuousFlightAirState(RE::PlayerCharacter* a_player, RE::bhkCharacterController* a_controller)
 	{
 		ResetFlightFallState(a_player, a_controller);
-		ApplyControlledAirState(a_controller);
+		ApplyControlledAirState(a_player, a_controller);
 	}
 
 	void AddInitialFlightLift(RE::bhkCharacterController* a_controller)
@@ -428,7 +434,7 @@ namespace
 		controller->SetLinearVelocityImpl(clampedVelocity);
 	}
 
-	bool MovePlayerWithControlledDescent()
+	bool MovePlayerWithControlledDescent(std::uint32_t& a_landingContactTicks)
 	{
 		auto* player = GetPlayer();
 
@@ -442,29 +448,35 @@ namespace
 			return false;
 		}
 
-		if (ResolveWaterLanding(player, controller)) {
-			logger::info("Flight descent resolved on water surface");
-			return true;
-		}
+		const bool nearWater = IsNearWaterSurface(player);
+		const bool nearSolidGround = IsNearSolidGroundSurface(player);
+		const bool grounded = IsControllerGrounded(controller);
 
-		if (IsControllerGrounded(controller)) {
-			if (!IsNearSolidGroundSurface(player)) {
-				ApplyControlledAirState(controller);
-				ResetFlightFallState(player, controller);
-			} else {
-				logger::info("Flight descent resolved on solid ground");
-				return true;
+		if (grounded && !nearWater && !nearSolidGround) {
+			a_landingContactTicks = 0;
+			ApplyControlledAirState(player, controller);
+			ResetFlightFallState(player, controller);
+		} else if (nearWater || (grounded && nearSolidGround)) {
+			++a_landingContactTicks;
+
+			if (a_landingContactTicks >= StableLandingContactTicks) {
+				if (nearWater && ResolveWaterLanding(player, controller)) {
+					logger::info("Flight descent resolved on stable water surface");
+					return true;
+				}
+
+				if (nearSolidGround) {
+					logger::info("Flight descent resolved on stable solid ground");
+					return true;
+				}
 			}
-		}
-
-		if (IsNearSolidGroundSurface(player) && controller->context.currentState == RE::hkpCharacterStateType::kOnGround) {
-			logger::info("Flight descent resolved near terrain surface");
-			return true;
+		} else {
+			a_landingContactTicks = 0;
 		}
 
 		RestoreFlightStamina(player);
 		ResetFlightFallState(player, controller);
-		ApplyControlledAirState(controller);
+		ApplyControlledAirState(player, controller);
 
 		RE::hkVector4 currentVelocity{ 0.0F, 0.0F, 0.0F, 0.0F };
 		controller->GetLinearVelocityImpl(currentVelocity);
@@ -488,7 +500,7 @@ namespace
 		return true;
 	}
 
-	bool IsNearWaterSurface(RE::PlayerCharacter* a_player)
+	bool IsNearWaterSurface(RE::PlayerCharacter* a_player, float a_tolerance)
 	{
 		if (!a_player) {
 			return false;
@@ -500,10 +512,10 @@ namespace
 			return false;
 		}
 
-		return a_player->GetPositionZ() <= waterHeight + WaterLandingTolerance;
+		return a_player->GetPositionZ() <= waterHeight + a_tolerance;
 	}
 
-	bool IsNearSolidGroundSurface(RE::PlayerCharacter* a_player)
+	bool IsNearSolidGroundSurface(RE::PlayerCharacter* a_player, float a_tolerance)
 	{
 		if (!a_player) {
 			return false;
@@ -522,7 +534,7 @@ namespace
 			return true;
 		}
 
-		return position.z <= landHeight + GroundLandingTolerance;
+		return position.z <= landHeight + a_tolerance;
 	}
 
 	bool ResolveWaterLanding(RE::PlayerCharacter* a_player, RE::bhkCharacterController* a_controller)
@@ -595,6 +607,7 @@ namespace DragonAspectFlight
 			_startAfterSheathePending = false;
 			_startAfterSheatheAttempts = 0;
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kIdle);
+			_landingContactTicks = 0;
 			_shoutGraphOverrideUntil = {};
 			logger::info("Flight started - {}", FlightBuildVersion);
 		}
@@ -606,7 +619,7 @@ namespace DragonAspectFlight
 		if (player && player->Is3DLoaded()) {
 			if (auto* controller = player->GetCharController()) {
 				_originalGravity = controller->gravity;
-				ApplyControlledAirState(controller);
+				ApplyControlledAirState(player, controller);
 				AddInitialFlightLift(controller);
 			}
 			SetFlightGraphVariables(player, true, true, false, false, FlightGraphState::kIdle);
@@ -655,6 +668,7 @@ namespace DragonAspectFlight
 			_flightShoutControlsOpen = false;
 			_flightShoutControlsCloseAfter = {};
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kDescent);
+			_landingContactTicks = 0;
 			logger::info("Flight descent started - {}", FlightBuildVersion);
 		}
 
@@ -683,6 +697,7 @@ namespace DragonAspectFlight
 			_flightShoutControlsOpen = false;
 			_flightShoutControlsCloseAfter = {};
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kOff);
+			_landingContactTicks = 0;
 			logger::info("Flight stopped - {}", FlightBuildVersion);
 		}
 
@@ -1044,6 +1059,7 @@ namespace DragonAspectFlight
 		bool boostHeld = false;
 		bool descending = false;
 		bool shoutOverrideActive = false;
+		std::uint32_t landingContactTicks = 0;
 		FlightGraphState graphState = FlightGraphState::kOff;
 
 		{
@@ -1068,6 +1084,7 @@ namespace DragonAspectFlight
 			verticalInput = _verticalInput;
 			launchBoost = _pendingLaunchBoost;
 			boostHeld = _boostHeld;
+			landingContactTicks = _landingContactTicks;
 			_pendingLaunchBoost = 0.0F;
 			shoutOverrideActive = !descending && std::chrono::steady_clock::now() < _shoutGraphOverrideUntil;
 
@@ -1093,8 +1110,13 @@ namespace DragonAspectFlight
 		SetFlightGraphVariables(player, true, true, graphState == FlightGraphState::kLaunch, shoutOverrideActive, graphState);
 
 		if (descending) {
-			if (MovePlayerWithControlledDescent()) {
+			if (MovePlayerWithControlledDescent(landingContactTicks)) {
 				StopFlight();
+			} else {
+				std::unique_lock lock(_mutex);
+				if (_isFlying && _isDescending) {
+					_landingContactTicks = landingContactTicks;
+				}
 			}
 			return;
 		}
