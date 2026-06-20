@@ -29,6 +29,7 @@ namespace DragonAspectFlight
 		void SetBoostHeld(bool a_boostHeld);
 		void NotifyFlightShout();
 		void BeginFlightShoutInput();
+		void QueueEndFlightShoutInput();
 		void EndFlightShoutInput();
 
 		[[nodiscard]] float GetFlightSpeed() const;
@@ -58,6 +59,7 @@ namespace DragonAspectFlight
 		bool _fightingControlsSuppressed{ false };
 		bool _restoreFightingControls{ false };
 		bool _flightShoutControlsOpen{ false };
+		std::chrono::steady_clock::time_point _flightShoutControlsCloseAfter{};
 		float _flightSpeed{ 14.0F };
 		float _verticalSpeed{ 24.0F };
 		float _liftScale{ 1.0F };

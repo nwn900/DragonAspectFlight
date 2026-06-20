@@ -40,7 +40,6 @@ namespace DragonAspectFlight
 		bool _ascendHeld{ false };
 		bool _descendHeld{ false };
 		bool _shoutHeld{ false };
-		std::chrono::steady_clock::time_point _shoutStartedAt{};
 		bool _boostHeld{ false };
 		bool _registered{ false };
 	};

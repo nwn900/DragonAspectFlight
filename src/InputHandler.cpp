@@ -4,9 +4,6 @@
 #include "DragonAspectFlight/InputHandler.h"
 
 #include "RE/C/ControlMap.h"
-#include "RE/M/MemoryManager.h"
-#include "RE/P/PlayerControls.h"
-#include "RE/S/ShoutHandler.h"
 
 namespace
 {
@@ -31,8 +28,7 @@ namespace
 	constexpr std::uint32_t SpaceKeyboardScanCode = 0x39;               // DIK_SPACE
 	constexpr std::uint32_t LeftShiftKeyboardScanCode = 0x2A;           // DIK_LSHIFT
 	constexpr float ThumbstickDeadzone = 0.25F;
-	constexpr const char* FlightBuildVersion = "v0.8.6-dragon-aspect";
-	constexpr float MinShoutReleaseHeldSeconds = 0.05F;
+	constexpr const char* FlightBuildVersion = "v0.8.7-dragon-aspect";
 
 	bool IsLaunchAction(const RE::ButtonEvent* a_event)
 	{
@@ -124,36 +120,6 @@ namespace
 		logger::info("{}", a_msg);
 	}
 
-	bool DispatchFlightShoutEvent(
-		const RE::ButtonEvent* a_event,
-		float a_value,
-		float a_heldSeconds)
-	{
-		auto* controls = RE::PlayerControls::GetSingleton();
-
-		if (!controls || !controls->shoutHandler) {
-			logger::warn("Dragon Aspect Flight: shout blocked because PlayerControls/ShoutHandler is unavailable");
-			return true;
-		}
-
-		auto* shoutEvent = RE::ButtonEvent::Create(
-			a_event->GetDevice(),
-			RE::BSFixedString(ShoutUserEvent),
-			a_event->GetIDCode(),
-			a_value,
-			a_heldSeconds);
-
-		if (!shoutEvent) {
-			logger::warn("Dragon Aspect Flight: shout blocked because synthetic ButtonEvent allocation failed");
-			return true;
-		}
-
-		controls->shoutHandler->ProcessButton(shoutEvent, std::addressof(controls->data));
-		RE::free(shoutEvent);
-
-		return true;
-	}
-
 	void ApplyRadialThumbstickDeadzone(float a_rawX, float a_rawY, float& a_outX, float& a_outY)
 	{
 		const float x = std::clamp(a_rawX, -1.0F, 1.0F);
@@ -221,39 +187,27 @@ namespace DragonAspectFlight
 		auto& fm = FlightManager::GetSingleton();
 
 		if (a_event->IsUp()) {
-			const auto now = std::chrono::steady_clock::now();
-			float heldSeconds = a_event->HeldDuration();
-
-			if (_shoutHeld) {
-				heldSeconds = std::max(
-					heldSeconds,
-					std::chrono::duration<float>(now - _shoutStartedAt).count());
-			}
-
 			_shoutHeld = false;
 			fm.NotifyFlightShout();
-			DispatchFlightShoutEvent(a_event, 0.0F, std::max(heldSeconds, MinShoutReleaseHeldSeconds));
-			fm.EndFlightShoutInput();
-			logger::info("Dragon Aspect Flight: released flight shout after {:.2f}s", heldSeconds);
-			return true;
+			fm.QueueEndFlightShoutInput();
+			logger::info("Dragon Aspect Flight: released vanilla flight shout input after {:.2f}s", a_event->HeldDuration());
+			return false;
 		}
 
 		if (a_event->IsDown() || (a_event->IsPressed() && !_shoutHeld)) {
 			_shoutHeld = true;
-			_shoutStartedAt = std::chrono::steady_clock::now();
 			fm.BeginFlightShoutInput();
 			fm.NotifyFlightShout();
-			DispatchFlightShoutEvent(a_event, 1.0F, 0.0F);
-			logger::info("Dragon Aspect Flight: started flight shout charge");
-			return true;
+			logger::info("Dragon Aspect Flight: passing vanilla flight shout input through");
+			return false;
 		}
 
 		if (a_event->IsHeld()) {
 			fm.NotifyFlightShout();
-			return true;
+			return false;
 		}
 
-		return true;
+		return false;
 	}
 
 	bool InputHandler::HandleButtonEvent(const RE::ButtonEvent* a_event)
