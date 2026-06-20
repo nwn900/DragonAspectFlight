@@ -24,6 +24,7 @@ namespace DragonAspectFlight
 		void SetVerticalSpeed(float a_speed);
 		void SetLiftScale(float a_scale);
 		void SetMovementInput(float a_forwardInput, float a_strafeInput);
+		void SetVerticalInput(float a_verticalInput);
 		void TriggerLaunchBoost();
 		void SetBoostHeld(bool a_boostHeld);
 		void NotifyFlightShout();
@@ -59,6 +60,7 @@ namespace DragonAspectFlight
 		float _liftScale{ 1.0F };
 		float _forwardInput{ 0.0F };
 		float _strafeInput{ 0.0F };
+		float _verticalInput{ 0.0F };
 		float _pendingLaunchBoost{ 0.0F };
 		bool _boostHeld{ false };
 		std::int32_t _lastGraphState{ 0 };

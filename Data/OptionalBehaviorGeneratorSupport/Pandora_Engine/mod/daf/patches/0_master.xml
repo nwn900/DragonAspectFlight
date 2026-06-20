@@ -4,6 +4,7 @@
 			<hkcstring>bDAF_DragonAspectActive</hkcstring>
 			<hkcstring>bDAF_FlightActive</hkcstring>
 			<hkcstring>bDAF_LaunchBoost</hkcstring>
+			<hkcstring>bDAF_FlightShout</hkcstring>
 			<hkcstring>iDAF_FlightState</hkcstring>
 		</edit>
 		<edit path="#0108/wordVariableValues">
@@ -19,8 +20,20 @@
 			<hkobject>
 				<hkparam name="value">0</hkparam>
 			</hkobject>
+			<hkobject>
+				<hkparam name="value">0</hkparam>
+			</hkobject>
 		</edit>
 		<edit path="#0108/variableInfos">
+			<hkobject>
+				<hkparam name="role">
+					<hkobject>
+						<hkparam name="role">ROLE_DEFAULT</hkparam>
+						<hkparam name="flags">0</hkparam>
+					</hkobject>
+				</hkparam>
+				<hkparam name="type">VARIABLE_TYPE_BOOL</hkparam>
+			</hkobject>
 			<hkobject>
 				<hkparam name="role">
 					<hkobject>

@@ -25,6 +25,7 @@ namespace DragonAspectFlight
 		void HandleThumbstickEvent(const RE::ThumbstickEvent* a_event);
 		void ResetFlightInputState();
 		void UpdateMovementInput();
+		void UpdateVerticalInput();
 
 		float _keyboardForwardInput{ 0.0F };
 		float _keyboardStrafeInput{ 0.0F };
@@ -37,6 +38,8 @@ namespace DragonAspectFlight
 		bool _rightCastHeld{ false };
 		bool _dualCastHeld{ false };
 		bool _launchHeld{ false };
+		bool _ascendHeld{ false };
+		bool _descendHeld{ false };
 		bool _boostHeld{ false };
 		bool _registered{ false };
 	};

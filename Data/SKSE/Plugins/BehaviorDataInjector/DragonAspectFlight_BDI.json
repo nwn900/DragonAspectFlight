@@ -19,6 +19,12 @@
     },
     {
         "projectPath": "Actors",
+        "type": "kBool",
+        "name": "bDAF_FlightShout",
+        "value": false
+    },
+    {
+        "projectPath": "Actors",
         "type": "kInt",
         "name": "iDAF_FlightState",
         "value": 0

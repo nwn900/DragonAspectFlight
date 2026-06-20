@@ -40,6 +40,7 @@ namespace
 	constexpr const char* GraphVarDragonAspectActive = "bDAF_DragonAspectActive";
 	constexpr const char* GraphVarFlightActive = "bDAF_FlightActive";
 	constexpr const char* GraphVarLaunchBoost = "bDAF_LaunchBoost";
+	constexpr const char* GraphVarFlightShout = "bDAF_FlightShout";
 	constexpr const char* GraphVarFlightState = "iDAF_FlightState";
 
 	enum class FlightGraphState : std::int32_t
@@ -221,6 +222,7 @@ namespace
 		bool a_dragonAspectActive,
 		bool a_flightActive,
 		bool a_launchBoost,
+		bool a_flightShout,
 		FlightGraphState a_state)
 	{
 		if (!a_player || !a_player->Is3DLoaded()) {
@@ -230,6 +232,7 @@ namespace
 		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarDragonAspectActive), a_dragonAspectActive);
 		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarFlightActive), a_flightActive);
 		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarLaunchBoost), a_launchBoost);
+		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarFlightShout), a_flightShout);
 		a_player->SetGraphVariableInt(RE::BSFixedString(GraphVarFlightState), static_cast<std::int32_t>(a_state));
 	}
 
@@ -298,7 +301,7 @@ namespace
 		return std::abs(a_forwardInput) > InputDeadzone || std::abs(a_strafeInput) > InputDeadzone;
 	}
 
-	void MovePlayerWithCharacterControllerVelocity(float a_horizontalSpeed, float a_verticalSpeed, float a_liftScale, float a_forwardInput, float a_strafeInput, float a_launchBoost, bool a_boostHeld)
+	void MovePlayerWithCharacterControllerVelocity(float a_horizontalSpeed, float a_verticalSpeed, float a_liftScale, float a_forwardInput, float a_strafeInput, float a_verticalInput, float a_launchBoost, bool a_boostHeld)
 	{
 		auto player = GetPlayer();
 
@@ -322,9 +325,14 @@ namespace
 		const float activeHorizontalSpeed = a_boostHeld ? BoostHorizontalVelocity : a_horizontalSpeed;
 		const float activeVerticalSpeed = a_boostHeld ? BoostVerticalVelocity : a_verticalSpeed;
 		const float activeSmoothing = a_boostHeld ? BoostVelocitySmoothing : TurnVelocitySmoothing;
+		const bool hasVerticalInput = std::abs(a_verticalInput) > InputDeadzone;
+		const float verticalControlVelocity = std::clamp(a_verticalInput, -1.0F, 1.0F) * activeVerticalSpeed;
 
 		if (a_horizontalSpeed <= 0.0F || !HasMovementInput(a_forwardInput, a_strafeInput)) {
-			const RE::hkVector4 idleTargetVelocity{ 0.0F, 0.0F, std::clamp(std::max(a_launchBoost, MinFlightHoverVelocity), 0.0F, MaxVerticalVelocity), 0.0F };
+			const float idleVerticalVelocity = hasVerticalInput ?
+				verticalControlVelocity :
+				std::max(a_launchBoost, MinFlightHoverVelocity);
+			const RE::hkVector4 idleTargetVelocity{ 0.0F, 0.0F, std::clamp(idleVerticalVelocity, -maxVerticalForMode, maxVerticalForMode), 0.0F };
 			smoothedVelocity = LerpVelocity(smoothedVelocity, idleTargetVelocity);
 			controller->SetLinearVelocityImpl(smoothedVelocity);
 			return;
@@ -347,16 +355,21 @@ namespace
 		desiredDirection = NormalizeVector(desiredDirection);
 
 		if (desiredDirection.SqrLength() <= 0.0001F || inputMagnitude <= InputDeadzone) {
-			controller->SetLinearVelocityImpl(RE::hkVector4{ 0.0F, 0.0F, MinFlightHoverVelocity, 0.0F });
+			controller->SetLinearVelocityImpl(RE::hkVector4{ 0.0F, 0.0F, hasVerticalInput ? verticalControlVelocity : MinFlightHoverVelocity, 0.0F });
 			return;
 		}
 
 		const float tunedHorizontalSpeed = std::min(activeHorizontalSpeed * inputMagnitude, maxHorizontalForMode);
 		const float tunedVerticalSpeed = std::min(activeVerticalSpeed * inputMagnitude, maxVerticalForMode);
 
-		const float targetVerticalVelocity = std::max(
-			(desiredDirection.z * tunedVerticalSpeed * BaseVerticalVelocityScale * std::clamp(a_liftScale, 0.25F, 2.50F)) + a_launchBoost,
-			MinFlightHoverVelocity);
+		float targetVerticalVelocity =
+			(desiredDirection.z * tunedVerticalSpeed * BaseVerticalVelocityScale * std::clamp(a_liftScale, 0.25F, 2.50F)) +
+			verticalControlVelocity +
+			a_launchBoost;
+
+		if (!hasVerticalInput && a_launchBoost <= 0.0F) {
+			targetVerticalVelocity = std::max(targetVerticalVelocity, MinFlightHoverVelocity);
+		}
 
 		RE::hkVector4 targetVelocity{
 			ClampMagnitude(desiredDirection.x * tunedHorizontalSpeed, maxHorizontalForMode),
@@ -541,7 +554,7 @@ namespace DragonAspectFlight
 				ApplyControlledAirState(controller);
 				AddInitialFlightLift(controller);
 			}
-			SetFlightGraphVariables(player, true, true, false, FlightGraphState::kIdle);
+			SetFlightGraphVariables(player, true, true, false, false, FlightGraphState::kIdle);
 		}
 
 		StartUpdateThread();
@@ -581,6 +594,7 @@ namespace DragonAspectFlight
 			_isDescending = true;
 			_forwardInput = 0.0F;
 			_strafeInput = 0.0F;
+			_verticalInput = 0.0F;
 			_pendingLaunchBoost = 0.0F;
 			_boostHeld = false;
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kDescent);
@@ -588,7 +602,7 @@ namespace DragonAspectFlight
 		}
 
 		if (auto* player = GetPlayer(); player && player->Is3DLoaded()) {
-			SetFlightGraphVariables(player, HasDragonAspectActive(), true, false, FlightGraphState::kDescent);
+			SetFlightGraphVariables(player, HasDragonAspectActive(), true, false, false, FlightGraphState::kDescent);
 		}
 
 		StartUpdateThread();
@@ -607,6 +621,7 @@ namespace DragonAspectFlight
 			_isDescending = false;
 			_forwardInput = 0.0F;
 			_strafeInput = 0.0F;
+			_verticalInput = 0.0F;
 			_boostHeld = false;
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kOff);
 			logger::info("Flight stopped - {}", FlightBuildVersion);
@@ -617,7 +632,7 @@ namespace DragonAspectFlight
 
 		// Restore gravity, friction, and ground state.
 		if (auto* player = GetPlayer(); player && player->Is3DLoaded()) {
-			SetFlightGraphVariables(player, HasDragonAspectActive(), false, false, FlightGraphState::kOff);
+			SetFlightGraphVariables(player, HasDragonAspectActive(), false, false, false, FlightGraphState::kOff);
 			if (auto* controller = player->GetCharController()) {
 				controller->gravity = _originalGravity;
 				controller->flags.reset(RE::CHARACTER_FLAGS::kNoFriction);
@@ -675,7 +690,7 @@ namespace DragonAspectFlight
 		}
 
 		if (applyImmediately) {
-			SetFlightGraphVariables(GetPlayer(), true, true, false, FlightGraphState::kMoving);
+			SetFlightGraphVariables(GetPlayer(), true, true, false, true, FlightGraphState::kMoving);
 		}
 	}
 
@@ -717,6 +732,12 @@ namespace DragonAspectFlight
 		std::unique_lock lock(_mutex);
 		_forwardInput = _isDescending ? 0.0F : std::clamp(a_forwardInput, -1.0F, 1.0F);
 		_strafeInput = _isDescending ? 0.0F : std::clamp(a_strafeInput, -1.0F, 1.0F);
+	}
+
+	void FlightManager::SetVerticalInput(float a_verticalInput)
+	{
+		std::unique_lock lock(_mutex);
+		_verticalInput = _isDescending ? 0.0F : std::clamp(a_verticalInput, -1.0F, 1.0F);
 	}
 
 	float FlightManager::GetFlightSpeed() const
@@ -877,6 +898,7 @@ namespace DragonAspectFlight
 		float liftScale = 1.0F;
 		float forwardInput = 0.0F;
 		float strafeInput = 0.0F;
+		float verticalInput = 0.0F;
 		float launchBoost = 0.0F;
 		bool boostHeld = false;
 		bool descending = false;
@@ -902,6 +924,7 @@ namespace DragonAspectFlight
 			liftScale = _liftScale;
 			forwardInput = _forwardInput;
 			strafeInput = _strafeInput;
+			verticalInput = _verticalInput;
 			launchBoost = _pendingLaunchBoost;
 			boostHeld = _boostHeld;
 			_pendingLaunchBoost = 0.0F;
@@ -926,7 +949,7 @@ namespace DragonAspectFlight
 			logger::info("Blocked weapon/magic draw during Dragon Aspect flight");
 		}
 
-		SetFlightGraphVariables(player, true, true, graphState == FlightGraphState::kLaunch, graphState);
+		SetFlightGraphVariables(player, true, true, graphState == FlightGraphState::kLaunch, shoutOverrideActive, graphState);
 
 		if (descending) {
 			if (MovePlayerWithControlledDescent()) {
@@ -935,6 +958,6 @@ namespace DragonAspectFlight
 			return;
 		}
 
-		MovePlayerWithCharacterControllerVelocity(flightSpeed, verticalSpeed, liftScale, forwardInput, strafeInput, launchBoost, boostHeld);
+		MovePlayerWithCharacterControllerVelocity(flightSpeed, verticalSpeed, liftScale, forwardInput, strafeInput, verticalInput, launchBoost, boostHeld);
 	}
 }

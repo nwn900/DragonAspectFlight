@@ -28,6 +28,8 @@ namespace
 	constexpr const char* ShoutUserEvent = "Shout";
 	constexpr const char* KinectShoutUserEvent = "KinectShout";
 	constexpr std::uint32_t DefaultReadyWeaponKeyboardScanCode = 0x13;  // DIK_R
+	constexpr std::uint32_t SpaceKeyboardScanCode = 0x39;               // DIK_SPACE
+	constexpr std::uint32_t LeftShiftKeyboardScanCode = 0x2A;           // DIK_LSHIFT
 	constexpr float ThumbstickDeadzone = 0.25F;
 	constexpr const char* FlightBuildVersion = "v0.3.2-dragon-aspect";
 	constexpr auto FlightDoubleTapWindow = std::chrono::milliseconds(450);
@@ -42,6 +44,20 @@ namespace
 	bool IsLaunchAction(const RE::ButtonEvent* a_event)
 	{
 		return a_event && a_event->QUserEvent() == JumpUserEvent;
+	}
+
+	bool IsKeyboardSpace(const RE::ButtonEvent* a_event)
+	{
+		return a_event &&
+			a_event->GetDevice() == RE::INPUT_DEVICE::kKeyboard &&
+			a_event->GetIDCode() == SpaceKeyboardScanCode;
+	}
+
+	bool IsKeyboardLeftShift(const RE::ButtonEvent* a_event)
+	{
+		return a_event &&
+			a_event->GetDevice() == RE::INPUT_DEVICE::kKeyboard &&
+			a_event->GetIDCode() == LeftShiftKeyboardScanCode;
 	}
 
 	bool IsReadyWeaponAction(const RE::ButtonEvent* a_event)
@@ -230,6 +246,40 @@ namespace DragonAspectFlight
 			if (ue == StrafeRightUserEvent) { _keyboardStrafeInput = pv; UpdateMovementInput(); return false; }
 		}
 
+		if (fm.IsFlying() && (IsKeyboardSpace(a_event) || IsKeyboardLeftShift(a_event) || IsLaunchAction(a_event))) {
+			if (!fm.IsDragonAspectActive()) {
+				fm.StopFlight();
+				ResetFlightInputState();
+				return true;
+			}
+
+			if (fm.IsDescending()) {
+				_ascendHeld = false;
+				_descendHeld = false;
+				UpdateVerticalInput();
+				return true;
+			}
+
+			if (a_event->IsUp()) {
+				if (IsKeyboardSpace(a_event) || IsLaunchAction(a_event)) {
+					_ascendHeld = false;
+				}
+				if (IsKeyboardLeftShift(a_event)) {
+					_descendHeld = false;
+				}
+			} else if (a_event->IsPressed() || a_event->IsHeld()) {
+				if (IsKeyboardSpace(a_event) || IsLaunchAction(a_event)) {
+					_ascendHeld = true;
+				}
+				if (IsKeyboardLeftShift(a_event)) {
+					_descendHeld = true;
+				}
+			}
+
+			UpdateVerticalInput();
+			return true;
+		}
+
 		if (IsShoutAction(a_event) && fm.IsFlying()) {
 			if (!fm.IsDragonAspectActive()) {
 				fm.StopFlight();
@@ -371,8 +421,11 @@ namespace DragonAspectFlight
 		_rightCastHeld = false;
 		_dualCastHeld = false;
 		_launchHeld = false;
+		_ascendHeld = false;
+		_descendHeld = false;
 		_boostHeld = false;
 		FlightManager::GetSingleton().SetBoostHeld(false);
+		UpdateVerticalInput();
 		UpdateMovementInput();
 	}
 
@@ -381,5 +434,14 @@ namespace DragonAspectFlight
 		FlightManager::GetSingleton().SetMovementInput(
 			std::clamp(_keyboardForwardInput + _thumbstickForwardInput, -1.0F, 1.0F),
 			std::clamp(_keyboardStrafeInput + _thumbstickStrafeInput, -1.0F, 1.0F));
+	}
+
+	void InputHandler::UpdateVerticalInput()
+	{
+		const float verticalInput =
+			(_ascendHeld ? 1.0F : 0.0F) +
+			(_descendHeld ? -1.0F : 0.0F);
+
+		FlightManager::GetSingleton().SetVerticalInput(std::clamp(verticalInput, -1.0F, 1.0F));
 	}
 }
