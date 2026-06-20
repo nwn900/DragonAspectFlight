@@ -140,6 +140,7 @@ namespace
 			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, true);
 		}
 
+		DragonAspectFlight::FlightManager::GetSingleton().NotifyFlightShout();
 		controls->shoutHandler->ProcessButton(shoutEvent, std::addressof(controls->data));
 
 		if (controlMap && !fightingWasEnabled) {

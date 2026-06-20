@@ -26,12 +26,16 @@ namespace
 	constexpr float BoostVelocitySmoothing = 0.22F;
 	constexpr float TurnVelocitySmoothing = 0.18F;
 	constexpr float CollisionCatchUpBrake = 0.65F;
+	constexpr float MinFlightHoverVelocity = 0.35F;
 	constexpr float StaminaRestorePerUpdate = 6.0F;
 	constexpr float MaxStopDownwardVelocity = -2.0F;
 	constexpr float DescentVerticalVelocity = -4.5F;
 	constexpr float DescentHorizontalDamping = 0.38F;
 	constexpr float WaterLandingTolerance = 24.0F;
 	constexpr float WaterLandingOffset = 4.0F;
+	constexpr std::uint32_t MaxStartAfterSheatheAttempts = 8;
+	constexpr auto StartAfterSheatheRetryDelay = 250ms;
+	constexpr auto ShoutGraphOverrideDuration = 1400ms;
 	constexpr std::string_view FlightBuildVersion = "v0.3.2-dragon-aspect";
 	constexpr const char* GraphVarDragonAspectActive = "bDAF_DragonAspectActive";
 	constexpr const char* GraphVarFlightActive = "bDAF_FlightActive";
@@ -179,6 +183,12 @@ namespace
 		a_controller->context.currentState = RE::hkpCharacterStateType::kInAir;
 	}
 
+	void HoldContinuousFlightAirState(RE::PlayerCharacter* a_player, RE::bhkCharacterController* a_controller)
+	{
+		ResetFlightFallState(a_player, a_controller);
+		ApplyControlledAirState(a_controller);
+	}
+
 	void AddInitialFlightLift(RE::bhkCharacterController* a_controller)
 	{
 		if (!a_controller) {
@@ -303,8 +313,7 @@ namespace
 		}
 
 		RestoreFlightStamina(player);
-		ResetFlightFallState(player, controller);
-		ApplyControlledAirState(controller);
+		HoldContinuousFlightAirState(player, controller);
 
 		static RE::hkVector4 smoothedVelocity{ 0.0F, 0.0F, 0.0F, 0.0F };
 
@@ -315,7 +324,7 @@ namespace
 		const float activeSmoothing = a_boostHeld ? BoostVelocitySmoothing : TurnVelocitySmoothing;
 
 		if (a_horizontalSpeed <= 0.0F || !HasMovementInput(a_forwardInput, a_strafeInput)) {
-			const RE::hkVector4 idleTargetVelocity{ 0.0F, 0.0F, std::clamp(a_launchBoost, 0.0F, MaxVerticalVelocity), 0.0F };
+			const RE::hkVector4 idleTargetVelocity{ 0.0F, 0.0F, std::clamp(std::max(a_launchBoost, MinFlightHoverVelocity), 0.0F, MaxVerticalVelocity), 0.0F };
 			smoothedVelocity = LerpVelocity(smoothedVelocity, idleTargetVelocity);
 			controller->SetLinearVelocityImpl(smoothedVelocity);
 			return;
@@ -338,17 +347,21 @@ namespace
 		desiredDirection = NormalizeVector(desiredDirection);
 
 		if (desiredDirection.SqrLength() <= 0.0001F || inputMagnitude <= InputDeadzone) {
-			controller->SetLinearVelocityImpl(RE::hkVector4{ 0.0F, 0.0F, 0.0F, 0.0F });
+			controller->SetLinearVelocityImpl(RE::hkVector4{ 0.0F, 0.0F, MinFlightHoverVelocity, 0.0F });
 			return;
 		}
 
 		const float tunedHorizontalSpeed = std::min(activeHorizontalSpeed * inputMagnitude, maxHorizontalForMode);
 		const float tunedVerticalSpeed = std::min(activeVerticalSpeed * inputMagnitude, maxVerticalForMode);
 
+		const float targetVerticalVelocity = std::max(
+			(desiredDirection.z * tunedVerticalSpeed * BaseVerticalVelocityScale * std::clamp(a_liftScale, 0.25F, 2.50F)) + a_launchBoost,
+			MinFlightHoverVelocity);
+
 		RE::hkVector4 targetVelocity{
 			ClampMagnitude(desiredDirection.x * tunedHorizontalSpeed, maxHorizontalForMode),
 			ClampMagnitude(desiredDirection.y * tunedHorizontalSpeed, maxHorizontalForMode),
-			ClampMagnitude((desiredDirection.z * tunedVerticalSpeed * BaseVerticalVelocityScale * std::clamp(a_liftScale, 0.25F, 2.50F)) + a_launchBoost, maxVerticalForMode),
+			ClampMagnitude(targetVerticalVelocity, maxVerticalForMode),
 			0.0F
 		};
 
@@ -480,6 +493,28 @@ namespace DragonAspectFlight
 
 	void FlightManager::StartFlight()
 	{
+		if (!HasDragonAspectActive()) {
+			logger::info("Dragon Aspect not active; flight cancelled");
+			return;
+		}
+
+		auto* player = GetPlayer();
+
+		if (ForceSheatheIfWeaponDrawn(player)) {
+			const auto attempt = _startAfterSheatheAttempts.fetch_add(1);
+
+			if (attempt >= MaxStartAfterSheatheAttempts) {
+				_startAfterSheatheAttempts = 0;
+				_startAfterSheathePending = false;
+				logger::warn("Dragon Aspect Flight: cancelled delayed flight start because weapons stayed drawn");
+				return;
+			}
+
+			logger::info("Dragon Aspect Flight: sheathing weapons before flight start");
+			QueueStartAfterSheathe();
+			return;
+		}
+
 		{
 			std::unique_lock lock(_mutex);
 
@@ -487,14 +522,12 @@ namespace DragonAspectFlight
 				return;
 			}
 
-			if (!HasDragonAspectActive()) {
-				logger::info("Dragon Aspect not active; flight cancelled");
-				return;
-			}
-
 			_isFlying = true;
 			_isDescending = false;
+			_startAfterSheathePending = false;
+			_startAfterSheatheAttempts = 0;
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kIdle);
+			_shoutGraphOverrideUntil = {};
 			logger::info("Flight started - {}", FlightBuildVersion);
 		}
 
@@ -502,9 +535,7 @@ namespace DragonAspectFlight
 
 		// Keep the physics state airborne for OAR without firing sprint/jump
 		// animation graph events that can collide with Better Jumping.
-		if (auto* player = GetPlayer(); player && player->Is3DLoaded()) {
-			ForceSheatheIfWeaponDrawn(player);
-
+		if (player && player->Is3DLoaded()) {
 			if (auto* controller = player->GetCharController()) {
 				_originalGravity = controller->gravity;
 				ApplyControlledAirState(controller);
@@ -514,6 +545,28 @@ namespace DragonAspectFlight
 		}
 
 		StartUpdateThread();
+	}
+
+	void FlightManager::QueueStartAfterSheathe()
+	{
+		if (_startAfterSheathePending.exchange(true)) {
+			return;
+		}
+
+		std::thread([this]() {
+			std::this_thread::sleep_for(StartAfterSheatheRetryDelay);
+
+			auto* taskInterface = SKSE::GetTaskInterface();
+			if (!taskInterface) {
+				_startAfterSheathePending = false;
+				return;
+			}
+
+			taskInterface->AddTask([this]() {
+				_startAfterSheathePending = false;
+				StartFlight();
+			});
+		}).detach();
 	}
 
 	void FlightManager::BeginDescent()
@@ -603,6 +656,27 @@ namespace DragonAspectFlight
 
 		_pendingLaunchBoost = LaunchBoostVelocity;
 		logger::info("Launch boost queued - {}", FlightBuildVersion);
+	}
+
+	void FlightManager::NotifyFlightShout()
+	{
+		bool applyImmediately = false;
+
+		{
+			std::unique_lock lock(_mutex);
+
+			if (!_isFlying || _isDescending || !HasDragonAspectActive()) {
+				return;
+			}
+
+			_shoutGraphOverrideUntil = std::chrono::steady_clock::now() + ShoutGraphOverrideDuration;
+			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kMoving);
+			applyImmediately = true;
+		}
+
+		if (applyImmediately) {
+			SetFlightGraphVariables(GetPlayer(), true, true, false, FlightGraphState::kMoving);
+		}
 	}
 
 	void FlightManager::SetBoostHeld(bool a_boostHeld)
@@ -806,6 +880,7 @@ namespace DragonAspectFlight
 		float launchBoost = 0.0F;
 		bool boostHeld = false;
 		bool descending = false;
+		bool shoutOverrideActive = false;
 		FlightGraphState graphState = FlightGraphState::kOff;
 
 		{
@@ -830,6 +905,7 @@ namespace DragonAspectFlight
 			launchBoost = _pendingLaunchBoost;
 			boostHeld = _boostHeld;
 			_pendingLaunchBoost = 0.0F;
+			shoutOverrideActive = !descending && std::chrono::steady_clock::now() < _shoutGraphOverrideUntil;
 
 			const bool hasMovementInput = !descending && HasMovementInput(forwardInput, strafeInput);
 			const bool hasLaunchBoost = launchBoost > 0.0F;
@@ -837,7 +913,7 @@ namespace DragonAspectFlight
 				FlightGraphState::kDescent :
 				(hasLaunchBoost ?
 				FlightGraphState::kLaunch :
-				(hasMovementInput ? FlightGraphState::kMoving : FlightGraphState::kIdle));
+				((hasMovementInput || shoutOverrideActive) ? FlightGraphState::kMoving : FlightGraphState::kIdle));
 
 			const auto nextGraphState = static_cast<std::int32_t>(graphState);
 			_lastGraphState = nextGraphState;

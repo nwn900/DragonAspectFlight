@@ -1,6 +1,7 @@
 #pragma once
 
 #include <atomic>
+#include <chrono>
 #include <cstdint>
 #include <shared_mutex>
 #include <thread>
@@ -25,6 +26,7 @@ namespace DragonAspectFlight
 		void SetMovementInput(float a_forwardInput, float a_strafeInput);
 		void TriggerLaunchBoost();
 		void SetBoostHeld(bool a_boostHeld);
+		void NotifyFlightShout();
 
 		[[nodiscard]] float GetFlightSpeed() const;
 		[[nodiscard]] float GetVerticalSpeed() const;
@@ -41,6 +43,7 @@ namespace DragonAspectFlight
 		void StopUpdateThread();
 		void QueueUpdate();
 		void UpdateFlight();
+		void QueueStartAfterSheathe();
 		void SuppressFightingControls();
 		void RestoreFightingControls();
 		void EnforceFightingControlsSuppressed();
@@ -59,9 +62,12 @@ namespace DragonAspectFlight
 		float _pendingLaunchBoost{ 0.0F };
 		bool _boostHeld{ false };
 		std::int32_t _lastGraphState{ 0 };
+		std::chrono::steady_clock::time_point _shoutGraphOverrideUntil{};
 
 		float _originalGravity{ 0.0F };
 
+		std::atomic_bool _startAfterSheathePending{ false };
+		std::atomic_uint32_t _startAfterSheatheAttempts{ 0 };
 		std::atomic_bool _threadRunning{ false };
 		std::jthread _updateThread;
 	};
