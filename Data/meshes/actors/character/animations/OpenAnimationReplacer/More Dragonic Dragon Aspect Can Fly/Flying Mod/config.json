@@ -1,0 +1,52 @@
+{
+  "name": "Dragon Aspect Flight - More Dragonic Flying Mod Compatibility",
+  "description": "Uses the installed More Dragonic Dragon Aspect Can Fly/Flying Mod HKX files while Dragon Aspect Flight is active. This config intentionally removes the More Draconic Aspect ESP magic-effect dependency.",
+  "priority": 69696969,
+  "interruptible": true,
+  "conditions": [
+    {
+      "condition": "IsActorBase",
+      "requiredVersion": "1.0.0.0",
+      "Actor base": {
+        "pluginName": "Skyrim.esm",
+        "formID": "7"
+      }
+    },
+    {
+      "condition": "CompareValues",
+      "requiredVersion": "1.0.0.0",
+      "Value A": {
+        "graphVariable": "bDAF_DragonAspectActive",
+        "graphVariableType": "Bool"
+      },
+      "Comparison": "==",
+      "Value B": {
+        "value": 1.0
+      }
+    },
+    {
+      "condition": "CompareValues",
+      "requiredVersion": "1.0.0.0",
+      "Value A": {
+        "graphVariable": "bDAF_FlightActive",
+        "graphVariableType": "Bool"
+      },
+      "Comparison": "==",
+      "Value B": {
+        "value": 1.0
+      }
+    },
+    {
+      "condition": "CompareValues",
+      "requiredVersion": "1.0.0.0",
+      "Value A": {
+        "graphVariable": "iDAF_FlightState",
+        "graphVariableType": "Int"
+      },
+      "Comparison": ">",
+      "Value B": {
+        "value": 0.0
+      }
+    }
+  ]
+}
