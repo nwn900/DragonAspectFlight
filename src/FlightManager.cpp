@@ -36,11 +36,12 @@ namespace
 	constexpr float WaterLandingOffset = 12.0F;
 	constexpr float GroundLandingTolerance = 18.0F;
 	constexpr std::uint32_t StableLandingContactTicks = 8;
+	constexpr std::uint32_t StableFallbackLandingContactTicks = 18;
 	constexpr std::uint32_t MaxStartAfterSheatheAttempts = 8;
 	constexpr auto StartAfterSheatheRetryDelay = 250ms;
 	constexpr auto ShoutGraphOverrideDuration = 1400ms;
 	constexpr auto ShoutControlsCloseDelay = 150ms;
-	constexpr std::string_view FlightBuildVersion = "v0.9.1-dragon-aspect";
+	constexpr std::string_view FlightBuildVersion = "v0.9.2-dragon-aspect";
 	constexpr const char* GraphVarDragonAspectActive = "bDAF_DragonAspectActive";
 	constexpr const char* GraphVarFlightActive = "bDAF_FlightActive";
 	constexpr const char* GraphVarLaunchBoost = "bDAF_LaunchBoost";
@@ -59,6 +60,8 @@ namespace
 	bool IsNearSolidGroundSurface(RE::PlayerCharacter* a_player, float a_tolerance = GroundLandingTolerance);
 	bool IsNearWaterSurface(RE::PlayerCharacter* a_player, float a_tolerance = WaterLandingTolerance);
 	bool ResolveWaterLanding(RE::PlayerCharacter* a_player, RE::bhkCharacterController* a_controller);
+	void HoldGroundedDescentContact(RE::PlayerCharacter* a_player, RE::bhkCharacterController* a_controller);
+	void ResolveSolidLanding(RE::PlayerCharacter* a_player, RE::bhkCharacterController* a_controller);
 
 	// Dragon Aspect magic effect form IDs from Dragonborn.esm.
 	// We check for active magic effects rather than HasSpell() because
@@ -452,23 +455,38 @@ namespace
 		const bool nearSolidGround = IsNearSolidGroundSurface(player);
 		const bool grounded = IsControllerGrounded(controller);
 
-		if (grounded && !nearWater && !nearSolidGround) {
-			a_landingContactTicks = 0;
-			ApplyControlledAirState(player, controller);
-			ResetFlightFallState(player, controller);
-		} else if (nearWater || (grounded && nearSolidGround)) {
+		if (nearWater || grounded) {
 			++a_landingContactTicks;
 
-			if (a_landingContactTicks >= StableLandingContactTicks) {
+			const auto requiredContactTicks =
+				nearWater || nearSolidGround ? StableLandingContactTicks : StableFallbackLandingContactTicks;
+
+			if (a_landingContactTicks >= requiredContactTicks) {
 				if (nearWater && ResolveWaterLanding(player, controller)) {
 					logger::info("Flight descent resolved on stable water surface");
 					return true;
 				}
 
+				if (grounded) {
+					ResolveSolidLanding(player, controller);
+					if (nearSolidGround) {
+						logger::info("Flight descent resolved on stable solid ground");
+					} else {
+						logger::info("Flight descent resolved on stable collision ground");
+					}
+					return true;
+				}
+
 				if (nearSolidGround) {
+					ResolveSolidLanding(player, controller);
 					logger::info("Flight descent resolved on stable solid ground");
 					return true;
 				}
+			}
+
+			if (grounded) {
+				HoldGroundedDescentContact(player, controller);
+				return false;
 			}
 		} else {
 			a_landingContactTicks = 0;
@@ -535,6 +553,37 @@ namespace
 		}
 
 		return position.z <= landHeight + a_tolerance;
+	}
+
+	void HoldGroundedDescentContact(RE::PlayerCharacter* a_player, RE::bhkCharacterController* a_controller)
+	{
+		if (!a_player || !a_controller) {
+			return;
+		}
+
+		RestoreFlightStamina(a_player);
+		ResetFlightFallState(a_player, a_controller);
+
+		RE::hkVector4 currentVelocity{ 0.0F, 0.0F, 0.0F, 0.0F };
+		a_controller->GetLinearVelocityImpl(currentVelocity);
+		currentVelocity.quad.m128_f32[0] *= DescentHorizontalDamping;
+		currentVelocity.quad.m128_f32[1] *= DescentHorizontalDamping;
+		currentVelocity.quad.m128_f32[2] = 0.0F;
+		currentVelocity.quad.m128_f32[3] = 0.0F;
+		a_controller->SetLinearVelocityImpl(currentVelocity);
+	}
+
+	void ResolveSolidLanding(RE::PlayerCharacter* a_player, RE::bhkCharacterController* a_controller)
+	{
+		if (!a_player || !a_controller) {
+			return;
+		}
+
+		ResetFlightFallState(a_player, a_controller);
+		a_controller->flags.reset(RE::CHARACTER_FLAGS::kNoFriction);
+		a_controller->wantState = RE::hkpCharacterStateType::kOnGround;
+		a_controller->context.currentState = RE::hkpCharacterStateType::kOnGround;
+		a_controller->SetLinearVelocityImpl(RE::hkVector4{ 0.0F, 0.0F, 0.0F, 0.0F });
 	}
 
 	bool ResolveWaterLanding(RE::PlayerCharacter* a_player, RE::bhkCharacterController* a_controller)
