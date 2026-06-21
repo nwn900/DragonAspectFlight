@@ -5,6 +5,15 @@
 
 #include "RE/C/ControlMap.h"
 
+#include <cerrno>
+#include <cctype>
+#include <cstdlib>
+#include <fstream>
+#include <limits>
+#include <optional>
+#include <string>
+#include <string_view>
+
 namespace
 {
 	constexpr const char* ForwardUserEvent = "Forward";
@@ -23,30 +32,174 @@ namespace
 	constexpr const char* DualCastUserEvent = "Dual Attack";
 	constexpr const char* ShoutUserEvent = "Shout";
 	constexpr const char* KinectShoutUserEvent = "KinectShout";
-	constexpr std::uint32_t FlightActivationKeyboardScanCode = 0x30;     // DIK_B
-	constexpr std::uint32_t DefaultReadyWeaponKeyboardScanCode = 0x13;  // DIK_R
-	constexpr std::uint32_t SpaceKeyboardScanCode = 0x39;               // DIK_SPACE
-	constexpr std::uint32_t LeftShiftKeyboardScanCode = 0x2A;           // DIK_LSHIFT
+	constexpr std::uint32_t DefaultFlightActivationKeyboardScanCode = 0x30;  // DIK_B
+	constexpr std::uint32_t DefaultReadyWeaponKeyboardScanCode = 0x13;       // DIK_R
+	constexpr std::uint32_t DefaultAscendKeyboardScanCode = 0x39;            // DIK_SPACE
+	constexpr std::uint32_t DefaultDescendKeyboardScanCode = 0x2A;           // DIK_LSHIFT
 	constexpr float ThumbstickDeadzone = 0.25F;
-	constexpr const char* FlightBuildVersion = "v0.9.2-dragon-aspect";
+	constexpr const char* FlightBuildVersion = "v0.9.3-dragon-aspect";
+	constexpr const char* HotkeyIniPath = "Data\\SKSE\\Plugins\\DragonAspectFlight.ini";
+
+	struct HotkeyConfig
+	{
+		std::uint32_t activation = DefaultFlightActivationKeyboardScanCode;
+		std::uint32_t ascend = DefaultAscendKeyboardScanCode;
+		std::uint32_t descend = DefaultDescendKeyboardScanCode;
+	};
+
+	std::string_view Trim(std::string_view a_value)
+	{
+		while (!a_value.empty() && std::isspace(static_cast<unsigned char>(a_value.front())) != 0) {
+			a_value.remove_prefix(1);
+		}
+
+		while (!a_value.empty() && std::isspace(static_cast<unsigned char>(a_value.back())) != 0) {
+			a_value.remove_suffix(1);
+		}
+
+		return a_value;
+	}
+
+	bool EqualsIgnoreCase(std::string_view a_lhs, std::string_view a_rhs)
+	{
+		if (a_lhs.size() != a_rhs.size()) {
+			return false;
+		}
+
+		for (std::size_t i = 0; i < a_lhs.size(); ++i) {
+			if (std::tolower(static_cast<unsigned char>(a_lhs[i])) !=
+				std::tolower(static_cast<unsigned char>(a_rhs[i]))) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	std::optional<std::uint32_t> ParseScanCode(std::string_view a_value)
+	{
+		a_value = Trim(a_value);
+
+		if (a_value.empty()) {
+			return std::nullopt;
+		}
+
+		std::string value{ a_value };
+		const char* begin = value.c_str();
+		int base = 10;
+
+		if (value.size() > 2 && value[0] == '0' && (value[1] == 'x' || value[1] == 'X')) {
+			begin += 2;
+			base = 16;
+		}
+
+		errno = 0;
+		char* end = nullptr;
+		const auto parsed = std::strtoul(begin, std::addressof(end), base);
+
+		if (begin == end || errno != 0 || *end != '\0' ||
+			parsed > std::numeric_limits<std::uint32_t>::max()) {
+			return std::nullopt;
+		}
+
+		return static_cast<std::uint32_t>(parsed);
+	}
+
+	HotkeyConfig LoadHotkeyConfig()
+	{
+		HotkeyConfig config;
+		std::ifstream file(HotkeyIniPath);
+
+		if (!file) {
+			logger::info(
+				"Dragon Aspect Flight hotkey INI not found at {}; using defaults Activation=0x{:X}, Ascend=0x{:X}, Descend=0x{:X}",
+				HotkeyIniPath,
+				config.activation,
+				config.ascend,
+				config.descend);
+			return config;
+		}
+
+		bool inHotkeysSection = false;
+		std::string line;
+
+		while (std::getline(file, line)) {
+			if (const auto comment = line.find_first_of(";#"); comment != std::string::npos) {
+				line.erase(comment);
+			}
+
+			auto trimmed = Trim(line);
+			if (trimmed.empty()) {
+				continue;
+			}
+
+			if (trimmed.front() == '[' && trimmed.back() == ']') {
+				trimmed.remove_prefix(1);
+				trimmed.remove_suffix(1);
+				inHotkeysSection = EqualsIgnoreCase(Trim(trimmed), "Hotkeys");
+				continue;
+			}
+
+			if (!inHotkeysSection) {
+				continue;
+			}
+
+			const auto delimiter = trimmed.find('=');
+			if (delimiter == std::string_view::npos) {
+				continue;
+			}
+
+			const auto key = Trim(trimmed.substr(0, delimiter));
+			const auto value = Trim(trimmed.substr(delimiter + 1));
+			const auto parsed = ParseScanCode(value);
+
+			if (!parsed) {
+				logger::warn("Dragon Aspect Flight: ignored invalid hotkey value '{}={}'", key, value);
+				continue;
+			}
+
+			if (EqualsIgnoreCase(key, "Activation")) {
+				config.activation = *parsed;
+			} else if (EqualsIgnoreCase(key, "Ascend")) {
+				config.ascend = *parsed;
+			} else if (EqualsIgnoreCase(key, "Descend")) {
+				config.descend = *parsed;
+			}
+		}
+
+		logger::info(
+			"Dragon Aspect Flight hotkeys loaded from {}: Activation=0x{:X}, Ascend=0x{:X}, Descend=0x{:X}",
+			HotkeyIniPath,
+			config.activation,
+			config.ascend,
+			config.descend);
+
+		return config;
+	}
+
+	const HotkeyConfig& GetHotkeys()
+	{
+		static const HotkeyConfig config = LoadHotkeyConfig();
+		return config;
+	}
 
 	bool IsLaunchAction(const RE::ButtonEvent* a_event)
 	{
 		return a_event && a_event->QUserEvent() == JumpUserEvent;
 	}
 
-	bool IsKeyboardSpace(const RE::ButtonEvent* a_event)
+	bool IsConfiguredAscendInput(const RE::ButtonEvent* a_event)
 	{
 		return a_event &&
 			a_event->GetDevice() == RE::INPUT_DEVICE::kKeyboard &&
-			a_event->GetIDCode() == SpaceKeyboardScanCode;
+			a_event->GetIDCode() == GetHotkeys().ascend;
 	}
 
-	bool IsKeyboardLeftShift(const RE::ButtonEvent* a_event)
+	bool IsConfiguredDescendInput(const RE::ButtonEvent* a_event)
 	{
 		return a_event &&
 			a_event->GetDevice() == RE::INPUT_DEVICE::kKeyboard &&
-			a_event->GetIDCode() == LeftShiftKeyboardScanCode;
+			a_event->GetIDCode() == GetHotkeys().descend;
 	}
 
 	bool IsReadyWeaponAction(const RE::ButtonEvent* a_event)
@@ -103,7 +256,7 @@ namespace
 	{
 		return a_event &&
 			a_event->GetDevice() == RE::INPUT_DEVICE::kKeyboard &&
-			a_event->GetIDCode() == FlightActivationKeyboardScanCode;
+			a_event->GetIDCode() == GetHotkeys().activation;
 	}
 
 	RE::PlayerCharacter* GetPlayer() { return RE::PlayerCharacter::GetSingleton(); }
@@ -226,7 +379,11 @@ namespace DragonAspectFlight
 			if (ue == StrafeRightUserEvent) { _keyboardStrafeInput = pv; UpdateMovementInput(); return false; }
 		}
 
-		if (fm.IsFlying() && (IsKeyboardSpace(a_event) || IsKeyboardLeftShift(a_event) || IsLaunchAction(a_event))) {
+		const bool isConfiguredAscendInput = IsConfiguredAscendInput(a_event);
+		const bool isConfiguredDescendInput = IsConfiguredDescendInput(a_event);
+		const bool isJumpInput = IsLaunchAction(a_event);
+
+		if (fm.IsFlying() && (isConfiguredAscendInput || isConfiguredDescendInput || isJumpInput)) {
 			if (!fm.IsDragonAspectActive()) {
 				fm.StopFlight();
 				ResetFlightInputState();
@@ -241,17 +398,17 @@ namespace DragonAspectFlight
 			}
 
 			if (a_event->IsUp()) {
-				if (IsKeyboardSpace(a_event) || IsLaunchAction(a_event)) {
+				if (isConfiguredAscendInput) {
 					_ascendHeld = false;
 				}
-				if (IsKeyboardLeftShift(a_event)) {
+				if (isConfiguredDescendInput) {
 					_descendHeld = false;
 				}
 			} else if (a_event->IsPressed() || a_event->IsHeld()) {
-				if (IsKeyboardSpace(a_event) || IsLaunchAction(a_event)) {
+				if (isConfiguredAscendInput) {
 					_ascendHeld = true;
 				}
-				if (IsKeyboardLeftShift(a_event)) {
+				if (isConfiguredDescendInput) {
 					_descendHeld = true;
 				}
 			}
@@ -361,7 +518,7 @@ namespace DragonAspectFlight
 			ResetFlightInputState();
 
 			if (a_event->IsDown()) {
-				ShowMessage("Dragon Aspect Flight: Dragon Aspect required");
+				ShowMessage("Dragon Aspect Flight: full Dragon Aspect required");
 			}
 
 			return true;

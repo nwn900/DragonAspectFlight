@@ -41,7 +41,7 @@ namespace
 	constexpr auto StartAfterSheatheRetryDelay = 250ms;
 	constexpr auto ShoutGraphOverrideDuration = 1400ms;
 	constexpr auto ShoutControlsCloseDelay = 150ms;
-	constexpr std::string_view FlightBuildVersion = "v0.9.2-dragon-aspect";
+	constexpr std::string_view FlightBuildVersion = "v0.9.3-dragon-aspect";
 	constexpr const char* GraphVarDragonAspectActive = "bDAF_DragonAspectActive";
 	constexpr const char* GraphVarFlightActive = "bDAF_FlightActive";
 	constexpr const char* GraphVarLaunchBoost = "bDAF_LaunchBoost";
@@ -66,9 +66,7 @@ namespace
 	// Dragon Aspect magic effect form IDs from Dragonborn.esm.
 	// We check for active magic effects rather than HasSpell() because
 	// shout-applied temporary ability spells may not register as "known" spells.
-	constexpr RE::FormID DA_BodyEffect1 = 0x01DF97;  // DLC2DragonAspectBody01Effect "Damage Resistance"
-	constexpr RE::FormID DA_BodyEffect2 = 0x01DF98;  // DLC2DragonAspectBody02Effect "Fire/Frost Resist"
-	constexpr RE::FormID DA_ArmsEffect  = 0x021730;  // DLC2DragonAspectArmsEffect02 "Dragon Aspect - Arms"
+	constexpr RE::FormID DA_ArmsEffect = 0x021730;  // DLC2DragonAspectArmsEffect02 "Dragon Aspect - Arms"
 	constexpr const char* DragonbornPlugin = "Dragonborn.esm";
 
 	// More Draconic Aspect wings magic effect (form 0x804 in the ESL)
@@ -80,7 +78,7 @@ namespace
 		return RE::PlayerCharacter::GetSingleton();
 	}
 
-	// Check if any Dragon Aspect magic effect is active on the player.
+	// Check if full-power Dragon Aspect is active on the player.
 	// Uses MagicTarget::HasMagicEffect which checks the active effect list
 	// directly - works for vanilla and modded setups.
 	bool HasDragonAspectActive()
@@ -94,16 +92,14 @@ namespace
 		auto* magicTarget = player->AsMagicTarget();
 		if (!magicTarget) return false;
 
-		// Check the three vanilla Dragon Aspect body/arms effects
-		constexpr RE::FormID ids[] = { DA_BodyEffect1, DA_BodyEffect2, DA_ArmsEffect };
-		for (auto id : ids) {
-			auto* effect = dh->LookupForm<RE::EffectSetting>(id, DragonbornPlugin);
-			if (effect && magicTarget->HasMagicEffect(effect)) {
-				return true;
-			}
+		// The body effects also appear on weaker casts. The arms effect is the
+		// vanilla full-form marker from the third word of power.
+		auto* fullPowerArms = dh->LookupForm<RE::EffectSetting>(DA_ArmsEffect, DragonbornPlugin);
+		if (fullPowerArms && magicTarget->HasMagicEffect(fullPowerArms)) {
+			return true;
 		}
 
-		// Also check More Draconic Aspect wings effect if that mod is installed
+		// More Draconic uses the wings effect as the corresponding full-form marker.
 		auto* wings = dh->LookupForm<RE::EffectSetting>(DA_WingsEffect, MoreDraconicPlugin);
 		if (wings && magicTarget->HasMagicEffect(wings)) {
 			return true;
