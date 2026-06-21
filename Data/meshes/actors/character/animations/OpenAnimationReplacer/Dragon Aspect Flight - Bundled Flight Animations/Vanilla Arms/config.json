@@ -1,8 +1,7 @@
 {
-  "name": "External More Draconic Flight - Vanilla Body 02",
-  "description": "Selects More Draconic flight animations when the second vanilla Dragon Aspect body effect and SKSE flight state are active.",
-  "priority": 69689998,
-  "overrideAnimationsFolder": "..\\More Dragonic Dragon Aspect Can Fly\\Flying Mod",
+  "name": "Bundled Flight - Vanilla Arms",
+  "description": "Human-compatible bundled flight animations for Dragon Aspect Flight when the vanilla Dragon Aspect arms effect is active and the SKSE flight state is engaged.",
+  "priority": 69689999,
   "interruptible": true,
   "conditions": [
     {
@@ -18,7 +17,7 @@
       "requiredVersion": "1.0.0.0",
       "Magic effect": {
         "pluginName": "Dragonborn.esm",
-        "formID": "1DF98"
+        "formID": "21730"
       },
       "Active effects only": true
     },

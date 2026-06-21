@@ -1,8 +1,7 @@
 {
-  "name": "External More Draconic Flight - Wings Effect",
-  "description": "Selects More Draconic flight animations when the More Draconic wings effect and SKSE flight state are active.",
+  "name": "Bundled Flight - More Draconic Wings Effect",
+  "description": "Human-compatible bundled flight animations for Dragon Aspect Flight when the More Draconic wings effect is active and the SKSE flight state is engaged.",
   "priority": 696969700,
-  "overrideAnimationsFolder": "..\\More Dragonic Dragon Aspect Can Fly\\Flying Mod",
   "interruptible": true,
   "conditions": [
     {

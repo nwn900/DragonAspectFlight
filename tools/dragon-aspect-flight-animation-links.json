@@ -1,0 +1,1762 @@
+﻿{
+    "version":  1,
+    "generatedFrom":  "Dragon Aspect Flight 0.8.8 commit 17ac471",
+    "externalOarRoot":  "More Dragonic Dragon Aspect Can Fly",
+    "entries":  [
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_idle.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_jump.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_jumpfall.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_jumpfallleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_jumpfallright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_jumpfast.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_jumpfastleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_jumpfastright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_runbackward.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_runbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_runbackwardright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_runforward.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_runforwardleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_runforwardright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_runleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_runright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_runstrafeleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_runstraferight.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_sprintforward.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_walkbackward.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_walkbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_walkbackwardright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_walkforward.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_walkforwardleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_walkforwardright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_walkleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/female/mt_walkright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_idle.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_jump.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_jumpfall.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_jumpfallleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_jumpfallright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_jumpfast.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_jumpfastleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_jumpfastright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_runbackward.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_runbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_runbackwardright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_runforward.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_runforwardleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_runforwardright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_runleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_runright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_runstrafeleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_runstraferight.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_sprintforward.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_walkbackward.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_walkbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_walkbackwardright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_walkforward.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_walkforwardleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_walkforwardright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_walkleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/male/mt_walkright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_idle.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_jump.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_jumpfall.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_jumpfallleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_jumpfallright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_jumpfast.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_jumpfastleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_jumpfastright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_runbackward.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_runbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_runbackwardright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_runforward.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_runforwardleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_runforwardright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_runleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_runright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_runstrafeleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_runstraferight.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_sprintforward.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_walkbackward.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_walkbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_walkbackwardright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_walkforward.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_walkforwardleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_walkforwardright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_walkleft.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Idle Hover Branch/mt_walkright.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Midair Shout Branch/mt_shout_exhale.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Midair Shout Branch/mt_shout_inhale.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_idle.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_runbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_runbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_runbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_runforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_runforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_runforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_runleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_runright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_runstrafeleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_runstraferight.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_sprintforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_walkbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_walkbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_walkbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_walkforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_walkforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_walkforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_walkleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/female/mt_walkright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_idle.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_runbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_runbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_runbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_runforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_runforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_runforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_runleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_runright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_runstrafeleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_runstraferight.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_sprintforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_walkbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_walkbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_walkbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_walkforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_walkforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_walkforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_walkleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/male/mt_walkright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_idle.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_jump.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_jumpfall.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_jumpfallleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_jumpfallright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_jumpfast.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_jumpfastleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_jumpfastright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_runbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_runbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_runbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_runforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_runforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_runforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_runleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_runright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_runstrafeleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_runstraferight.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_sprintforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_walkbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_walkbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_walkbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_walkforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_walkforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_walkforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_walkleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/More Draconic Wings Effect/mt_walkright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_idle.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_runbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_runbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_runbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_runforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_runforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_runforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_runleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_runright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_runstrafeleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_runstraferight.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_sprintforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_walkbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_walkbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_walkbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_walkforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_walkforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_walkforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_walkleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/female/mt_walkright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_idle.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_runbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_runbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_runbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_runforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_runforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_runforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_runleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_runright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_runstrafeleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_runstraferight.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_sprintforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_walkbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_walkbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_walkbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_walkforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_walkforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_walkforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_walkleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/male/mt_walkright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_idle.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_jump.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_jumpfall.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_jumpfallleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_jumpfallright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_jumpfast.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_jumpfastleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_jumpfastright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_runbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_runbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_runbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_runforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_runforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_runforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_runleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_runright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_runstrafeleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_runstraferight.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_sprintforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_walkbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_walkbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_walkbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_walkforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_walkforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_walkforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_walkleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Arms/mt_walkright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_idle.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_runbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_runbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_runbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_runforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_runforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_runforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_runleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_runright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_runstrafeleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_runstraferight.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_sprintforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_walkbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_walkbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_walkbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_walkforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_walkforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_walkforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_walkleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/female/mt_walkright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_idle.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_runbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_runbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_runbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_runforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_runforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_runforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_runleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_runright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_runstrafeleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_runstraferight.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_sprintforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_walkbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_walkbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_walkbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_walkforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_walkforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_walkforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_walkleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/male/mt_walkright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_idle.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_jump.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_jumpfall.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_jumpfallleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_jumpfallright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_jumpfast.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_jumpfastleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_jumpfastright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_runbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_runbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_runbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_runforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_runforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_runforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_runleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_runright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_runstrafeleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_runstraferight.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_sprintforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_walkbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_walkbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_walkbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_walkforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_walkforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_walkforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_walkleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 01/mt_walkright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_idle.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_runbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_runbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_runbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_runforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_runforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_runforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_runleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_runright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_runstrafeleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_runstraferight.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_sprintforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_walkbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_walkbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_walkbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_walkforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_walkforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_walkforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_walkleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/female/mt_walkright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_idle.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_runbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_runbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_runbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_runforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_runforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_runforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_runleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_runright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_runstrafeleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_runstraferight.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_sprintforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_walkbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_walkbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_walkbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_walkforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_walkforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_walkforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_walkleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/male/mt_walkright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_idle.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_jump.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_jumpfall.hkx",
+                        "source":  "Flying Mod/mt_jumpfall.hkx",
+                        "sha256":  "96F5109088E5266196D5F6BF5790D1142D3028BD3F717D887EFD71956E19F943"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_jumpfallleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_jumpfallright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_jumpfast.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_jumpfastleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_jumpfastright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_runbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_runbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_runbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_runforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_runforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_runforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_runleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_runright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_runstrafeleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_runstraferight.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_sprintforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_walkbackward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_walkbackwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_walkbackwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_walkforward.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_walkforwardleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_walkforwardright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_walkleft.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    },
+                    {
+                        "target":  "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations/Vanilla Body 02/mt_walkright.hkx",
+                        "source":  "Flying Mod/mt_idle.hkx",
+                        "sha256":  "21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451"
+                    }
+                ]
+}

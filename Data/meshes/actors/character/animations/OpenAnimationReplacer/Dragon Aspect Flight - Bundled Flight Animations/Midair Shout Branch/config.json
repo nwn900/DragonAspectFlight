@@ -1,8 +1,7 @@
 {
-  "name": "Dragon Aspect Flight - Idle Hover Branch",
-  "description": "Uses More Draconic's flight animation files while Dragon Aspect Flight is active and idle.",
-  "priority": 696969900,
-  "overrideAnimationsFolder": "..\\More Dragonic Dragon Aspect Can Fly\\Flying Mod",
+  "name": "Dragon Aspect Flight - Midair Shout Branch",
+  "description": "Forces the Dragon Aspect Flight body pose over generic shout replacers while the SKSE plugin routes a midair shout.",
+  "priority": 696969950,
   "interruptible": true,
   "conditions": [
     {
@@ -29,8 +28,8 @@
       "condition": "CompareValues",
       "requiredVersion": "1.0.0.0",
       "Value A": {
-        "graphVariable": "iDAF_FlightState",
-        "graphVariableType": "Int"
+        "graphVariable": "bDAF_FlightShout",
+        "graphVariableType": "Bool"
       },
       "Comparison": "==",
       "Value B": {

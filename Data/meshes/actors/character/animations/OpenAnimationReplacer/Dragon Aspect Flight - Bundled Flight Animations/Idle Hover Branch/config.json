@@ -1,8 +1,7 @@
 {
-  "name": "External More Draconic Flight - Vanilla Body 01",
-  "description": "Selects More Draconic flight animations when the first vanilla Dragon Aspect body effect and SKSE flight state are active.",
-  "priority": 69689997,
-  "overrideAnimationsFolder": "..\\More Dragonic Dragon Aspect Can Fly\\Flying Mod",
+  "name": "Dragon Aspect Flight - Idle Hover Branch",
+  "description": "Uses the vertical levitation pose only while Dragon Aspect Flight is active and idle, leaving horizontal flight poses for actual movement.",
+  "priority": 696969900,
   "interruptible": true,
   "conditions": [
     {
@@ -12,15 +11,6 @@
         "pluginName": "Skyrim.esm",
         "formID": "7"
       }
-    },
-    {
-      "condition": "HasMagicEffect",
-      "requiredVersion": "1.0.0.0",
-      "Magic effect": {
-        "pluginName": "Dragonborn.esm",
-        "formID": "1DF97"
-      },
-      "Active effects only": true
     },
     {
       "condition": "CompareValues",
@@ -41,9 +31,9 @@
         "graphVariable": "iDAF_FlightState",
         "graphVariableType": "Int"
       },
-      "Comparison": ">",
+      "Comparison": "==",
       "Value B": {
-        "value": 0.0
+        "value": 1.0
       }
     }
   ]

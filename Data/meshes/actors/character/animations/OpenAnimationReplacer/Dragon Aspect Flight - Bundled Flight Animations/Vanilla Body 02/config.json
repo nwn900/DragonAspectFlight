@@ -1,8 +1,7 @@
 {
-  "name": "Dragon Aspect Flight - Midair Shout Branch",
-  "description": "Keeps More Draconic's flight body pose selected while the SKSE plugin routes a midair shout.",
-  "priority": 696969950,
-  "overrideAnimationsFolder": "..\\More Dragonic Dragon Aspect Can Fly\\Flying Mod",
+  "name": "Bundled Flight - Vanilla Body 02",
+  "description": "Human-compatible bundled flight animations for Dragon Aspect Flight when the second vanilla Dragon Aspect body effect is active and the SKSE flight state is engaged.",
+  "priority": 69689998,
   "interruptible": true,
   "conditions": [
     {
@@ -12,6 +11,15 @@
         "pluginName": "Skyrim.esm",
         "formID": "7"
       }
+    },
+    {
+      "condition": "HasMagicEffect",
+      "requiredVersion": "1.0.0.0",
+      "Magic effect": {
+        "pluginName": "Dragonborn.esm",
+        "formID": "1DF98"
+      },
+      "Active effects only": true
     },
     {
       "condition": "CompareValues",
@@ -29,12 +37,12 @@
       "condition": "CompareValues",
       "requiredVersion": "1.0.0.0",
       "Value A": {
-        "graphVariable": "bDAF_FlightShout",
-        "graphVariableType": "Bool"
+        "graphVariable": "iDAF_FlightState",
+        "graphVariableType": "Int"
       },
-      "Comparison": "==",
+      "Comparison": ">",
       "Value B": {
-        "value": 1.0
+        "value": 0.0
       }
     }
   ]

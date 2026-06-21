@@ -11,6 +11,19 @@ option(ENABLE_SKYRIM_SE "Build for Skyrim SE (1.5.97)" ON)
 option(ENABLE_SKYRIM_AE "Build for Skyrim AE (1.6.x)" OFF)
 option(ENABLE_SKYRIM_VR "Build for Skyrim VR" OFF)
 
+set(DAF_MORE_DRACONIC_OAR_ROOT
+    "C:/Games/Nolvus/Instances/Nolvus Awakening/MODS/mods/[NoDelete] [001.00202] More Draconic Aspect Can Fly (With Collisions)/meshes/actors/character/animations/OpenAnimationReplacer/More Dragonic Dragon Aspect Can Fly"
+    CACHE PATH "Path to the installed More Dragonic Dragon Aspect Can Fly OAR root")
+
+find_program(POWERSHELL_EXECUTABLE powershell)
+if(NOT POWERSHELL_EXECUTABLE)
+    find_program(POWERSHELL_EXECUTABLE pwsh)
+endif()
+
+if(NOT POWERSHELL_EXECUTABLE)
+    message(FATAL_ERROR "PowerShell is required to materialize external More Draconic animation hardlinks")
+endif()
+
 if(NOT EXISTS "${COMMONLIBSSE_NG_PATH}/CMakeLists.txt")
     message(FATAL_ERROR
         "CommonLibSSE-NG not found at ${COMMONLIBSSE_NG_PATH}. "
@@ -87,6 +100,11 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_CURRENT_SOURCE_DIR}/Data"
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data"
+    COMMAND "${POWERSHELL_EXECUTABLE}" -NoProfile -ExecutionPolicy Bypass
+        -File "${CMAKE_CURRENT_SOURCE_DIR}/tools/MaterializeExternalAnimationLinks.ps1"
+        -ManifestPath "${CMAKE_CURRENT_SOURCE_DIR}/tools/dragon-aspect-flight-animation-links.json"
+        -TargetDataRoot "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data"
+        -ExternalOarRoot "${DAF_MORE_DRACONIC_OAR_ROOT}"
     COMMENT "Copying DragonAspectFlight.dll to SKSE/Plugins")
 
 install(TARGETS ${PROJECT_NAME}
