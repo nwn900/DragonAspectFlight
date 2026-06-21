@@ -40,46 +40,16 @@
           ]
         },
         {
-          "condition": "AND",
+          "condition": "CompareValues",
           "requiredVersion": "1.0.0.0",
-          "Conditions": [
-            {
-              "condition": "CompareValues",
-              "requiredVersion": "1.0.0.0",
-              "Value A": {
-                "graphVariable": "bDAF_DragonAspectActive",
-                "graphVariableType": "Bool"
-              },
-              "Comparison": "==",
-              "Value B": {
-                "value": 1.0
-              }
-            },
-            {
-              "condition": "CompareValues",
-              "requiredVersion": "1.0.0.0",
-              "Value A": {
-                "graphVariable": "bDAF_FlightActive",
-                "graphVariableType": "Bool"
-              },
-              "Comparison": "==",
-              "Value B": {
-                "value": 1.0
-              }
-            },
-            {
-              "condition": "CompareValues",
-              "requiredVersion": "1.0.0.0",
-              "Value A": {
-                "graphVariable": "iDAF_FlightState",
-                "graphVariableType": "Int"
-              },
-              "Comparison": ">",
-              "Value B": {
-                "value": 0.0
-              }
-            }
-          ]
+          "Value A": {
+            "graphVariable": "iDAF_FlightState",
+            "graphVariableType": "Int"
+          },
+          "Comparison": ">",
+          "Value B": {
+            "value": 0.0
+          }
         }
       ]
     }

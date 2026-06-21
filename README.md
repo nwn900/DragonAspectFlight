@@ -25,7 +25,7 @@ Place Dragon Aspect Flight after `More Dragonic Dragon Aspect Can Fly` in the mo
 
 Behavior Data Injector is the primary path. Users should not need to run Nemesis or Pandora for the normal package.
 
-The plugin drives graph variables such as `bDAF_DragonAspectActive`, `bDAF_FlightActive`, `bDAF_LaunchBoost`, and `iDAF_FlightState`. The packaged runtime state is provided through Behavior Data Injector; animation files are supplied by the external `More Dragonic Dragon Aspect Can Fly` mod and selected through Dragon Aspect Flight's config-only OAR compatibility overrides. See `docs/BehaviorArchitecture.md` for the design notes and fallback generator support.
+The plugin drives character graph variables such as `bDAF_DragonAspectActive`, `bDAF_FlightActive`, `bDAF_LaunchBoost`, and `iDAF_FlightState`. The packaged runtime state is provided through Behavior Data Injector; animation files are supplied by the external `More Dragonic Dragon Aspect Can Fly` mod and selected through Dragon Aspect Flight's config-only OAR compatibility overrides. See `docs/BehaviorArchitecture.md` for the design notes and fallback generator support.
 
 ## Build
 

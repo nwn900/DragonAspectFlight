@@ -1,30 +1,30 @@
 [
     {
-        "projectPath": "Actors",
+        "projectPath": "Actors\\Character",
         "type": "kBool",
         "name": "bDAF_DragonAspectActive",
         "value": false
     },
     {
-        "projectPath": "Actors",
+        "projectPath": "Actors\\Character",
         "type": "kBool",
         "name": "bDAF_FlightActive",
         "value": false
     },
     {
-        "projectPath": "Actors",
+        "projectPath": "Actors\\Character",
         "type": "kBool",
         "name": "bDAF_LaunchBoost",
         "value": false
     },
     {
-        "projectPath": "Actors",
+        "projectPath": "Actors\\Character",
         "type": "kBool",
         "name": "bDAF_FlightShout",
         "value": false
     },
     {
-        "projectPath": "Actors",
+        "projectPath": "Actors\\Character",
         "type": "kInt",
         "name": "iDAF_FlightState",
         "value": 0
