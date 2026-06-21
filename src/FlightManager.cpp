@@ -40,8 +40,7 @@ namespace
 	constexpr auto StartAfterSheatheRetryDelay = 250ms;
 	constexpr auto ShoutGraphOverrideDuration = 1400ms;
 	constexpr auto ShoutControlsCloseDelay = 150ms;
-	constexpr auto FlightAnimationPulseInterval = 650ms;
-	constexpr std::string_view FlightBuildVersion = "v0.8.13-dragon-aspect";
+	constexpr std::string_view FlightBuildVersion = "v0.8.9-dragon-aspect";
 	constexpr const char* GraphVarDragonAspectActive = "bDAF_DragonAspectActive";
 	constexpr const char* GraphVarFlightActive = "bDAF_FlightActive";
 	constexpr const char* GraphVarLaunchBoost = "bDAF_LaunchBoost";
@@ -60,17 +59,6 @@ namespace
 	bool IsNearSolidGroundSurface(RE::PlayerCharacter* a_player, float a_tolerance = GroundLandingTolerance);
 	bool IsNearWaterSurface(RE::PlayerCharacter* a_player, float a_tolerance = WaterLandingTolerance);
 	bool ResolveWaterLanding(RE::PlayerCharacter* a_player, RE::bhkCharacterController* a_controller);
-
-	bool SendAnimationEvent(RE::PlayerCharacter* a_player, const char* a_eventName)
-	{
-		if (!a_player || !a_player->Is3DLoaded() || !a_eventName) {
-			return false;
-		}
-
-		const bool sent = a_player->NotifyAnimationGraph(RE::BSFixedString(a_eventName));
-		logger::debug("Flight animation event '{}' sent result: {}", a_eventName, sent);
-		return sent;
-	}
 
 	// Dragon Aspect magic effect form IDs from Dragonborn.esm.
 	// We check for active magic effects rather than HasSpell() because
@@ -259,30 +247,6 @@ namespace
 		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarLaunchBoost), a_launchBoost);
 		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarFlightShout), a_flightShout);
 		a_player->SetGraphVariableInt(RE::BSFixedString(GraphVarFlightState), static_cast<std::int32_t>(a_state));
-	}
-
-	void PulseFlightAnimation(RE::PlayerCharacter* a_player, FlightGraphState a_state)
-	{
-		switch (a_state) {
-		case FlightGraphState::kIdle:
-			SendAnimationEvent(a_player, "moveStop");
-			SendAnimationEvent(a_player, "IdleForceDefaultState");
-			break;
-		case FlightGraphState::kMoving:
-		case FlightGraphState::kLaunch:
-			SendAnimationEvent(a_player, "moveStart");
-			SendAnimationEvent(a_player, "JumpFall");
-			break;
-		case FlightGraphState::kDescent:
-			SendAnimationEvent(a_player, "moveStop");
-			SendAnimationEvent(a_player, "JumpFall");
-			break;
-		case FlightGraphState::kOff:
-		default:
-			SendAnimationEvent(a_player, "moveStop");
-			SendAnimationEvent(a_player, "IdleForceDefaultState");
-			break;
-		}
 	}
 
 	void ClampStopVelocityForSafeRelease(RE::PlayerCharacter* a_player)
@@ -643,8 +607,6 @@ namespace DragonAspectFlight
 			_startAfterSheathePending = false;
 			_startAfterSheatheAttempts = 0;
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kIdle);
-			_lastAnimationPulseState = static_cast<std::int32_t>(FlightGraphState::kIdle);
-			_lastAnimationPulseAt = std::chrono::steady_clock::now();
 			_landingContactTicks = 0;
 			_shoutGraphOverrideUntil = {};
 			logger::info("Flight started - {}", FlightBuildVersion);
@@ -661,7 +623,6 @@ namespace DragonAspectFlight
 				AddInitialFlightLift(controller);
 			}
 			SetFlightGraphVariables(player, true, true, false, false, FlightGraphState::kIdle);
-			PulseFlightAnimation(player, FlightGraphState::kIdle);
 		}
 
 		StartUpdateThread();
@@ -707,15 +668,12 @@ namespace DragonAspectFlight
 			_flightShoutControlsOpen = false;
 			_flightShoutControlsCloseAfter = {};
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kDescent);
-			_lastAnimationPulseState = static_cast<std::int32_t>(FlightGraphState::kDescent);
-			_lastAnimationPulseAt = std::chrono::steady_clock::now();
 			_landingContactTicks = 0;
 			logger::info("Flight descent started - {}", FlightBuildVersion);
 		}
 
 		if (auto* player = GetPlayer(); player && player->Is3DLoaded()) {
 			SetFlightGraphVariables(player, HasDragonAspectActive(), true, false, false, FlightGraphState::kDescent);
-			PulseFlightAnimation(player, FlightGraphState::kDescent);
 		}
 
 		StartUpdateThread();
@@ -739,8 +697,6 @@ namespace DragonAspectFlight
 			_flightShoutControlsOpen = false;
 			_flightShoutControlsCloseAfter = {};
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kOff);
-			_lastAnimationPulseState = static_cast<std::int32_t>(FlightGraphState::kOff);
-			_lastAnimationPulseAt = std::chrono::steady_clock::now();
 			_landingContactTicks = 0;
 			logger::info("Flight stopped - {}", FlightBuildVersion);
 		}
@@ -751,7 +707,6 @@ namespace DragonAspectFlight
 		// Restore gravity, friction, and ground state.
 		if (auto* player = GetPlayer(); player && player->Is3DLoaded()) {
 			SetFlightGraphVariables(player, HasDragonAspectActive(), false, false, false, FlightGraphState::kOff);
-			PulseFlightAnimation(player, FlightGraphState::kOff);
 			if (auto* controller = player->GetCharController()) {
 				controller->gravity = _originalGravity;
 				controller->flags.reset(RE::CHARACTER_FLAGS::kNoFriction);
@@ -1104,7 +1059,6 @@ namespace DragonAspectFlight
 		bool boostHeld = false;
 		bool descending = false;
 		bool shoutOverrideActive = false;
-		bool pulseAnimation = false;
 		std::uint32_t landingContactTicks = 0;
 		FlightGraphState graphState = FlightGraphState::kOff;
 
@@ -1132,8 +1086,7 @@ namespace DragonAspectFlight
 			boostHeld = _boostHeld;
 			landingContactTicks = _landingContactTicks;
 			_pendingLaunchBoost = 0.0F;
-			const auto now = std::chrono::steady_clock::now();
-			shoutOverrideActive = !descending && now < _shoutGraphOverrideUntil;
+			shoutOverrideActive = !descending && std::chrono::steady_clock::now() < _shoutGraphOverrideUntil;
 
 			const bool hasMovementInput = !descending && HasFlightControlInput(forwardInput, strafeInput, verticalInput);
 			const bool hasLaunchBoost = launchBoost > 0.0F;
@@ -1144,15 +1097,7 @@ namespace DragonAspectFlight
 				((hasMovementInput || shoutOverrideActive) ? FlightGraphState::kMoving : FlightGraphState::kIdle));
 
 			const auto nextGraphState = static_cast<std::int32_t>(graphState);
-			pulseAnimation =
-				_lastAnimationPulseState != nextGraphState ||
-				_lastAnimationPulseAt == std::chrono::steady_clock::time_point{} ||
-				now - _lastAnimationPulseAt >= FlightAnimationPulseInterval;
 			_lastGraphState = nextGraphState;
-			if (pulseAnimation) {
-				_lastAnimationPulseState = nextGraphState;
-				_lastAnimationPulseAt = now;
-			}
 		}
 
 		auto* player = GetPlayer();
@@ -1163,9 +1108,6 @@ namespace DragonAspectFlight
 		}
 
 		SetFlightGraphVariables(player, true, true, graphState == FlightGraphState::kLaunch, shoutOverrideActive, graphState);
-		if (pulseAnimation) {
-			PulseFlightAnimation(player, graphState);
-		}
 
 		if (descending) {
 			if (MovePlayerWithControlledDescent(landingContactTicks)) {

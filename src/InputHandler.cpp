@@ -28,7 +28,7 @@ namespace
 	constexpr std::uint32_t SpaceKeyboardScanCode = 0x39;               // DIK_SPACE
 	constexpr std::uint32_t LeftShiftKeyboardScanCode = 0x2A;           // DIK_LSHIFT
 	constexpr float ThumbstickDeadzone = 0.25F;
-	constexpr const char* FlightBuildVersion = "v0.8.13-dragon-aspect";
+	constexpr const char* FlightBuildVersion = "v0.8.9-dragon-aspect";
 
 	bool IsLaunchAction(const RE::ButtonEvent* a_event)
 	{
