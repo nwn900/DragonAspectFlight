@@ -6,14 +6,23 @@ SKSE/CommonLibSSE-NG plugin that lets the player manually fly while Dragon Aspec
 
 - SKSE plugin source in `src/` and `include/`.
 - Runtime animation state integration through `Data/SKSE/Plugins/BehaviorDataInjector/DragonAspectFlight_BDI.json`.
-- Open Animation Replacer bundled flight animation assets under `Data/meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations`.
 - Optional Pandora and Nemesis support files under `Data/OptionalBehaviorGeneratorSupport`.
+
+This package does not redistribute flight animation HKX files. Install `More Dragonic Dragon Aspect Can Fly` alongside this mod for the Dragon Aspect flight animation set.
+
+## End User Dependencies
+
+- SKSE.
+- Address Library for SKSE Plugins.
+- Behavior Data Injector.
+- Open Animation Replacer.
+- `More Dragonic Dragon Aspect Can Fly` for the flight animations. Its ESP/plugin content supplies the More Draconic Dragon Aspect effect used by its OAR conditions; this mod references that installed animation package rather than bundling its assets.
 
 ## Behavior Architecture
 
 Behavior Data Injector is the primary path. Users should not need to run Nemesis or Pandora for the normal package.
 
-The plugin drives graph variables such as `bDAF_DragonAspectActive`, `bDAF_FlightActive`, `bDAF_LaunchBoost`, and `iDAF_FlightState`; OAR uses those variables to select flight movement clips without hijacking vanilla jump/sprint loops. See `docs/BehaviorArchitecture.md` for the design notes and fallback generator support.
+The plugin drives graph variables such as `bDAF_DragonAspectActive`, `bDAF_FlightActive`, `bDAF_LaunchBoost`, and `iDAF_FlightState`. The packaged runtime state is provided through Behavior Data Injector; animation files are supplied by the external `More Dragonic Dragon Aspect Can Fly` mod. See `docs/BehaviorArchitecture.md` for the design notes and fallback generator support.
 
 ## Build
 
@@ -33,4 +42,3 @@ Copy the staged `SKSE` and `Data` contents into a mod manager mod folder. For th
 ```text
 C:\Games\Nolvus\Instances\Nolvus Awakening\MODS\mods\[NoDelete] Dragon Aspect Flight
 ```
-

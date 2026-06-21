@@ -40,7 +40,7 @@ namespace
 	constexpr auto StartAfterSheatheRetryDelay = 250ms;
 	constexpr auto ShoutGraphOverrideDuration = 1400ms;
 	constexpr auto ShoutControlsCloseDelay = 150ms;
-	constexpr std::string_view FlightBuildVersion = "v0.8.8-dragon-aspect";
+	constexpr std::string_view FlightBuildVersion = "v0.8.9-dragon-aspect";
 	constexpr const char* GraphVarDragonAspectActive = "bDAF_DragonAspectActive";
 	constexpr const char* GraphVarFlightActive = "bDAF_FlightActive";
 	constexpr const char* GraphVarLaunchBoost = "bDAF_LaunchBoost";

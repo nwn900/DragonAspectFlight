@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(DragonAspectFlight VERSION 0.8.8 LANGUAGES CXX)
+project(DragonAspectFlight VERSION 0.8.9 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -72,6 +72,8 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "$<TARGET_FILE:${PROJECT_NAME}>"
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../SKSE/Plugins/$<TARGET_FILE_NAME:${PROJECT_NAME}>"
+    COMMAND ${CMAKE_COMMAND} -E remove_directory
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations"
     COMMAND ${CMAKE_COMMAND} -E remove_directory
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Vampire Lord Fallback"
     COMMAND ${CMAKE_COMMAND} -E remove_directory
