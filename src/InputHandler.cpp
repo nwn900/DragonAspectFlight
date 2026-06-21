@@ -28,7 +28,7 @@ namespace
 	constexpr std::uint32_t SpaceKeyboardScanCode = 0x39;               // DIK_SPACE
 	constexpr std::uint32_t LeftShiftKeyboardScanCode = 0x2A;           // DIK_LSHIFT
 	constexpr float ThumbstickDeadzone = 0.25F;
-	constexpr const char* FlightBuildVersion = "v0.8.8-dragon-aspect";
+	constexpr const char* FlightBuildVersion = "v0.9.1-dragon-aspect";
 
 	bool IsLaunchAction(const RE::ButtonEvent* a_event)
 	{
@@ -284,7 +284,23 @@ namespace DragonAspectFlight
 		}
 
 		if (fm.IsDescending()) {
-			if (IsFlightActivationInput(a_event) || IsLaunchAction(a_event) || IsSpellCastAction(a_event) || IsShoutAction(a_event)) {
+			if (IsFlightActivationInput(a_event)) {
+				if (!fm.IsDragonAspectActive()) {
+					fm.StopFlight();
+					ResetFlightInputState();
+					return true;
+				}
+
+				if (a_event->IsDown()) {
+					ResetFlightInputState();
+					fm.CancelDescent();
+					UpdateMovementInput();
+					ShowMessage("Dragon Aspect Flight: descent cancelled");
+				}
+				return true;
+			}
+
+			if (IsLaunchAction(a_event) || IsSpellCastAction(a_event) || IsShoutAction(a_event)) {
 				return true;
 			}
 		}

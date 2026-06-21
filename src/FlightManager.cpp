@@ -40,7 +40,7 @@ namespace
 	constexpr auto StartAfterSheatheRetryDelay = 250ms;
 	constexpr auto ShoutGraphOverrideDuration = 1400ms;
 	constexpr auto ShoutControlsCloseDelay = 150ms;
-	constexpr std::string_view FlightBuildVersion = "v0.8.8-dragon-aspect";
+	constexpr std::string_view FlightBuildVersion = "v0.9.1-dragon-aspect";
 	constexpr const char* GraphVarDragonAspectActive = "bDAF_DragonAspectActive";
 	constexpr const char* GraphVarFlightActive = "bDAF_FlightActive";
 	constexpr const char* GraphVarLaunchBoost = "bDAF_LaunchBoost";
@@ -674,6 +674,45 @@ namespace DragonAspectFlight
 
 		if (auto* player = GetPlayer(); player && player->Is3DLoaded()) {
 			SetFlightGraphVariables(player, HasDragonAspectActive(), true, false, false, FlightGraphState::kDescent);
+		}
+
+		StartUpdateThread();
+	}
+
+	void FlightManager::CancelDescent()
+	{
+		{
+			std::unique_lock lock(_mutex);
+
+			if (!_isFlying || !_isDescending || !HasDragonAspectActive()) {
+				return;
+			}
+
+			_isDescending = false;
+			_forwardInput = 0.0F;
+			_strafeInput = 0.0F;
+			_verticalInput = 0.0F;
+			_pendingLaunchBoost = 0.0F;
+			_boostHeld = false;
+			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kIdle);
+			_landingContactTicks = 0;
+			_shoutGraphOverrideUntil = {};
+			logger::info("Flight descent cancelled - {}", FlightBuildVersion);
+		}
+
+		if (auto* player = GetPlayer(); player && player->Is3DLoaded()) {
+			if (auto* controller = player->GetCharController()) {
+				ApplyControlledAirState(player, controller);
+				ResetFlightFallState(player, controller);
+
+				RE::hkVector4 currentVelocity{ 0.0F, 0.0F, 0.0F, 0.0F };
+				controller->GetLinearVelocityImpl(currentVelocity);
+				currentVelocity.quad.m128_f32[2] = std::max(currentVelocity.quad.m128_f32[2], MinFlightHoverVelocity);
+				currentVelocity.quad.m128_f32[3] = 0.0F;
+				controller->SetLinearVelocityImpl(currentVelocity);
+			}
+
+			SetFlightGraphVariables(player, true, true, false, false, FlightGraphState::kIdle);
 		}
 
 		StartUpdateThread();

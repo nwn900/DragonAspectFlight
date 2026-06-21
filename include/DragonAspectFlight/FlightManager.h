@@ -15,6 +15,7 @@ namespace DragonAspectFlight
 
 		void StartFlight();
 		void BeginDescent();
+		void CancelDescent();
 		void StopFlight();
 		[[nodiscard]] bool IsFlying() const;
 		[[nodiscard]] bool IsDescending() const;
