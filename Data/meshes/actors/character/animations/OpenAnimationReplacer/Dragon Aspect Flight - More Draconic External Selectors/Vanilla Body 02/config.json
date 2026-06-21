@@ -1,0 +1,50 @@
+{
+  "name": "External More Draconic Flight - Vanilla Body 02",
+  "description": "Selects More Draconic flight animations when the second vanilla Dragon Aspect body effect and SKSE flight state are active.",
+  "priority": 69689998,
+  "overrideAnimationsFolder": "..\\More Dragonic Dragon Aspect Can Fly\\Flying Mod",
+  "interruptible": true,
+  "conditions": [
+    {
+      "condition": "IsActorBase",
+      "requiredVersion": "1.0.0.0",
+      "Actor base": {
+        "pluginName": "Skyrim.esm",
+        "formID": "7"
+      }
+    },
+    {
+      "condition": "HasMagicEffect",
+      "requiredVersion": "1.0.0.0",
+      "Magic effect": {
+        "pluginName": "Dragonborn.esm",
+        "formID": "1DF98"
+      },
+      "Active effects only": true
+    },
+    {
+      "condition": "CompareValues",
+      "requiredVersion": "1.0.0.0",
+      "Value A": {
+        "graphVariable": "bDAF_FlightActive",
+        "graphVariableType": "Bool"
+      },
+      "Comparison": "==",
+      "Value B": {
+        "value": 1.0
+      }
+    },
+    {
+      "condition": "CompareValues",
+      "requiredVersion": "1.0.0.0",
+      "Value A": {
+        "graphVariable": "iDAF_FlightState",
+        "graphVariableType": "Int"
+      },
+      "Comparison": ">",
+      "Value B": {
+        "value": 0.0
+      }
+    }
+  ]
+}

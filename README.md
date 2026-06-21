@@ -6,14 +6,24 @@ SKSE/CommonLibSSE-NG plugin that lets the player manually fly while Dragon Aspec
 
 - SKSE plugin source in `src/` and `include/`.
 - Runtime animation state integration through `Data/SKSE/Plugins/BehaviorDataInjector/DragonAspectFlight_BDI.json`.
-- Open Animation Replacer bundled flight animation assets under `Data/meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations`.
+- Open Animation Replacer selector configs under `Data/meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - More Draconic External Selectors`.
 - Optional Pandora and Nemesis support files under `Data/OptionalBehaviorGeneratorSupport`.
+
+## Animation Dependency
+
+Dragon Aspect Flight does not bundle animation HKX files. Its OAR selector configs load the active flight clips from the sibling load-order package:
+
+```text
+meshes\actors\character\animations\OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly\Flying Mod
+```
+
+Install the More Draconic Aspect Can Fly animation package so that folder is present in the player's virtual `Data` tree.
 
 ## Behavior Architecture
 
 Behavior Data Injector is the primary path. Users should not need to run Nemesis or Pandora for the normal package.
 
-The plugin drives graph variables such as `bDAF_DragonAspectActive`, `bDAF_FlightActive`, `bDAF_LaunchBoost`, and `iDAF_FlightState`; OAR uses those variables to select flight movement clips without hijacking vanilla jump/sprint loops. See `docs/BehaviorArchitecture.md` for the design notes and fallback generator support.
+The plugin drives graph variables such as `bDAF_DragonAspectActive`, `bDAF_FlightActive`, `bDAF_LaunchBoost`, and `iDAF_FlightState`; OAR uses those variables to select More Draconic flight movement clips without hijacking vanilla jump/sprint loops. See `docs/BehaviorArchitecture.md` for the design notes and fallback generator support.
 
 ## Build
 
