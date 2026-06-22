@@ -10,11 +10,12 @@ Current release: `1.0.0`
 
 ## Requirements
 
-- Skyrim Special Edition 1.5.97 runtime.
+- Skyrim Special Edition with a matching SKSE/CommonLibSSE-NG runtime build. The public release DLL is built for the SE runtime target; rebuild from source if you need a different runtime target.
 - SKSE64.
 - Address Library compatible with the target runtime.
 - Behavior Data Injector.
 - Open Animation Replacer.
+- Edmond's More Draconic Aspect - Become The Dragonborn.
 - More Draconic Aspect Can Fly animation package, installed separately.
 
 Dragon Aspect Flight does not bundle More Draconic `.hkx` animation files. More Draconic remains the owner/provider of the actual animation clips.
@@ -79,6 +80,7 @@ Install the release ZIP with MO2 or another mod manager. The ZIP root is already
 
 Make sure:
 
+- Edmond's More Draconic Aspect - Become The Dragonborn is installed and enabled.
 - More Draconic Aspect Can Fly is installed and enabled.
 - Dragon Aspect Flight is enabled after More Draconic Aspect Can Fly.
 - Behavior Data Injector and Open Animation Replacer are installed and enabled.
