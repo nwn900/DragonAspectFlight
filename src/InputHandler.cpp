@@ -37,7 +37,7 @@ namespace
 	constexpr std::uint32_t DefaultAscendKeyboardScanCode = 0x39;            // DIK_SPACE
 	constexpr std::uint32_t DefaultDescendKeyboardScanCode = 0x2A;           // DIK_LSHIFT
 	constexpr float ThumbstickDeadzone = 0.25F;
-	constexpr const char* FlightBuildVersion = "v0.9.3-dragon-aspect";
+	constexpr const char* FlightBuildVersion = "v1.0.0-dragon-aspect";
 	constexpr const char* HotkeyIniPath = "Data\\SKSE\\Plugins\\DragonAspectFlight.ini";
 
 	struct HotkeyConfig

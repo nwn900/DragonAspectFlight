@@ -1,52 +1,52 @@
 # Dragon Aspect Flight
 
-SKSE/CommonLibSSE-NG plugin that lets the player manually fly while Dragon Aspect is active.
+Dragon Aspect Flight is an SKSE/CommonLibSSE-NG plugin that lets the player manually fly while the full-strength Dragon Aspect shout is active.
 
-Flight activation requires the full-strength Dragon Aspect shout: the third word of power must be active.
+Flight starts only when the third word of Dragon Aspect is active. The plugin handles flight physics, ascent/descent controls, shout pass-through during flight, weapon/magic suppression, and OAR graph variables for animation selection.
 
-## What It Ships
+## Version
 
-- SKSE plugin source in `src/` and `include/`.
-- Runtime animation state integration through `Data/SKSE/Plugins/BehaviorDataInjector/DragonAspectFlight_BDI.json`.
-- User-configurable keyboard scan codes in `Data/SKSE/Plugins/DragonAspectFlight.ini`.
-- Open Animation Replacer config patches under `Data/meshes/actors/character/animations/OpenAnimationReplacer/More Dragonic Dragon Aspect Can Fly`.
-- An optional link manifest and materializer under `tools/` for local diagnostics against the installed More Draconic animation package.
+Current release: `1.0.0`
 
-## Animation Dependency
+## Requirements
 
-Dragon Aspect Flight source control does not bundle animation HKX files, and normal builds do not stage animation HKX files. The player should install the More Draconic Aspect Can Fly animation package separately so its OAR animation files are present in the virtual `Data` tree:
+- Skyrim Special Edition 1.5.97 runtime.
+- SKSE64.
+- Address Library compatible with the target runtime.
+- Behavior Data Injector.
+- Open Animation Replacer.
+- More Draconic Aspect Can Fly animation package, installed separately.
 
-```text
-meshes\actors\character\animations\OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly\Flying Mod
-```
+Dragon Aspect Flight does not bundle More Draconic `.hkx` animation files. More Draconic remains the owner/provider of the actual animation clips.
 
-The Dragon Aspect Flight package ships SKSE, BDI, OAR config patches, and INI files only. It should not ship More Draconic `.hkx` animation files. Its OAR patches intentionally live as sibling submods under More Draconic's `More Dragonic Dragon Aspect Can Fly` replacer mod and use `overrideAnimationsFolder` to read HKX files from More Draconic's `Flying Mod` and `Elegant Flying Animations` folders.
+## Load Order
 
-Dragon Aspect Flight should load after More Draconic Aspect Can Fly in the mod manager so its additional config-only submods are visible alongside More Draconic's animation folders. The animation HKX files remain owned by More Draconic.
+Install Dragon Aspect Flight after More Draconic Aspect Can Fly in your mod manager.
 
-The default local build path is:
-
-```text
-C:\Games\Nolvus\Instances\Nolvus Awakening\MODS\mods\[NoDelete] [001.00202] More Draconic Aspect Can Fly (With Collisions)\meshes\actors\character\animations\OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly
-```
-
-For local diagnostics only, `DAF_MATERIALIZE_EXTERNAL_ANIMATION_LINKS=ON` recreates the old hardlink staging layout from the installed More Draconic folder. Do not use that option for the release package unless you intentionally want to ship a local animation payload.
-
-## Behavior Architecture
-
-Behavior Data Injector is the shipped behavior path. Users should not need to run Nemesis or Pandora for this package.
-
-The plugin drives graph variables such as `bDAF_DragonAspectActive`, `bDAF_FlightActive`, `bDAF_LaunchBoost`, and `iDAF_FlightState`; OAR uses those variables to select More Draconic flight movement clips without hijacking vanilla jump/sprint loops. See `docs/BehaviorArchitecture.md` for the design notes.
-
-## Configuration
-
-Keyboard hotkeys are read once from:
+The release ships two config-only OAR submods under:
 
 ```text
-Data\SKSE\Plugins\DragonAspectFlight.ini
+meshes\actors\character\animations\OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly
 ```
 
-The values are DirectInput scan codes and can be decimal or hexadecimal:
+Those patches use OAR's `overrideAnimationsFolder` to read HKX files from More Draconic's installed `Flying Mod` and `Elegant Flying Animations` folders. The Dragon Aspect Flight package should contain zero `.hkx` files.
+
+## What The Release Ships
+
+- `SKSE\Plugins\DragonAspectFlight.dll`
+- `SKSE\Plugins\DragonAspectFlight.ini`
+- `SKSE\Plugins\BehaviorDataInjector\DragonAspectFlight_BDI.json`
+- OAR config-only patches for More Draconic's installed animation folders.
+
+It does not ship:
+
+- More Draconic animation `.hkx` files.
+- Pandora/Nemesis behavior-generator files.
+- A nested `Data` folder inside the mod root.
+
+## Controls
+
+Default hotkeys:
 
 ```ini
 [Hotkeys]
@@ -55,9 +55,35 @@ Ascend=0x39
 Descend=0x2A
 ```
 
-Defaults are `B` for activation, `Space` for ascent, and `Left Shift` for descent. Jump input is still swallowed during flight so the player does not enter the vanilla jump state, but only the configured ascent key raises flight height.
+Defaults are `B` for activation, `Space` for ascent, and `Left Shift` for descent. Values are DirectInput scan codes and can be written as decimal or hexadecimal. The release INI includes a commented key-code table for common keyboard keys.
 
-## Build
+Jump input is swallowed during flight so the player does not enter the vanilla jump state. If ascent is remapped away from `Space`, `Space` remains suppressed during flight but no longer raises flight height.
+
+## Behavior And Animation Model
+
+Behavior Data Injector registers these graph variables:
+
+- `bDAF_DragonAspectActive`
+- `bDAF_FlightActive`
+- `bDAF_LaunchBoost`
+- `bDAF_FlightShout`
+- `iDAF_FlightState`
+
+The SKSE plugin drives those variables while Dragon Aspect Flight is active. OAR uses them to select More Draconic's flight clips without depending on vanilla jump/sprint animation loops.
+
+Users should not need to run Nemesis or Pandora for this mod.
+
+## Installation
+
+Install the release ZIP with MO2 or another mod manager. The ZIP root is already the game `Data` root, so it should expose `SKSE` and `meshes` at the top level after installation.
+
+Make sure:
+
+- More Draconic Aspect Can Fly is installed and enabled.
+- Dragon Aspect Flight is enabled after More Draconic Aspect Can Fly.
+- Behavior Data Injector and Open Animation Replacer are installed and enabled.
+
+## Build From Source
 
 This project expects `CommonLibSSE-NG` next to this folder by default:
 
@@ -68,11 +94,4 @@ cmake --build build --config Release
 
 The build stages the DLL and deployable `Data` files under `build/bin` without HKX animation payloads.
 
-## Deploy
-
-Copy the staged `SKSE` and `Data` contents into a mod manager mod folder. For the local Nolvus setup used during development, the active deployment target was:
-
-```text
-C:\Games\Nolvus\Instances\Nolvus Awakening\MODS\mods\[NoDelete] Dragon Aspect Flight
-```
-
+For local diagnostics only, `DAF_MATERIALIZE_EXTERNAL_ANIMATION_LINKS=ON` can recreate the old hardlink staging layout from an installed More Draconic folder. Do not use that option for release packaging.
