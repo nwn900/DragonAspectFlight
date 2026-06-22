@@ -506,7 +506,9 @@ namespace
 
 	bool ForceSheatheIfWeaponDrawn(RE::PlayerCharacter* a_player)
 	{
-		if (!a_player || !a_player->IsWeaponDrawn()) {
+		auto* actorState = a_player ? a_player->AsActorState() : nullptr;
+
+		if (!actorState || !actorState->IsWeaponDrawn()) {
 			return false;
 		}
 

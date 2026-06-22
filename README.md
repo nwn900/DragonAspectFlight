@@ -10,7 +10,7 @@ Current release: `1.0.0`
 
 ## Requirements
 
-- Skyrim Special Edition with a matching SKSE/CommonLibSSE-NG runtime build. The public release DLL is built for the SE runtime target; rebuild from source if you need a different runtime target.
+- Skyrim Special Edition with a matching SKSE/CommonLibSSE-NG runtime build. The public release DLL is built with SE and AE runtime support enabled.
 - SKSE64.
 - Address Library compatible with the target runtime.
 - Behavior Data Injector.

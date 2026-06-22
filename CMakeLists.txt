@@ -8,7 +8,7 @@ set(COMMONLIBSSE_NG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../CommonLibSSE-NG"
     CACHE PATH "Path to CommonLibSSE-NG root")
 
 option(ENABLE_SKYRIM_SE "Build for Skyrim SE (1.5.97)" ON)
-option(ENABLE_SKYRIM_AE "Build for Skyrim AE (1.6.x)" OFF)
+option(ENABLE_SKYRIM_AE "Build for Skyrim AE (1.6.x)" ON)
 option(ENABLE_SKYRIM_VR "Build for Skyrim VR" OFF)
 option(DAF_MATERIALIZE_EXTERNAL_ANIMATION_LINKS
     "Materialize external More Draconic animation hardlinks into the staged build output"
