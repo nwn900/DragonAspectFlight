@@ -1,7 +1,8 @@
 {
-  "name": "Dragon Aspect Flight - More Draconic Elegant Flying Patch",
-  "description": "Uses More Draconic's installed Elegant Flying Animations HKX files for female player characters while Dragon Aspect Flight is active. This folder intentionally contains config only; the animation files come from the More Draconic animation mod.",
+  "name": "Dragon Aspect Flight - Elegant Flying Patch",
+  "description": "Uses More Draconic's installed Elegant Flying Animations HKX files for female player characters while Dragon Aspect Flight is active. This submod intentionally contains config only; OAR reads animations from the sibling Elegant Flying Animations folder.",
   "priority": 696969800,
+  "overrideAnimationsFolder": "Elegant Flying Animations",
   "interruptible": true,
   "conditions": [
     {

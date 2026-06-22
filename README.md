@@ -20,9 +20,9 @@ Dragon Aspect Flight source control does not bundle animation HKX files, and nor
 meshes\actors\character\animations\OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly\Flying Mod
 ```
 
-The Dragon Aspect Flight package ships SKSE, BDI, OAR config patches, and INI files only. It should not ship More Draconic `.hkx` animation files. Its OAR patches intentionally live at the same virtual paths as More Draconic's `Flying Mod` and `Elegant Flying Animations` folders, so the Dragon Aspect Flight configs can win while More Draconic still supplies the HKX files.
+The Dragon Aspect Flight package ships SKSE, BDI, OAR config patches, and INI files only. It should not ship More Draconic `.hkx` animation files. Its OAR patches intentionally live as sibling submods under More Draconic's `More Dragonic Dragon Aspect Can Fly` replacer mod and use `overrideAnimationsFolder` to read HKX files from More Draconic's `Flying Mod` and `Elegant Flying Animations` folders.
 
-Dragon Aspect Flight should load after More Draconic Aspect Can Fly in the mod manager so its `config.json` files win the loose-file conflict. Only the configs are overwritten; the animation HKX files remain owned by More Draconic.
+Dragon Aspect Flight should load after More Draconic Aspect Can Fly in the mod manager so its additional config-only submods are visible alongside More Draconic's animation folders. The animation HKX files remain owned by More Draconic.
 
 The default local build path is:
 

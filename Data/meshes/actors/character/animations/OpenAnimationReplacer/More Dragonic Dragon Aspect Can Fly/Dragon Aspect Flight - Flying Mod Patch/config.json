@@ -1,7 +1,8 @@
 {
-  "name": "Dragon Aspect Flight - More Draconic Flying Mod Patch",
-  "description": "Uses More Draconic's installed Flying Mod HKX files while Dragon Aspect Flight is active. This folder intentionally contains config only; the animation files come from the More Draconic animation mod.",
+  "name": "Dragon Aspect Flight - Flying Mod Patch",
+  "description": "Uses More Draconic's installed Flying Mod HKX files while Dragon Aspect Flight is active. This submod intentionally contains config only; OAR reads animations from the sibling Flying Mod folder.",
   "priority": 696969700,
+  "overrideAnimationsFolder": "Flying Mod",
   "interruptible": true,
   "conditions": [
     {
