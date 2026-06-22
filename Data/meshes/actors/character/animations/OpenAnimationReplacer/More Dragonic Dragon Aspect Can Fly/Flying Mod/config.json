@@ -1,6 +1,6 @@
 {
-  "name": "Bundled Flight - More Draconic Wings Effect",
-  "description": "Human-compatible bundled flight animations for Dragon Aspect Flight when the More Draconic wings effect is active and the SKSE flight state is engaged.",
+  "name": "Dragon Aspect Flight - More Draconic Flying Mod Patch",
+  "description": "Uses More Draconic's installed Flying Mod HKX files while Dragon Aspect Flight is active. This folder intentionally contains config only; the animation files come from the More Draconic animation mod.",
   "priority": 696969700,
   "interruptible": true,
   "conditions": [
@@ -11,15 +11,6 @@
         "pluginName": "Skyrim.esm",
         "formID": "7"
       }
-    },
-    {
-      "condition": "HasMagicEffect",
-      "requiredVersion": "1.0.0.0",
-      "Magic effect": {
-        "pluginName": "More Draconic Aspect - Become The Dragonborn ESL.esp",
-        "formID": "804"
-      },
-      "Active effects only": true
     },
     {
       "condition": "CompareValues",

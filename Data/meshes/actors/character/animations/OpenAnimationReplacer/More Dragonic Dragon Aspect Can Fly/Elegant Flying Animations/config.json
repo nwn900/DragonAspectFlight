@@ -1,7 +1,7 @@
 {
-  "name": "Bundled Flight - Vanilla Body 02",
-  "description": "Human-compatible bundled flight animations for Dragon Aspect Flight when the second vanilla Dragon Aspect body effect is active and the SKSE flight state is engaged.",
-  "priority": 69689998,
+  "name": "Dragon Aspect Flight - More Draconic Elegant Flying Patch",
+  "description": "Uses More Draconic's installed Elegant Flying Animations HKX files for female player characters while Dragon Aspect Flight is active. This folder intentionally contains config only; the animation files come from the More Draconic animation mod.",
+  "priority": 696969800,
   "interruptible": true,
   "conditions": [
     {
@@ -13,13 +13,8 @@
       }
     },
     {
-      "condition": "HasMagicEffect",
-      "requiredVersion": "1.0.0.0",
-      "Magic effect": {
-        "pluginName": "Dragonborn.esm",
-        "formID": "1DF98"
-      },
-      "Active effects only": true
+      "condition": "IsFemale",
+      "requiredVersion": "1.0.0.0"
     },
     {
       "condition": "CompareValues",
