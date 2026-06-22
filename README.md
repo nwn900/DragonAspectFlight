@@ -11,7 +11,6 @@ Flight activation requires the full-strength Dragon Aspect shout: the third word
 - User-configurable keyboard scan codes in `Data/SKSE/Plugins/DragonAspectFlight.ini`.
 - Open Animation Replacer selector configs under `Data/meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations`.
 - An optional link manifest and materializer under `tools/` for local diagnostics against the installed More Draconic animation package.
-- Optional Pandora and Nemesis support files under `Data/OptionalBehaviorGeneratorSupport`.
 
 ## Animation Dependency
 
@@ -21,7 +20,7 @@ Dragon Aspect Flight source control does not bundle animation HKX files, and nor
 meshes\actors\character\animations\OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly\Flying Mod
 ```
 
-The Dragon Aspect Flight package ships SKSE, BDI, OAR selector configs, optional behavior-generator support, and INI files only. It should not ship More Draconic `.hkx` animation files.
+The Dragon Aspect Flight package ships SKSE, BDI, OAR selector configs, and INI files only. It should not ship More Draconic `.hkx` animation files.
 
 The default local build path is:
 
@@ -33,9 +32,9 @@ For local diagnostics only, `DAF_MATERIALIZE_EXTERNAL_ANIMATION_LINKS=ON` recrea
 
 ## Behavior Architecture
 
-Behavior Data Injector is the primary path. Users should not need to run Nemesis or Pandora for the normal package.
+Behavior Data Injector is the shipped behavior path. Users should not need to run Nemesis or Pandora for this package.
 
-The plugin drives graph variables such as `bDAF_DragonAspectActive`, `bDAF_FlightActive`, `bDAF_LaunchBoost`, and `iDAF_FlightState`; OAR uses those variables to select More Draconic flight movement clips without hijacking vanilla jump/sprint loops. See `docs/BehaviorArchitecture.md` for the design notes and fallback generator support.
+The plugin drives graph variables such as `bDAF_DragonAspectActive`, `bDAF_FlightActive`, `bDAF_LaunchBoost`, and `iDAF_FlightState`; OAR uses those variables to select More Draconic flight movement clips without hijacking vanilla jump/sprint loops. See `docs/BehaviorArchitecture.md` for the design notes.
 
 ## Configuration
 
