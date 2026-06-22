@@ -10,18 +10,18 @@ Flight activation requires the full-strength Dragon Aspect shout: the third word
 - Runtime animation state integration through `Data/SKSE/Plugins/BehaviorDataInjector/DragonAspectFlight_BDI.json`.
 - User-configurable keyboard scan codes in `Data/SKSE/Plugins/DragonAspectFlight.ini`.
 - Open Animation Replacer selector configs under `Data/meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations`.
-- A build-time link manifest and materializer under `tools/` that recreates the working 0.8.8 OAR animation filename layout from the installed More Draconic animation package.
+- An optional link manifest and materializer under `tools/` for local diagnostics against the installed More Draconic animation package.
 - Optional Pandora and Nemesis support files under `Data/OptionalBehaviorGeneratorSupport`.
 
 ## Animation Dependency
 
-Dragon Aspect Flight source control does not bundle animation HKX files. During build or local deployment, `tools/MaterializeExternalAnimationLinks.ps1` creates hardlinks for the exact 0.8.8 OAR replacement filenames, using byte-identical clips from the installed More Draconic package:
+Dragon Aspect Flight source control does not bundle animation HKX files, and normal builds do not stage animation HKX files. The player should install the More Draconic Aspect Can Fly animation package separately so its OAR animation files are present in the virtual `Data` tree:
 
 ```text
 meshes\actors\character\animations\OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly\Flying Mod
 ```
 
-Install the More Draconic Aspect Can Fly animation package so that folder is present in the player's virtual `Data` tree.
+The Dragon Aspect Flight package ships SKSE, BDI, OAR selector configs, optional behavior-generator support, and INI files only. It should not ship More Draconic `.hkx` animation files.
 
 The default local build path is:
 
@@ -29,7 +29,7 @@ The default local build path is:
 C:\Games\Nolvus\Instances\Nolvus Awakening\MODS\mods\[NoDelete] [001.00202] More Draconic Aspect Can Fly (With Collisions)\meshes\actors\character\animations\OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly
 ```
 
-Override it with the CMake cache variable `DAF_MORE_DRACONIC_OAR_ROOT` if the More Draconic OAR root is installed elsewhere.
+For local diagnostics only, `DAF_MATERIALIZE_EXTERNAL_ANIMATION_LINKS=ON` recreates the old hardlink staging layout from the installed More Draconic folder. Do not use that option for the release package unless you intentionally want to ship a local animation payload.
 
 ## Behavior Architecture
 
@@ -65,7 +65,7 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release
 ```
 
-The build stages the DLL and deployable `Data` files under `build/bin`. It also materializes the 0.8.8 animation replacement filenames as hardlinks to the external More Draconic files, so Open Animation Replacer sees the same animation surface as the working 0.8.8 package without storing HKX binaries in this repository.
+The build stages the DLL and deployable `Data` files under `build/bin` without HKX animation payloads.
 
 ## Deploy
 
