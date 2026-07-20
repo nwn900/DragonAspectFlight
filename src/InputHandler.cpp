@@ -31,7 +31,7 @@ namespace
 	constexpr const char* KinectShoutUserEvent = "KinectShout";
 	constexpr std::uint32_t DefaultReadyWeaponKeyboardScanCode = 0x13;       // DIK_R
 	constexpr float ThumbstickDeadzone = 0.25F;
-	constexpr const char* FlightBuildVersion = "v1.1.0-dragon-aspect";
+	constexpr const char* FlightBuildVersion = "v1.2.0-dragon-aspect";
 
 	bool IsLaunchAction(const RE::ButtonEvent* a_event)
 	{

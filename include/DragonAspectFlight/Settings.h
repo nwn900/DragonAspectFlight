@@ -26,8 +26,7 @@ namespace DragonAspectFlight
 		bool showExpiredNotification{ true };
 		bool suppressInMenus{ true };
 
-		// Magicka drain while flying (disabled by default)
-		bool magickaCostEnabled{ false };
+		bool magickaCostEnabled{ true };
 		float magickaCostPerSecond{ 5.0F };
 
 		// Thread safety - shared_mutex because reads (InputHandler/game thread)

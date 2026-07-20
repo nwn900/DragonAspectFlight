@@ -6,7 +6,7 @@ Flight starts only when the third word of Dragon Aspect is active. The plugin ha
 
 ## Version
 
-Current release: `1.1.0`
+Current release: `1.2.0`
 
 ## Requirements
 
@@ -22,7 +22,7 @@ Dragon Aspect Flight does not bundle More Draconic `.hkx` animation files. More 
 
 ## Optional: In-Game Settings Panel
 
-[SKSE Menu Framework 3](https://www.nexusmods.com/skyrimspecialedition/mods/120352) (3.13+) is an optional dependency. If installed, a "Dragon Aspect Flight > Settings" page appears in the Mod Control Panel (default toggle key: F1) where you can edit hotkeys, flight physics, notification toggles, and magicka cost live. Changes can be saved back to the INI from the panel.
+[SKSE Menu Framework 3](https://www.nexusmods.com/skyrimspecialedition/mods/120352) (3.13+) is an optional dependency. If installed, a "Dragon Aspect Flight > Settings" page appears in the Mod Control Panel (default toggle key: F1). Click a hotkey button and press a key to rebind in-game (no scan-code lookup). Also edit flight physics, notifications, and magicka cost. Save writes back to the INI.
 
 ## Load Order
 
@@ -70,18 +70,23 @@ ShowExpired=1
 SuppressInMenus=1
 
 [Magicka]
-Enabled=0
+Enabled=1
 CostPerSecond=5.0
 ```
 
-Defaults are `B` for activation, `Space` for ascent, and `Left Shift` for descent. Values are DirectInput scan codes and can be written as decimal or hexadecimal. The release INI includes a commented key-code table for common keyboard keys.
+Defaults are `B` for activation, `Space` for ascent, and `Left Shift` for descent. Magicka drain is **on by default** at 5 points/sec. INI still accepts DirectInput scan codes (hex or decimal); with SMF3 you rebind by clicking the button and pressing a key.
 
-### New v1.1.0 Features
+### New v1.2.0 Features
+
+- **Click-to-rebind hotkeys** in the SMF3 Settings panel (no manual scan codes). Esc cancels.
+- **Magicka cost on by default** at 5 magicka/sec (still configurable / disableable).
+
+### v1.1.0 Features
 
 - **SKSE Menu Framework 3 integration**: optional in-game Settings panel for hotkeys, flight physics, notifications, and magicka cost. Changes can be saved to the INI.
 - **No activation while typing in UI menus**: the flight hotkeys ignore key presses while the console, journal, inventory, magic, map, stats, book, MCM, or any text-input menu is open. Configurable via `[Notifications] SuppressInMenus`.
 - **Dragon Aspect Shout cast notification**: a "Dragon Aspect Flight ready: press B to fly" notification fires the moment the player casts the full Dragon Aspect shout. An "exhausted" notification fires when the shout expires. Configurable via `[Notifications] ShowReady` and `ShowExpired`.
-- **Magicka cost while flying**: optionally drain magicka per second while airborne. When magicka runs out, the character descends safely to the ground instead of free-falling. Disabled by default. Configurable via `[Magicka] Enabled` and `CostPerSecond`.
+- **Magicka cost while flying**: drain magicka per second while airborne. When magicka runs out, the character descends safely to the ground instead of free-falling. Configurable via `[Magicka] Enabled` and `CostPerSecond`.
 
 ### Crash/Stutter Fixes (v1.1.0)
 
