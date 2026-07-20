@@ -4,7 +4,10 @@
 #include <chrono>
 #include <cstdint>
 #include <shared_mutex>
+#include <string_view>
 #include <thread>
+
+#include "RE/H/hkVector4.h"
 
 namespace DragonAspectFlight
 {
@@ -20,6 +23,7 @@ namespace DragonAspectFlight
 		[[nodiscard]] bool IsFlying() const;
 		[[nodiscard]] bool IsDescending() const;
 		[[nodiscard]] bool IsDragonAspectActive() const;
+		[[nodiscard]] static bool ShouldSuppressInput();
 
 		void SetFlightSpeed(float a_speed);
 		void SetVerticalSpeed(float a_speed);
@@ -74,9 +78,12 @@ namespace DragonAspectFlight
 		std::chrono::steady_clock::time_point _shoutGraphOverrideUntil{};
 
 		float _originalGravity{ 0.0F };
+		RE::hkVector4 _smoothedFlightVelocity{ 0.0F, 0.0F, 0.0F, 0.0F };
 
 		std::atomic_bool _startAfterSheathePending{ false };
 		std::atomic_uint32_t _startAfterSheatheAttempts{ 0 };
+		std::jthread _startAfterSheatheThread;
+		std::atomic_bool _startAfterSheatheThreadRunning{ false };
 		std::atomic_bool _threadRunning{ false };
 		std::jthread _updateThread;
 	};

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(DragonAspectFlight VERSION 1.0.0 LANGUAGES CXX)
+project(DragonAspectFlight VERSION 1.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -43,6 +43,17 @@ set(SOURCES
     src/FlightManager.cpp
     src/InputHandler.cpp
     src/Papyrus.cpp
+    src/Settings.cpp
+    src/UI.cpp
+    src/DragonAspectMonitor.cpp
+    imgui/imgui.cpp
+    imgui/imgui_demo.cpp
+    imgui/imgui_draw.cpp
+    imgui/imgui_tables.cpp
+    imgui/imgui_widgets.cpp
+    imgui/misc/cpp/imgui_stdlib.cpp
+    imgui/backends/imgui_impl_dx11.cpp
+    imgui/backends/imgui_impl_win32.cpp
 )
 
 set(HEADERS
@@ -50,6 +61,10 @@ set(HEADERS
     include/DragonAspectFlight/FlightManager.h
     include/DragonAspectFlight/InputHandler.h
     include/DragonAspectFlight/Papyrus.h
+    include/DragonAspectFlight/Settings.h
+    include/DragonAspectFlight/UI.h
+    include/DragonAspectFlight/DragonAspectMonitor.h
+    include/SKSEMenuFramework.h
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
@@ -57,6 +72,9 @@ add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
 target_include_directories(${PROJECT_NAME} PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
+    "${CMAKE_CURRENT_SOURCE_DIR}/imgui"
+    "${CMAKE_CURRENT_SOURCE_DIR}/imgui/misc/cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends"
     "${COMMONLIBSSE_NG_PATH}/include"
     "${COMMONLIBSSE_NG_PATH}/src"
 )
@@ -78,7 +96,7 @@ if(MSVC)
         /W3 /utf-8 /Zc:preprocessor /Zc:__cplusplus /permissive-
     )
     target_compile_definitions(${PROJECT_NAME} PRIVATE
-        NOMINMAX WIN32_LEAN_AND_MEAN _CRT_SECURE_NO_WARNINGS
+        NOMINMAX WIN32_LEAN_AND_MEAN _CRT_SECURE_NO_WARNINGS IMGUI_DEFINE_MATH_OPERATORS
     )
     set_property(TARGET ${PROJECT_NAME} PROPERTY
         MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")

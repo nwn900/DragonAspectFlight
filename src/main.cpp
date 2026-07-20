@@ -1,7 +1,10 @@
 #include "PCH.h"
 
+#include "DragonAspectFlight/DragonAspectMonitor.h"
 #include "DragonAspectFlight/InputHandler.h"
 #include "DragonAspectFlight/Papyrus.h"
+#include "DragonAspectFlight/Settings.h"
+#include "DragonAspectFlight/UI.h"
 
 #include <Windows.h>
 #include <fstream>
@@ -98,10 +101,15 @@ namespace
 			RawLog("InputLoaded message received");
 			break;
 
-		case SKSE::MessagingInterface::kDataLoaded:
-			logger::info("DataLoaded message received");
-			RawLog("DataLoaded message received");
-			break;
+	case SKSE::MessagingInterface::kDataLoaded:
+		logger::info("DataLoaded message received");
+		RawLog("DataLoaded message received");
+		DragonAspectFlight::Settings::GetSingleton().Load();
+		DragonAspectFlight::UI::Register();
+		DragonAspectFlight::DragonAspectMonitor::GetSingleton().Start();
+		logger::info("Dragon Aspect Flight: settings loaded, UI registered, DA monitor started");
+		RawLog("Dragon Aspect Flight: settings loaded, UI registered, DA monitor started");
+		break;
 
 		default:
 			break;
@@ -114,7 +122,7 @@ extern "C" __declspec(dllexport) SKSE::PluginVersionData SKSEPlugin_Version = []
 	SKSE::PluginVersionData data{};
 
 	data.PluginName("DragonAspectFlight");
-	data.PluginVersion(REL::Version{ 1, 0, 0, 0 });
+	data.PluginVersion(REL::Version{ 1, 1, 0, 0 });
 	data.AuthorName("LvxMagick");
 	data.UsesAddressLibrary(true);
 	data.UsesStructsPost629(true);

@@ -1,6 +1,8 @@
 #include "PCH.h"
 
 #include "DragonAspectFlight/FlightManager.h"
+#include "DragonAspectFlight/Settings.h"
+#include "SKSEMenuFramework.h"
 
 #include "RE/B/bhkCharacterController.h"
 #include "RE/B/BSFixedString.h"
@@ -9,6 +11,8 @@
 #include "RE/H/hkpCharacterState.h"
 #include "RE/M/MagicTarget.h"
 #include "RE/T/TES.h"
+#include "RE/U/UI.h"
+#include "RE/U/UI.h"
 
 namespace
 {
@@ -41,7 +45,7 @@ namespace
 	constexpr auto StartAfterSheatheRetryDelay = 250ms;
 	constexpr auto ShoutGraphOverrideDuration = 1400ms;
 	constexpr auto ShoutControlsCloseDelay = 150ms;
-	constexpr std::string_view FlightBuildVersion = "v1.0.0-dragon-aspect";
+	constexpr std::string_view FlightBuildVersion = "v1.1.0-dragon-aspect";
 	constexpr const char* GraphVarDragonAspectActive = "bDAF_DragonAspectActive";
 	constexpr const char* GraphVarFlightActive = "bDAF_FlightActive";
 	constexpr const char* GraphVarLaunchBoost = "bDAF_LaunchBoost";
@@ -164,6 +168,36 @@ namespace
 
 		const float restoreAmount = std::min(StaminaRestorePerUpdate, maxStamina - currentStamina);
 		actorValueOwner->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage, RE::ActorValue::kStamina, restoreAmount);
+	}
+
+	// Drain magicka while flying. Returns true if magicka is depleted (caller
+	// should trigger controlled descent). Reads Settings under shared lock.
+	bool DrainFlightMagicka(RE::PlayerCharacter* a_player)
+	{
+		bool enabled = false;
+		float costPerSecond = 0.0F;
+		{
+			std::shared_lock lock(DragonAspectFlight::Settings::GetSingleton().mutex);
+			enabled = DragonAspectFlight::Settings::GetSingleton().magickaCostEnabled;
+			costPerSecond = DragonAspectFlight::Settings::GetSingleton().magickaCostPerSecond;
+		}
+
+		if (!enabled || costPerSecond <= 0.0F || !a_player) {
+			return false;
+		}
+
+		auto* actorValueOwner = a_player->AsActorValueOwner();
+		if (!actorValueOwner) return false;
+
+		const float currentMagicka = actorValueOwner->GetActorValue(RE::ActorValue::kMagicka);
+		const float cost = costPerSecond * TickSeconds;
+
+		if (currentMagicka <= cost) {
+			return true;
+		}
+
+		actorValueOwner->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage, RE::ActorValue::kMagicka, -cost);
+		return false;
 	}
 
 	void ResetFlightFallState(RE::PlayerCharacter* a_player, RE::bhkCharacterController* a_controller)
@@ -318,7 +352,7 @@ namespace
 		return HasMovementInput(a_forwardInput, a_strafeInput) || std::abs(a_verticalInput) > InputDeadzone;
 	}
 
-	void MovePlayerWithCharacterControllerVelocity(float a_horizontalSpeed, float a_verticalSpeed, float a_liftScale, float a_forwardInput, float a_strafeInput, float a_verticalInput, float a_launchBoost, bool a_boostHeld)
+	void MovePlayerWithCharacterControllerVelocity(float a_horizontalSpeed, float a_verticalSpeed, float a_liftScale, float a_forwardInput, float a_strafeInput, float a_verticalInput, float a_launchBoost, bool a_boostHeld, RE::hkVector4& smoothedVelocity)
 	{
 		auto player = GetPlayer();
 
@@ -334,8 +368,6 @@ namespace
 
 		RestoreFlightStamina(player);
 		HoldContinuousFlightAirState(player, controller);
-
-		static RE::hkVector4 smoothedVelocity{ 0.0F, 0.0F, 0.0F, 0.0F };
 
 		const float maxHorizontalForMode = a_boostHeld ? BoostedMaxHorizontalVelocity : MaxHorizontalVelocity;
 		const float maxVerticalForMode = a_boostHeld ? BoostedMaxVerticalVelocity : MaxVerticalVelocity;
@@ -656,6 +688,7 @@ namespace DragonAspectFlight
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kIdle);
 			_landingContactTicks = 0;
 			_shoutGraphOverrideUntil = {};
+			_smoothedFlightVelocity = RE::hkVector4{ 0.0F, 0.0F, 0.0F, 0.0F };
 			logger::info("Flight started - {}", FlightBuildVersion);
 		}
 
@@ -681,20 +714,39 @@ namespace DragonAspectFlight
 			return;
 		}
 
-		std::thread([this]() {
-			std::this_thread::sleep_for(StartAfterSheatheRetryDelay);
+		if (_startAfterSheatheThreadRunning.exchange(true)) {
+			return;
+		}
+
+		_startAfterSheatheThread = std::jthread([this](std::stop_token stopToken) {
+			for (int i = 0; i < 25; ++i) {
+				if (stopToken.stop_requested()) {
+					_startAfterSheathePending = false;
+					_startAfterSheatheThreadRunning = false;
+					return;
+				}
+				std::this_thread::sleep_for(std::chrono::milliseconds(10));
+			}
+
+			if (stopToken.stop_requested()) {
+				_startAfterSheathePending = false;
+				_startAfterSheatheThreadRunning = false;
+				return;
+			}
 
 			auto* taskInterface = SKSE::GetTaskInterface();
 			if (!taskInterface) {
 				_startAfterSheathePending = false;
+				_startAfterSheatheThreadRunning = false;
 				return;
 			}
 
 			taskInterface->AddTask([this]() {
 				_startAfterSheathePending = false;
+				_startAfterSheatheThreadRunning = false;
 				StartFlight();
 			});
-		}).detach();
+		});
 	}
 
 	void FlightManager::BeginDescent()
@@ -784,6 +836,7 @@ namespace DragonAspectFlight
 			_flightShoutControlsCloseAfter = {};
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kOff);
 			_landingContactTicks = 0;
+			_smoothedFlightVelocity = RE::hkVector4{ 0.0F, 0.0F, 0.0F, 0.0F };
 			logger::info("Flight stopped - {}", FlightBuildVersion);
 		}
 
@@ -800,6 +853,13 @@ namespace DragonAspectFlight
 				controller->context.currentState = RE::hkpCharacterStateType::kOnGround;
 			}
 		}
+
+		if (_startAfterSheatheThread.joinable()) {
+			_startAfterSheatheThread.request_stop();
+			_startAfterSheatheThread.join();
+		}
+		_startAfterSheatheThreadRunning = false;
+		_startAfterSheathePending = false;
 
 		StopUpdateThread();
 	}
@@ -819,6 +879,56 @@ namespace DragonAspectFlight
 	bool FlightManager::IsDragonAspectActive() const
 	{
 		return HasDragonAspectActive();
+	}
+
+	bool FlightManager::ShouldSuppressInput()
+	{
+		// SMF blocking window is authoritative for the Mod Control Panel context.
+		if (SKSEMenuFramework::IsInstalled() && SKSEMenuFramework::IsAnyBlockingWindowOpened()) {
+			return true;
+		}
+
+		bool suppressInMenus = true;
+		{
+			std::shared_lock lock(DragonAspectFlight::Settings::GetSingleton().mutex);
+			suppressInMenus = DragonAspectFlight::Settings::GetSingleton().suppressInMenus;
+		}
+		if (!suppressInMenus) return false;
+
+		auto* ui = RE::UI::GetSingleton();
+		if (!ui) return false;
+
+		// RE::UI::IsMenuOpen takes const std::string_view&.
+		static constexpr std::string_view BlockingMenus[] = {
+			"Console",
+			"Journal Menu",
+			"InventoryMenu",
+			"ContainerMenu",
+			"BarterMenu",
+			"GiftMenu",
+			"MagicMenu",
+			"TweenMenu",
+			"FavoritesMenu",
+			"CraftingMenu",
+			"SmithingMenu",
+			"EnchantingMenu",
+			"ItemCard",
+			"MapMenu",
+			"StatsMenu",
+			"Book Menu",
+			"RaceSex Menu",
+			"Sleep/Wait Menu",
+			"LevelUp Menu",
+			"Mod Configuration Menu",
+			"CustomSkill Menu",
+			"MessageBoxMenu",
+			"TextInput Menu",
+		};
+
+		for (const auto& name : BlockingMenus) {
+			if (ui->IsMenuOpen(name)) return true;
+		}
+		return false;
 	}
 
 	void FlightManager::TriggerLaunchBoost()
@@ -1207,6 +1317,13 @@ namespace DragonAspectFlight
 			return;
 		}
 
-		MovePlayerWithCharacterControllerVelocity(flightSpeed, verticalSpeed, liftScale, forwardInput, strafeInput, verticalInput, launchBoost, boostHeld);
+		if (DrainFlightMagicka(player)) {
+			logger::info("Dragon Aspect Flight: magicka depleted, beginning controlled descent");
+			RE::DebugNotification("Dragon Aspect Flight: magicka exhausted, descending");
+			BeginDescent();
+			return;
+		}
+
+		MovePlayerWithCharacterControllerVelocity(flightSpeed, verticalSpeed, liftScale, forwardInput, strafeInput, verticalInput, launchBoost, boostHeld, _smoothedFlightVelocity);
 	}
 }

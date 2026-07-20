@@ -6,7 +6,7 @@ Flight starts only when the third word of Dragon Aspect is active. The plugin ha
 
 ## Version
 
-Current release: `1.0.0`
+Current release: `1.1.0`
 
 ## Requirements
 
@@ -19,6 +19,10 @@ Current release: `1.0.0`
 - More Draconic Aspect Can Fly animation package, installed separately.
 
 Dragon Aspect Flight does not bundle More Draconic `.hkx` animation files. More Draconic remains the owner/provider of the actual animation clips.
+
+## Optional: In-Game Settings Panel
+
+[SKSE Menu Framework 3](https://www.nexusmods.com/skyrimspecialedition/mods/120352) (3.13+) is an optional dependency. If installed, a "Dragon Aspect Flight > Settings" page appears in the Mod Control Panel (default toggle key: F1) where you can edit hotkeys, flight physics, notification toggles, and magicka cost live. Changes can be saved back to the INI from the panel.
 
 ## Load Order
 
@@ -47,16 +51,42 @@ It does not ship:
 
 ## Controls
 
-Default hotkeys:
+Default hotkeys and new INI sections:
 
 ```ini
 [Hotkeys]
 Activation=0x30
 Ascend=0x39
 Descend=0x2A
+
+[Flight]
+FlightSpeed=14.0
+VerticalSpeed=24.0
+LiftScale=1.0
+
+[Notifications]
+ShowReady=1
+ShowExpired=1
+SuppressInMenus=1
+
+[Magicka]
+Enabled=0
+CostPerSecond=5.0
 ```
 
 Defaults are `B` for activation, `Space` for ascent, and `Left Shift` for descent. Values are DirectInput scan codes and can be written as decimal or hexadecimal. The release INI includes a commented key-code table for common keyboard keys.
+
+### New v1.1.0 Features
+
+- **SKSE Menu Framework 3 integration**: optional in-game Settings panel for hotkeys, flight physics, notifications, and magicka cost. Changes can be saved to the INI.
+- **No activation while typing in UI menus**: the flight hotkeys ignore key presses while the console, journal, inventory, magic, map, stats, book, MCM, or any text-input menu is open. Configurable via `[Notifications] SuppressInMenus`.
+- **Dragon Aspect Shout cast notification**: a "Dragon Aspect Flight ready: press B to fly" notification fires the moment the player casts the full Dragon Aspect shout. An "exhausted" notification fires when the shout expires. Configurable via `[Notifications] ShowReady` and `ShowExpired`.
+- **Magicka cost while flying**: optionally drain magicka per second while airborne. When magicka runs out, the character descends safely to the ground instead of free-falling. Disabled by default. Configurable via `[Magicka] Enabled` and `CostPerSecond`.
+
+### Crash/Stutter Fixes (v1.1.0)
+
+- Reset flight velocity smoothing state on flight start/stop. The previous `static` local persisted across sessions and carried stale velocity, causing a jerk on flight restart.
+- Replace detached sheathe-wait thread with a `std::jthread` that respects stop tokens. The old thread had no shutdown control and could access freed memory on plugin unload.
 
 Jump input is swallowed during flight so the player does not enter the vanilla jump state. If ascent is remapped away from `Space`, `Space` remains suppressed during flight but no longer raises flight height.
 
