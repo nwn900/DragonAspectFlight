@@ -6,11 +6,11 @@ Flight starts only when the third word of Dragon Aspect is active. The plugin ha
 
 ## Version
 
-Current release: `1.3.0`
+Current release: `1.4.0`
 
 ## Requirements
 
-- Skyrim Special Edition with a matching SKSE/CommonLibSSE-NG runtime build. The public release DLL is built with SE and AE runtime support enabled.
+- Skyrim Special Edition or Skyrim VR with a matching SKSE/CommonLibSSE-NG runtime build. The public release DLL is built as one SE, AE, and VR-compatible binary.
 - SKSE64.
 - Address Library compatible with the target runtime.
 - Behavior Data Injector.
@@ -91,6 +91,11 @@ Supported gamepad bindings are D-Pad Up/Down/Left/Right, Start/Menu, Back/View, 
 - **Keyboard and gamepad bindings** for activation, ascent, and descent.
 - **SMF3 raw-input rebinding** captures controller buttons as well as keyboard input; Escape cancels a keyboard rebind.
 - **Binding-aware readiness notification** shows the configured activation control rather than assuming `B`.
+
+### New v1.4.0 Multi-Runtime Update
+
+- **Single DLL for SE, AE, and VR**: the build enables all three CommonLibSSE-NG runtime targets.
+- VR still requires SKSEVR and the VR Address Library matching Skyrim VR 1.4.15.
 
 ### v1.1.0 Features
 

@@ -347,7 +347,7 @@ namespace DragonAspectFlight::UI
 		// under a shared lock, then releases it before game-state processing.
 		std::unique_lock lock(s.mutex);
 
-		ImGuiMCP::SeparatorText("Dragon Aspect Flight v1.3.0");
+		ImGuiMCP::SeparatorText("Dragon Aspect Flight v1.4.0");
 
 		if (ImGuiMCP::CollapsingHeader("Hotkeys", ImGuiMCP::ImGuiTreeNodeFlags_DefaultOpen)) {
 			ImGuiMCP::TextWrapped("Click a binding, then press a key or controller button. Esc cancels keyboard rebinding.");

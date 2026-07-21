@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(DragonAspectFlight VERSION 1.3.0 LANGUAGES CXX)
+project(DragonAspectFlight VERSION 1.4.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -9,7 +9,7 @@ set(COMMONLIBSSE_NG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../CommonLibSSE-NG"
 
 option(ENABLE_SKYRIM_SE "Build for Skyrim SE (1.5.97)" ON)
 option(ENABLE_SKYRIM_AE "Build for Skyrim AE (1.6.x)" ON)
-option(ENABLE_SKYRIM_VR "Build for Skyrim VR" OFF)
+option(ENABLE_SKYRIM_VR "Build for Skyrim VR" ON)
 option(DAF_MATERIALIZE_EXTERNAL_ANIMATION_LINKS
     "Materialize external More Draconic animation hardlinks into the staged build output"
     OFF)
