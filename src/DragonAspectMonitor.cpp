@@ -2,6 +2,7 @@
 
 #include "DragonAspectFlight/DragonAspectMonitor.h"
 #include "DragonAspectFlight/Settings.h"
+#include "DragonAspectFlight/UI.h"
 
 #include "RE/M/MagicTarget.h"
 #include "RE/T/TES.h"
@@ -54,15 +55,15 @@ namespace
 		return false;
 	}
 
-	void NotifyOnGameThread(const char* a_message)
+	void NotifyOnGameThread(std::string a_message)
 	{
 		auto* taskInterface = SKSE::GetTaskInterface();
 		if (!taskInterface) {
 			logger::warn("Dragon Aspect Flight: TaskInterface unavailable; notification skipped");
 			return;
 		}
-		taskInterface->AddTask([a_message]() {
-			RE::DebugNotification(a_message);
+		taskInterface->AddTask([message = std::move(a_message)]() {
+			RE::DebugNotification(message.c_str());
 		});
 	}
 }
@@ -91,12 +92,14 @@ namespace DragonAspectFlight
 				if (nowActive && !wasActive) {
 					// false -> true: full Dragon Aspect shout just applied
 					bool showReady = true;
+					InputBinding activation;
 					{
 						std::shared_lock lock(Settings::GetSingleton().mutex);
 						showReady = Settings::GetSingleton().showReadyNotification;
+						activation = Settings::GetSingleton().activation;
 					}
 					if (showReady) {
-						NotifyOnGameThread("Dragon Aspect Flight ready: press B to fly");
+						NotifyOnGameThread("Dragon Aspect Flight ready: press " + UI::DescribeBinding(activation) + " to fly");
 						logger::info("Dragon Aspect Flight: 'ready' notification queued");
 					}
 				} else if (!nowActive && wasActive) {

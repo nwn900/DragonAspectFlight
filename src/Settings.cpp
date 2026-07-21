@@ -37,6 +37,26 @@ namespace
 		return true;
 	}
 
+	std::optional<DragonAspectFlight::BindingDevice> ParseBindingDevice(std::string_view a_value)
+	{
+		a_value = Trim(a_value);
+		if (EqualsIgnoreCase(a_value, "Keyboard")) return DragonAspectFlight::BindingDevice::Keyboard;
+		if (EqualsIgnoreCase(a_value, "Gamepad")) return DragonAspectFlight::BindingDevice::Gamepad;
+		return std::nullopt;
+	}
+
+	const char* BindingDeviceToString(DragonAspectFlight::BindingDevice a_device)
+	{
+		switch (a_device) {
+		case DragonAspectFlight::BindingDevice::Keyboard:
+			return "Keyboard";
+		case DragonAspectFlight::BindingDevice::Gamepad:
+			return "Gamepad";
+		default:
+			return "Keyboard";
+		}
+	}
+
 	std::uint32_t ParseScanCode(std::string_view a_value, std::uint32_t a_fallback)
 	{
 		a_value = Trim(a_value);
@@ -131,9 +151,27 @@ namespace DragonAspectFlight
 			const auto val = Trim(trimmed.substr(eq + 1));
 
 			if (EqualsIgnoreCase(section, "Hotkeys")) {
-				if (EqualsIgnoreCase(key, "Activation")) activation = ParseScanCode(val, activation);
-				else if (EqualsIgnoreCase(key, "Ascend")) ascend = ParseScanCode(val, ascend);
-				else if (EqualsIgnoreCase(key, "Descend")) descend = ParseScanCode(val, descend);
+				if (EqualsIgnoreCase(key, "ActivationDevice")) {
+					if (const auto device = ParseBindingDevice(val)) activation.device = *device;
+				} else if (EqualsIgnoreCase(key, "ActivationCode")) {
+					activation.code = ParseScanCode(val, activation.code);
+				} else if (EqualsIgnoreCase(key, "AscendDevice")) {
+					if (const auto device = ParseBindingDevice(val)) ascend.device = *device;
+				} else if (EqualsIgnoreCase(key, "AscendCode")) {
+					ascend.code = ParseScanCode(val, ascend.code);
+				} else if (EqualsIgnoreCase(key, "DescendDevice")) {
+					if (const auto device = ParseBindingDevice(val)) descend.device = *device;
+				} else if (EqualsIgnoreCase(key, "DescendCode")) {
+					descend.code = ParseScanCode(val, descend.code);
+				// Legacy keys are always keyboard bindings, even if a device line
+				// appears elsewhere in the same legacy file.
+				} else if (EqualsIgnoreCase(key, "Activation")) {
+					activation = { BindingDevice::Keyboard, ParseScanCode(val, activation.code) };
+				} else if (EqualsIgnoreCase(key, "Ascend")) {
+					ascend = { BindingDevice::Keyboard, ParseScanCode(val, ascend.code) };
+				} else if (EqualsIgnoreCase(key, "Descend")) {
+					descend = { BindingDevice::Keyboard, ParseScanCode(val, descend.code) };
+				}
 			} else if (EqualsIgnoreCase(section, "Flight")) {
 				if (EqualsIgnoreCase(key, "FlightSpeed")) flightSpeed = ParseFloat(val, flightSpeed);
 				else if (EqualsIgnoreCase(key, "VerticalSpeed")) verticalSpeed = ParseFloat(val, verticalSpeed);
@@ -153,10 +191,12 @@ namespace DragonAspectFlight
 		if (liftScale > 2.50F) liftScale = 2.50F;
 
 		logger::info(
-			"Dragon Aspect Flight settings loaded: Activation=0x{:X} Ascend=0x{:X} Descend=0x{:X} "
+			"Dragon Aspect Flight settings loaded: Activation={} 0x{:X} Ascend={} 0x{:X} Descend={} 0x{:X} "
 			"FlightSpeed={} VerticalSpeed={} LiftScale={} ShowReady={} ShowExpired={} SuppressInMenus={} "
 			"MagickaCostEnabled={} MagickaCostPerSecond={}",
-			activation, ascend, descend, flightSpeed, verticalSpeed, liftScale,
+			BindingDeviceToString(activation.device), activation.code,
+			BindingDeviceToString(ascend.device), ascend.code,
+			BindingDeviceToString(descend.device), descend.code, flightSpeed, verticalSpeed, liftScale,
 			showReadyNotification, showExpiredNotification, suppressInMenus,
 			magickaCostEnabled, magickaCostPerSecond);
 
@@ -172,10 +212,14 @@ namespace DragonAspectFlight
 		}
 
 		file << "[Hotkeys]\n";
-		file << "; DirectInput keyboard scan codes. Decimal and hexadecimal values are both supported.\n";
-		file << "Activation=0x" << std::hex << activation << "\n";
-		file << "Ascend=0x" << ascend << "\n";
-		file << "Descend=0x" << descend << std::dec << "\n\n";
+		file << "; Keyboard codes are DirectInput scan codes; gamepad codes are CommonLib gamepad IDs.\n";
+		file << "; Keyboard and Gamepad devices are supported. Legacy Activation/Ascend/Descend keys still load as Keyboard.\n";
+		file << "ActivationDevice=" << BindingDeviceToString(activation.device) << "\n";
+		file << "ActivationCode=0x" << std::hex << activation.code << "\n";
+		file << "AscendDevice=" << BindingDeviceToString(ascend.device) << "\n";
+		file << "AscendCode=0x" << ascend.code << "\n";
+		file << "DescendDevice=" << BindingDeviceToString(descend.device) << "\n";
+		file << "DescendCode=0x" << descend.code << std::dec << "\n\n";
 
 		file << "[Flight]\n";
 		file << "; Flight physics tuning.\n";

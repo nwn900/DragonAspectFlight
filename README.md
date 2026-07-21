@@ -6,7 +6,7 @@ Flight starts only when the third word of Dragon Aspect is active. The plugin ha
 
 ## Version
 
-Current release: `1.2.0`
+Current release: `1.3.0`
 
 ## Requirements
 
@@ -22,7 +22,7 @@ Dragon Aspect Flight does not bundle More Draconic `.hkx` animation files. More 
 
 ## Optional: In-Game Settings Panel
 
-[SKSE Menu Framework 3](https://www.nexusmods.com/skyrimspecialedition/mods/120352) (3.13+) is an optional dependency. If installed, a "Dragon Aspect Flight > Settings" page appears in the Mod Control Panel (default toggle key: F1). Click a hotkey button and press a key to rebind in-game (no scan-code lookup). Also edit flight physics, notifications, and magicka cost. Save writes back to the INI.
+[SKSE Menu Framework 3](https://www.nexusmods.com/skyrimspecialedition/mods/120352) (3.13+) is an optional dependency. If installed, a "Dragon Aspect Flight > Settings" page appears in the Mod Control Panel (default toggle key: F1). Click a binding, then press a keyboard key or controller button to rebind it; keyboard Escape cancels. The rebinder ignores mouse input and uses a short arming delay after the UI click. Duplicate flight bindings are rejected with a clear message. Also edit flight physics, notifications, and magicka cost. Save writes back to the INI.
 
 ## Load Order
 
@@ -55,9 +55,12 @@ Default hotkeys and new INI sections:
 
 ```ini
 [Hotkeys]
-Activation=0x30
-Ascend=0x39
-Descend=0x2A
+ActivationDevice=Keyboard
+ActivationCode=0x30
+AscendDevice=Keyboard
+AscendCode=0x39
+DescendDevice=Keyboard
+DescendCode=0x2A
 
 [Flight]
 FlightSpeed=14.0
@@ -74,12 +77,20 @@ Enabled=1
 CostPerSecond=5.0
 ```
 
-Defaults are `B` for activation, `Space` for ascent, and `Left Shift` for descent. Magicka drain is **on by default** at 5 points/sec. INI still accepts DirectInput scan codes (hex or decimal); with SMF3 you rebind by clicking the button and pressing a key.
+Defaults are `B` for activation, `Space` for ascent, and `Left Shift` for descent. Magicka drain is **on by default** at 5 points/sec. Every flight binding stores both a device (`Keyboard` or `Gamepad`) and a code. Keyboard codes are DirectInput scan codes; gamepad codes use CommonLib's gamepad button IDs. For compatibility, legacy `Activation=`, `Ascend=`, and `Descend=` INI entries still load as keyboard bindings.
+
+Supported gamepad bindings are D-Pad Up/Down/Left/Right, Start/Menu, Back/View, Left/Right Stick, Left/Right Bumper, A/Cross, B/Circle, X/Square, Y/Triangle, and Left/Right Trigger. Configure them manually in the INI or through the SMF3 rebinder. Custom bindings take precedence over Skyrim's vanilla semantic input while flying, so controller A, Y, bumpers, and triggers can drive flight instead of their normal action.
 
 ### New v1.2.0 Features
 
 - **Click-to-rebind hotkeys** in the SMF3 Settings panel (no manual scan codes). Esc cancels.
 - **Magicka cost on by default** at 5 magicka/sec (still configurable / disableable).
+
+### New v1.3.0 Controller Binding Update
+
+- **Keyboard and gamepad bindings** for activation, ascent, and descent.
+- **SMF3 raw-input rebinding** captures controller buttons as well as keyboard input; Escape cancels a keyboard rebind.
+- **Binding-aware readiness notification** shows the configured activation control rather than assuming `B`.
 
 ### v1.1.0 Features
 

@@ -31,7 +31,16 @@ namespace
 	constexpr const char* KinectShoutUserEvent = "KinectShout";
 	constexpr std::uint32_t DefaultReadyWeaponKeyboardScanCode = 0x13;       // DIK_R
 	constexpr float ThumbstickDeadzone = 0.25F;
-	constexpr const char* FlightBuildVersion = "v1.2.0-dragon-aspect";
+	constexpr const char* FlightBuildVersion = "v1.3.0-controller-bindings";
+
+	bool MatchesBinding(const RE::ButtonEvent* a_event, const DragonAspectFlight::InputBinding& a_binding)
+	{
+		if (!a_event) return false;
+
+		const auto device = a_binding.device == DragonAspectFlight::BindingDevice::Keyboard ?
+			RE::INPUT_DEVICE::kKeyboard : RE::INPUT_DEVICE::kGamepad;
+		return a_event->GetDevice() == device && a_event->GetIDCode() == a_binding.code;
+	}
 
 	bool IsLaunchAction(const RE::ButtonEvent* a_event)
 	{
@@ -40,16 +49,24 @@ namespace
 
 	bool IsConfiguredAscendInput(const RE::ButtonEvent* a_event)
 	{
-		return a_event &&
-			a_event->GetDevice() == RE::INPUT_DEVICE::kKeyboard &&
-			a_event->GetIDCode() == DragonAspectFlight::Settings::GetSingleton().ascend;
+		auto& settings = DragonAspectFlight::Settings::GetSingleton();
+		DragonAspectFlight::InputBinding binding;
+		{
+			std::shared_lock lock(settings.mutex);
+			binding = settings.ascend;
+		}
+		return MatchesBinding(a_event, binding);
 	}
 
 	bool IsConfiguredDescendInput(const RE::ButtonEvent* a_event)
 	{
-		return a_event &&
-			a_event->GetDevice() == RE::INPUT_DEVICE::kKeyboard &&
-			a_event->GetIDCode() == DragonAspectFlight::Settings::GetSingleton().descend;
+		auto& settings = DragonAspectFlight::Settings::GetSingleton();
+		DragonAspectFlight::InputBinding binding;
+		{
+			std::shared_lock lock(settings.mutex);
+			binding = settings.descend;
+		}
+		return MatchesBinding(a_event, binding);
 	}
 
 	bool IsReadyWeaponAction(const RE::ButtonEvent* a_event)
@@ -104,9 +121,13 @@ namespace
 
 	bool IsFlightActivationInput(const RE::ButtonEvent* a_event)
 	{
-		return a_event &&
-			a_event->GetDevice() == RE::INPUT_DEVICE::kKeyboard &&
-			a_event->GetIDCode() == DragonAspectFlight::Settings::GetSingleton().activation;
+		auto& settings = DragonAspectFlight::Settings::GetSingleton();
+		DragonAspectFlight::InputBinding binding;
+		{
+			std::shared_lock lock(settings.mutex);
+			binding = settings.activation;
+		}
+		return MatchesBinding(a_event, binding);
 	}
 
 	RE::PlayerCharacter* GetPlayer() { return RE::PlayerCharacter::GetSingleton(); }
@@ -226,18 +247,17 @@ namespace DragonAspectFlight
 		const float pv = a_event->IsPressed() ? 1.0F : 0.0F;
 		auto& fm = FlightManager::GetSingleton();
 
-		if (isKb) {
-			if (ue == ForwardUserEvent) { _keyboardForwardInput = pv; UpdateMovementInput(); return false; }
-			if (ue == BackUserEvent) { _keyboardForwardInput = -pv; UpdateMovementInput(); return false; }
-			if (ue == StrafeLeftUserEvent) { _keyboardStrafeInput = -pv; UpdateMovementInput(); return false; }
-			if (ue == StrafeRightUserEvent) { _keyboardStrafeInput = pv; UpdateMovementInput(); return false; }
+		// Bindings are deliberately evaluated before vanilla semantic actions.
+		// Gamepad A/Y/bumpers/triggers can be mapped to flight without their
+		// vanilla action pre-empting the configured flight response.
+		if (IsFlightActivationInput(a_event)) {
+			return HandleFlightActivation(a_event);
 		}
 
 		const bool isConfiguredAscendInput = IsConfiguredAscendInput(a_event);
 		const bool isConfiguredDescendInput = IsConfiguredDescendInput(a_event);
-		const bool isJumpInput = IsLaunchAction(a_event);
 
-		if (fm.IsFlying() && (isConfiguredAscendInput || isConfiguredDescendInput || isJumpInput)) {
+		if (fm.IsFlying() && (isConfiguredAscendInput || isConfiguredDescendInput)) {
 			if (!fm.IsDragonAspectActive()) {
 				fm.StopFlight();
 				ResetFlightInputState();
@@ -271,6 +291,29 @@ namespace DragonAspectFlight
 			return true;
 		}
 
+		if (isKb) {
+			if (ue == ForwardUserEvent) { _keyboardForwardInput = pv; UpdateMovementInput(); return false; }
+			if (ue == BackUserEvent) { _keyboardForwardInput = -pv; UpdateMovementInput(); return false; }
+			if (ue == StrafeLeftUserEvent) { _keyboardStrafeInput = -pv; UpdateMovementInput(); return false; }
+			if (ue == StrafeRightUserEvent) { _keyboardStrafeInput = pv; UpdateMovementInput(); return false; }
+		}
+
+		if (IsLaunchAction(a_event)) {
+			if (fm.IsDescending()) return true;
+			if (a_event->IsUp()) { _launchHeld = false; return fm.IsFlying() && fm.IsDragonAspectActive(); }
+			if ((a_event->IsPressed() || a_event->IsHeld()) && fm.IsFlying()) {
+				if (!fm.IsDragonAspectActive()) {
+					fm.StopFlight();
+					ResetFlightInputState();
+					return false;
+				}
+
+				if (!_launchHeld) { _launchHeld = true; fm.TriggerLaunchBoost(); }
+				return true;
+			}
+			return false;
+		}
+
 		if (IsShoutAction(a_event) && fm.IsFlying()) {
 			if (!fm.IsDragonAspectActive()) {
 				fm.StopFlight();
@@ -295,22 +338,6 @@ namespace DragonAspectFlight
 		}
 
 		if (fm.IsDescending()) {
-			if (IsFlightActivationInput(a_event)) {
-				if (!fm.IsDragonAspectActive()) {
-					fm.StopFlight();
-					ResetFlightInputState();
-					return true;
-				}
-
-				if (a_event->IsDown()) {
-					ResetFlightInputState();
-					fm.CancelDescent();
-					UpdateMovementInput();
-					ShowMessage("Dragon Aspect Flight: descent cancelled");
-				}
-				return true;
-			}
-
 			if (IsLaunchAction(a_event) || IsSpellCastAction(a_event) || IsShoutAction(a_event)) {
 				return true;
 			}
@@ -341,23 +368,14 @@ namespace DragonAspectFlight
 			return false;
 		}
 
-		if (IsLaunchAction(a_event)) {
-			if (a_event->IsUp()) { _launchHeld = false; return fm.IsFlying() && fm.IsDragonAspectActive(); }
-			if ((a_event->IsPressed() || a_event->IsHeld()) && fm.IsFlying()) {
-				if (!fm.IsDragonAspectActive()) {
-					fm.StopFlight();
-					ResetFlightInputState();
-					return false;
-				}
+		return false;
+	}
 
-				if (!_launchHeld) { _launchHeld = true; fm.TriggerLaunchBoost(); }
-				return true;
-			}
-			return false;
-		}
-
-		if (!IsFlightActivationInput(a_event)) return false;
+	bool InputHandler::HandleFlightActivation(const RE::ButtonEvent* a_event)
+	{
 		if (!IsPlayerLoaded()) return false;
+
+		auto& fm = FlightManager::GetSingleton();
 
 		const bool dragonAspectActive = fm.IsDragonAspectActive();
 
@@ -375,6 +393,16 @@ namespace DragonAspectFlight
 				ShowMessage("Dragon Aspect Flight: full Dragon Aspect required");
 			}
 
+			return true;
+		}
+
+		if (fm.IsDescending()) {
+			if (a_event->IsDown()) {
+				ResetFlightInputState();
+				fm.CancelDescent();
+				UpdateMovementInput();
+				ShowMessage("Dragon Aspect Flight: descent cancelled");
+			}
 			return true;
 		}
 

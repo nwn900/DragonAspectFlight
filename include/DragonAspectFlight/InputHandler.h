@@ -22,6 +22,7 @@ namespace DragonAspectFlight
 		InputHandler& operator=(InputHandler&&) = delete;
 
 		bool HandleButtonEvent(const RE::ButtonEvent* a_event);
+		bool HandleFlightActivation(const RE::ButtonEvent* a_event);
 		void HandleThumbstickEvent(const RE::ThumbstickEvent* a_event);
 		bool ProcessFlightShout(const RE::ButtonEvent* a_event);
 		void ResetFlightInputState();

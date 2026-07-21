@@ -5,16 +5,28 @@
 
 namespace DragonAspectFlight
 {
+	enum class BindingDevice : std::uint8_t
+	{
+		Keyboard,
+		Gamepad
+	};
+
+	struct InputBinding
+	{
+		BindingDevice device{ BindingDevice::Keyboard };
+		std::uint32_t code{ 0 };
+	};
+
 	class Settings
 	{
 	public:
 		static Settings& GetSingleton();
 
-		// Hotkeys - DirectInput keyboard scan codes
+		// Device-aware hotkeys. Keyboard codes are DirectInput scan codes.
 		// Defaults: B=0x30, Space=0x39, Left Shift=0x2A
-		std::uint32_t activation{ 0x30 };
-		std::uint32_t ascend{ 0x39 };
-		std::uint32_t descend{ 0x2A };
+		InputBinding activation{ BindingDevice::Keyboard, 0x30 };
+		InputBinding ascend{ BindingDevice::Keyboard, 0x39 };
+		InputBinding descend{ BindingDevice::Keyboard, 0x2A };
 
 		// Flight physics (mirror FlightManager private fields, editable at runtime)
 		float flightSpeed{ 14.0F };

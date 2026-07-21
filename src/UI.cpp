@@ -125,6 +125,41 @@ namespace
 		return nullptr;
 	}
 
+	std::string BindingName(const DragonAspectFlight::InputBinding& a_binding)
+	{
+		const auto unknownName = [&a_binding](const char* a_device) {
+			char label[32]{};
+			std::snprintf(label, sizeof(label), "%s 0x%X", a_device, a_binding.code);
+			return std::string(label);
+		};
+
+		if (a_binding.device == DragonAspectFlight::BindingDevice::Keyboard) {
+			if (const char* name = ScanCodeToName(a_binding.code)) return name;
+			return unknownName("Keyboard");
+		}
+
+		using GamepadKey = RE::BSWin32GamepadDevice::Key;
+		switch (a_binding.code) {
+		case GamepadKey::kUp: return "D-Pad Up";
+		case GamepadKey::kDown: return "D-Pad Down";
+		case GamepadKey::kLeft: return "D-Pad Left";
+		case GamepadKey::kRight: return "D-Pad Right";
+		case GamepadKey::kStart: return "Start / Menu";
+		case GamepadKey::kBack: return "Back / View";
+		case GamepadKey::kLeftThumb: return "Left Stick";
+		case GamepadKey::kRightThumb: return "Right Stick";
+		case GamepadKey::kLeftShoulder: return "Left Bumper";
+		case GamepadKey::kRightShoulder: return "Right Bumper";
+		case GamepadKey::kA: return "A / Cross";
+		case GamepadKey::kB: return "B / Circle";
+		case GamepadKey::kX: return "X / Square";
+		case GamepadKey::kY: return "Y / Triangle";
+		case GamepadKey::kLeftTrigger: return "Left Trigger";
+		case GamepadKey::kRightTrigger: return "Right Trigger";
+		default: return unknownName("Gamepad");
+		}
+	}
+
 	// Which hotkey row is waiting for a key press. 0 = none.
 	enum class BindSlot : int
 	{
@@ -134,15 +169,56 @@ namespace
 		Descend,
 	};
 
-	BindSlot g_listening = BindSlot::None;
-	int g_listenSkipFrames = 0;
+	std::atomic<BindSlot> g_listening = BindSlot::None;
+	std::atomic_int g_listenSkipFrames = 0;
+	SKSEMenuFramework::Model::InputEvent* g_inputEvent = nullptr;
+	std::mutex g_captureMutex;
+	std::optional<std::pair<BindSlot, DragonAspectFlight::InputBinding>> g_capturedBinding;
+	std::optional<BindSlot> g_cancelledBinding;
+	std::string g_rebindStatus;
 
-	// Returns true and writes DI scan code when a bindable key was pressed this frame.
-	// Escape cancels (returns false, sets outCancelled).
+	// Raw SMF3 input capture accepts only button-down keyboard/gamepad events.
+	bool __stdcall CaptureRebindInput(RE::InputEvent* a_event)
+	{
+		const auto listening = g_listening.load();
+		if (!a_event || listening == BindSlot::None || g_listenSkipFrames.load() > 0 ||
+			a_event->eventType != RE::INPUT_EVENT_TYPE::kButton) return false;
+
+		auto* button = a_event->AsButtonEvent();
+		if (!button || !button->IsDown()) return false;
+
+		const auto device = button->GetDevice();
+		if (device != RE::INPUT_DEVICE::kKeyboard && device != RE::INPUT_DEVICE::kGamepad) return false;
+
+		std::scoped_lock lock(g_captureMutex);
+		if (device == RE::INPUT_DEVICE::kKeyboard && button->GetIDCode() == 0x01) {
+			g_cancelledBinding = listening;
+		} else {
+			const auto bindingDevice = device == RE::INPUT_DEVICE::kKeyboard ?
+				DragonAspectFlight::BindingDevice::Keyboard : DragonAspectFlight::BindingDevice::Gamepad;
+			g_capturedBinding = std::pair{ listening, DragonAspectFlight::InputBinding{ bindingDevice, button->GetIDCode() } };
+		}
+		return true;
+	}
+
+	bool ConsumeCapturedBinding(BindSlot a_slot, DragonAspectFlight::InputBinding& a_outBinding, bool& a_outCancelled)
+	{
+		std::scoped_lock lock(g_captureMutex);
+		a_outCancelled = g_cancelledBinding == a_slot;
+		if (a_outCancelled) g_cancelledBinding.reset();
+		if (!g_capturedBinding || g_capturedBinding->first != a_slot) return false;
+		a_outBinding = g_capturedBinding->second;
+		g_capturedBinding.reset();
+		return true;
+	}
+
 	bool PollRebind(std::uint32_t& a_outScan, bool& a_outCancelled)
 	{
 		a_outCancelled = false;
+		(void)a_outScan;
+		return false;
 
+	#if 0
 		if (ImGuiMCP::IsKeyPressed(ImGuiMCP::ImGuiKey_Escape, false)) {
 			a_outCancelled = true;
 			return false;
@@ -159,27 +235,69 @@ namespace
 			}
 		}
 		return false;
+	#endif
 	}
 
-	void DrawHotkeyRow(const char* a_label, std::uint32_t& a_scan, BindSlot a_slot)
+	bool SameBinding(const DragonAspectFlight::InputBinding& a_lhs, const DragonAspectFlight::InputBinding& a_rhs)
+	{
+		return a_lhs.device == a_rhs.device && a_lhs.code == a_rhs.code;
+	}
+
+	const char* SlotName(BindSlot a_slot)
+	{
+		switch (a_slot) {
+		case BindSlot::Activation: return "Activation";
+		case BindSlot::Ascend: return "Ascend";
+		case BindSlot::Descend: return "Descend";
+		default: return "binding";
+		}
+	}
+
+	DragonAspectFlight::InputBinding* BindingForSlot(DragonAspectFlight::Settings& a_settings, BindSlot a_slot)
+	{
+		switch (a_slot) {
+		case BindSlot::Activation: return std::addressof(a_settings.activation);
+		case BindSlot::Ascend: return std::addressof(a_settings.ascend);
+		case BindSlot::Descend: return std::addressof(a_settings.descend);
+		default: return nullptr;
+		}
+	}
+
+	bool ApplyBinding(DragonAspectFlight::Settings& a_settings, BindSlot a_slot, const DragonAspectFlight::InputBinding& a_binding)
+	{
+		for (const auto other : { BindSlot::Activation, BindSlot::Ascend, BindSlot::Descend }) {
+			if (other != a_slot && SameBinding(*BindingForSlot(a_settings, other), a_binding)) {
+				g_rebindStatus = DragonAspectFlight::UI::DescribeBinding(a_binding) +
+					" is already assigned to " + SlotName(other) + ". Choose another binding.";
+				return false;
+			}
+		}
+
+		*BindingForSlot(a_settings, a_slot) = a_binding;
+		g_rebindStatus = std::string(SlotName(a_slot)) + " set to " + DragonAspectFlight::UI::DescribeBinding(a_binding) + ".";
+		return true;
+	}
+
+	void DrawHotkeyRow(const char* a_label, DragonAspectFlight::InputBinding& a_binding, BindSlot a_slot, DragonAspectFlight::Settings& a_settings)
 	{
 		ImGuiMCP::AlignTextToFramePadding();
 		ImGuiMCP::TextUnformatted(a_label);
 		ImGuiMCP::SameLine(160.0F);
 
 		char buttonLabel[96]{};
-		const bool listening = g_listening == a_slot;
+		const bool listening = g_listening.load() == a_slot;
 		if (listening) {
-			std::snprintf(buttonLabel, sizeof(buttonLabel), "Press a key... (Esc cancel)##%s", a_label);
-		} else if (const char* name = ScanCodeToName(a_scan)) {
-			std::snprintf(buttonLabel, sizeof(buttonLabel), "%s##%s", name, a_label);
+			std::snprintf(buttonLabel, sizeof(buttonLabel), "Press a key or controller button... (Esc cancel)##%s", a_label);
 		} else {
-			std::snprintf(buttonLabel, sizeof(buttonLabel), "0x%02X (unknown)##%s", a_scan, a_label);
+			std::snprintf(buttonLabel, sizeof(buttonLabel), "%s##%s", DragonAspectFlight::UI::DescribeBinding(a_binding).c_str(), a_label);
 		}
 
 		if (ImGuiMCP::Button(buttonLabel, ImGuiMCP::ImVec2(220.0F, 0.0F))) {
 			g_listening = a_slot;
-			g_listenSkipFrames = 2;  // ponytail: ignore click residual
+			g_listenSkipFrames = 2;  // Arm after the UI click has cleared.
+			std::scoped_lock lock(g_captureMutex);
+			g_capturedBinding.reset();
+			g_cancelledBinding.reset();
 		}
 
 		if (listening) {
@@ -188,12 +306,13 @@ namespace
 				return;
 			}
 
-			std::uint32_t captured = 0;
+			DragonAspectFlight::InputBinding captured;
 			bool cancelled = false;
-			if (PollRebind(captured, cancelled)) {
-				a_scan = captured;
+			if (ConsumeCapturedBinding(a_slot, captured, cancelled)) {
+				ApplyBinding(a_settings, a_slot, captured);
 				g_listening = BindSlot::None;
 			} else if (cancelled) {
+				g_rebindStatus = std::string(SlotName(a_slot)) + " rebinding cancelled.";
 				g_listening = BindSlot::None;
 			}
 		}
@@ -202,6 +321,11 @@ namespace
 
 namespace DragonAspectFlight::UI
 {
+	std::string DescribeBinding(const InputBinding& a_binding)
+	{
+		return BindingName(a_binding);
+	}
+
 	void Register()
 	{
 		if (!SKSEMenuFramework::IsInstalled()) {
@@ -211,6 +335,7 @@ namespace DragonAspectFlight::UI
 
 		SKSEMenuFramework::SetSection("Dragon Aspect Flight");
 		SKSEMenuFramework::AddSectionItem("Settings", Render);
+		g_inputEvent = SKSEMenuFramework::AddInputEvent(CaptureRebindInput);
 		logger::info("Dragon Aspect Flight: SMF Settings page registered");
 	}
 
@@ -218,18 +343,18 @@ namespace DragonAspectFlight::UI
 	{
 		auto& s = Settings::GetSingleton();
 
-		// Hold exclusive lock for the duration of the render so InputHandler
-		// (game thread) never reads a half-edited value. Both threads are
-		// effectively the game thread during a menu open, so contention is nil.
+		// Hold exclusive lock for the render; InputHandler copies each binding
+		// under a shared lock, then releases it before game-state processing.
 		std::unique_lock lock(s.mutex);
 
-		ImGuiMCP::SeparatorText("Dragon Aspect Flight v1.2.0");
+		ImGuiMCP::SeparatorText("Dragon Aspect Flight v1.3.0");
 
 		if (ImGuiMCP::CollapsingHeader("Hotkeys", ImGuiMCP::ImGuiTreeNodeFlags_DefaultOpen)) {
-			ImGuiMCP::TextWrapped("Click a button, then press the key you want. Esc cancels.");
-			DrawHotkeyRow("Activation", s.activation, BindSlot::Activation);
-			DrawHotkeyRow("Ascend", s.ascend, BindSlot::Ascend);
-			DrawHotkeyRow("Descend", s.descend, BindSlot::Descend);
+			ImGuiMCP::TextWrapped("Click a binding, then press a key or controller button. Esc cancels keyboard rebinding.");
+			DrawHotkeyRow("Activation", s.activation, BindSlot::Activation, s);
+			DrawHotkeyRow("Ascend", s.ascend, BindSlot::Ascend, s);
+			DrawHotkeyRow("Descend", s.descend, BindSlot::Descend, s);
+			if (!g_rebindStatus.empty()) ImGuiMCP::TextWrapped(g_rebindStatus.c_str());
 		}
 
 		if (ImGuiMCP::CollapsingHeader("Flight Physics", ImGuiMCP::ImGuiTreeNodeFlags_DefaultOpen)) {
