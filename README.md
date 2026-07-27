@@ -70,6 +70,7 @@ LiftScale=1.0
 [Notifications]
 ShowReady=1
 ShowExpired=1
+ShowShoutRequired=1
 SuppressInMenus=1
 
 [Magicka]

@@ -390,7 +390,15 @@ namespace DragonAspectFlight
 			ResetFlightInputState();
 
 			if (a_event->IsDown()) {
-				ShowMessage("Dragon Aspect Flight: full Dragon Aspect required");
+				bool showShoutRequired = true;
+				auto& settings = Settings::GetSingleton();
+				{
+					std::shared_lock lock(settings.mutex);
+					showShoutRequired = settings.showShoutRequiredNotification;
+				}
+				if (showShoutRequired) {
+					ShowMessage("Dragon Aspect Flight: full Dragon Aspect required");
+				}
 			}
 
 			return true;

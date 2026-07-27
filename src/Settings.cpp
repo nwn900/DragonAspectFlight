@@ -179,6 +179,7 @@ namespace DragonAspectFlight
 			} else if (EqualsIgnoreCase(section, "Notifications")) {
 				if (EqualsIgnoreCase(key, "ShowReady")) showReadyNotification = ParseBool(val, showReadyNotification);
 				else if (EqualsIgnoreCase(key, "ShowExpired")) showExpiredNotification = ParseBool(val, showExpiredNotification);
+				else if (EqualsIgnoreCase(key, "ShowShoutRequired")) showShoutRequiredNotification = ParseBool(val, showShoutRequiredNotification);
 				else if (EqualsIgnoreCase(key, "SuppressInMenus")) suppressInMenus = ParseBool(val, suppressInMenus);
 			} else if (EqualsIgnoreCase(section, "Magicka")) {
 				if (EqualsIgnoreCase(key, "Enabled")) magickaCostEnabled = ParseBool(val, magickaCostEnabled);
@@ -192,12 +193,12 @@ namespace DragonAspectFlight
 
 		logger::info(
 			"Dragon Aspect Flight settings loaded: Activation={} 0x{:X} Ascend={} 0x{:X} Descend={} 0x{:X} "
-			"FlightSpeed={} VerticalSpeed={} LiftScale={} ShowReady={} ShowExpired={} SuppressInMenus={} "
+			"FlightSpeed={} VerticalSpeed={} LiftScale={} ShowReady={} ShowExpired={} ShowShoutRequired={} SuppressInMenus={} "
 			"MagickaCostEnabled={} MagickaCostPerSecond={}",
 			BindingDeviceToString(activation.device), activation.code,
 			BindingDeviceToString(ascend.device), ascend.code,
 			BindingDeviceToString(descend.device), descend.code, flightSpeed, verticalSpeed, liftScale,
-			showReadyNotification, showExpiredNotification, suppressInMenus,
+			showReadyNotification, showExpiredNotification, showShoutRequiredNotification, suppressInMenus,
 			magickaCostEnabled, magickaCostPerSecond);
 
 		ApplyToFlightManager();
@@ -231,6 +232,7 @@ namespace DragonAspectFlight
 		file << "; 1=yes, 0=no\n";
 		file << "ShowReady=" << (showReadyNotification ? 1 : 0) << "\n";
 		file << "ShowExpired=" << (showExpiredNotification ? 1 : 0) << "\n";
+		file << "ShowShoutRequired=" << (showShoutRequiredNotification ? 1 : 0) << "\n";
 		file << "SuppressInMenus=" << (suppressInMenus ? 1 : 0) << "\n\n";
 
 		file << "[Magicka]\n";

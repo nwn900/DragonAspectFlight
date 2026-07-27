@@ -372,6 +372,7 @@ namespace DragonAspectFlight::UI
 		if (ImGuiMCP::CollapsingHeader("Notifications", ImGuiMCP::ImGuiTreeNodeFlags_DefaultOpen)) {
 			ImGuiMCP::Checkbox("Show 'Flight Ready' on Dragon Aspect Shout", &s.showReadyNotification);
 			ImGuiMCP::Checkbox("Show 'Flight Expired' when shout ends", &s.showExpiredNotification);
+			ImGuiMCP::Checkbox("Show 'Full Dragon Aspect Required' when activation fails", &s.showShoutRequiredNotification);
 			ImGuiMCP::Checkbox("Suppress flight hotkeys while typing in menus", &s.suppressInMenus);
 		}
 

@@ -36,6 +36,7 @@ namespace DragonAspectFlight
 		// Notification + UX toggles
 		bool showReadyNotification{ true };
 		bool showExpiredNotification{ true };
+		bool showShoutRequiredNotification{ true };
 		bool suppressInMenus{ true };
 
 		bool magickaCostEnabled{ true };
