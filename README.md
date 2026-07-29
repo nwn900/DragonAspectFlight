@@ -6,7 +6,7 @@ Flight starts only when the third word of Dragon Aspect is active. The plugin ha
 
 ## Version
 
-Current release: `1.4.0`
+Current release: `1.5.0`
 
 ## Requirements
 
@@ -97,6 +97,10 @@ Supported gamepad bindings are D-Pad Up/Down/Left/Right, Start/Menu, Back/View, 
 
 - **Single DLL for SE, AE, and VR**: the build enables all three CommonLibSSE-NG runtime targets.
 - VR still requires SKSEVR and the VR Address Library matching Skyrim VR 1.4.15.
+
+### New v1.5.0 Notification Update
+
+- **Optional shout-required message**: set `ShowShoutRequired=0` in `[Notifications]` to silence the message shown when flight is activated before the full Dragon Aspect shout is active.
 
 ### v1.1.0 Features
 
