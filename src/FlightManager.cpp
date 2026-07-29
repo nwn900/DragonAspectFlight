@@ -43,7 +43,7 @@ namespace
 	constexpr std::uint32_t MaxStartAfterSheatheAttempts = 8;
 	constexpr auto StartAfterSheatheRetryDelay = 250ms;
 	constexpr auto ShoutGraphOverrideDuration = 1400ms;
-	constexpr std::string_view FlightBuildVersion = "v1.6.0-se-ae-vr-flight-combat";
+	constexpr std::string_view FlightBuildVersion = "v1.7.0-se-ae-vr-aerial-topology";
 	constexpr const char* GraphVarDragonAspectActive = "bDAF_DragonAspectActive";
 	constexpr const char* GraphVarFlightActive = "bDAF_FlightActive";
 	constexpr const char* GraphVarFlightCombatActive = "bDAF_FlightCombatActive";
@@ -51,6 +51,8 @@ namespace
 	constexpr const char* GraphVarFlightShout = "bDAF_FlightShout";
 	constexpr const char* GraphVarFlightState = "iDAF_FlightState";
 	constexpr const char* GraphVarVanillaInJumpState = "bInJumpState";
+	constexpr const char* GraphVarJumpAttackState = "jumpAttack";
+	std::atomic_bool GraphVariableWriteFailureLogged{ false };
 
 	enum class FlightGraphState : std::int32_t
 	{
@@ -263,6 +265,16 @@ namespace
 			a_controller->context.currentState == RE::hkpCharacterStateType::kSwimming;
 	}
 
+	bool HasAerialCombatTopology(RE::PlayerCharacter* a_player)
+	{
+		if (!a_player || !a_player->Is3DLoaded()) {
+			return false;
+		}
+
+		float jumpAttackState = 0.0F;
+		return a_player->GetGraphVariableFloat(RE::BSFixedString(GraphVarJumpAttackState), jumpAttackState);
+	}
+
 	void SetFlightGraphVariables(
 		RE::PlayerCharacter* a_player,
 		bool a_dragonAspectActive,
@@ -276,19 +288,32 @@ namespace
 			return;
 		}
 
-		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarDragonAspectActive), a_dragonAspectActive);
-		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarFlightActive), a_flightActive);
-		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarFlightCombatActive), a_flightCombatActive);
-		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarLaunchBoost), a_launchBoost);
-		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarFlightShout), a_flightShout);
-		a_player->SetGraphVariableInt(RE::BSFixedString(GraphVarFlightState), static_cast<std::int32_t>(a_state));
+		bool customVariablesWritten = true;
+		customVariablesWritten &= a_player->SetGraphVariableBool(
+			RE::BSFixedString(GraphVarDragonAspectActive), a_dragonAspectActive);
+		customVariablesWritten &= a_player->SetGraphVariableBool(
+			RE::BSFixedString(GraphVarFlightActive), a_flightActive);
+		customVariablesWritten &= a_player->SetGraphVariableBool(
+			RE::BSFixedString(GraphVarFlightCombatActive), a_flightCombatActive);
+		customVariablesWritten &= a_player->SetGraphVariableBool(
+			RE::BSFixedString(GraphVarLaunchBoost), a_launchBoost);
+		customVariablesWritten &= a_player->SetGraphVariableBool(
+			RE::BSFixedString(GraphVarFlightShout), a_flightShout);
+		customVariablesWritten &= a_player->SetGraphVariableInt(
+			RE::BSFixedString(GraphVarFlightState), static_cast<std::int32_t>(a_state));
 
-		// Keep the vanilla combat state machine available while the controller
-		// remains physically airborne. OAR supplies the aerial clips; vanilla
-		// attack and cast states continue to own combat semantics.
-		if (a_flightActive && a_flightCombatActive) {
-			a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarVanillaInJumpState), false);
+		if (!customVariablesWritten && !GraphVariableWriteFailureLogged.exchange(true)) {
+			logger::warn(
+				"Dragon Aspect Flight: one or more DAF graph variables were unavailable; "
+				"verify Behavior Data Injector and DragonAspectFlight_BDI.json");
 		}
+
+		// Jumping Attack's behavior topology branches on bInJumpState. Keep the
+		// jump branch clear during non-combat flight, then hold the aerial branch
+		// while combat is active so grounded Stances/MCO states cannot take ownership.
+		a_player->SetGraphVariableBool(
+			RE::BSFixedString(GraphVarVanillaInJumpState),
+			a_flightActive && a_flightCombatActive);
 	}
 
 	void ClampStopVelocityForSafeRelease(RE::PlayerCharacter* a_player)
@@ -696,6 +721,7 @@ namespace DragonAspectFlight
 			_isDescending = false;
 			_flightCombatActive = false;
 			_flightCombatSheathePending = false;
+			_aerialCombatUnsupportedNotified = false;
 			_startAfterSheathePending = false;
 			_startAfterSheatheAttempts = 0;
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kIdle);
@@ -905,18 +931,50 @@ namespace DragonAspectFlight
 			return false;
 		}
 
+		const bool hasAerialCombatTopology = !a_active || HasAerialCombatTopology(player);
+		bool notifyMissingTopology = false;
 		{
 			std::unique_lock lock(_mutex);
 			if (!_isFlying || _isDescending || (a_active && !HasDragonAspectActive())) {
 				return false;
 			}
-			_flightCombatActive = a_active;
-			_flightCombatSheathePending = false;
+			if (!hasAerialCombatTopology) {
+				notifyMissingTopology = !_aerialCombatUnsupportedNotified;
+				_aerialCombatUnsupportedNotified = true;
+			} else {
+				_flightCombatActive = a_active;
+				_flightCombatSheathePending = false;
+			}
 		}
 
-		player->SetGraphVariableBool(RE::BSFixedString(GraphVarFlightCombatActive), a_active);
-		if (a_active) {
-			player->SetGraphVariableBool(RE::BSFixedString(GraphVarVanillaInJumpState), false);
+		if (!hasAerialCombatTopology) {
+			if (notifyMissingTopology) {
+				logger::error(
+					"Dragon Aspect Flight: aerial combat unavailable because the jumpAttack "
+					"behavior graph variable is missing; generate Jumping Attack behaviors");
+				RE::DebugNotification(
+					"Dragon Aspect Flight: aerial combat needs generated Jumping Attack behaviors");
+			}
+			return false;
+		}
+
+		const bool combatVariableWritten =
+			player->SetGraphVariableBool(RE::BSFixedString(GraphVarFlightCombatActive), a_active);
+		const bool jumpStateWritten =
+			player->SetGraphVariableBool(RE::BSFixedString(GraphVarVanillaInJumpState), a_active);
+		if (!jumpStateWritten) {
+			std::unique_lock lock(_mutex);
+			_flightCombatActive = false;
+			_flightCombatSheathePending = false;
+			player->SetGraphVariableBool(RE::BSFixedString(GraphVarFlightCombatActive), false);
+			logger::error(
+				"Dragon Aspect Flight: bInJumpState was unavailable; refusing grounded flight combat");
+			return false;
+		}
+		if (!combatVariableWritten && !GraphVariableWriteFailureLogged.exchange(true)) {
+			logger::warn(
+				"Dragon Aspect Flight: bDAF_FlightCombatActive was unavailable; "
+				"verify Behavior Data Injector and DragonAspectFlight_BDI.json");
 		}
 		return true;
 	}
@@ -948,7 +1006,6 @@ namespace DragonAspectFlight
 				}
 				_flightCombatSheathePending = true;
 			}
-			player->SetGraphVariableBool(RE::BSFixedString(GraphVarVanillaInJumpState), false);
 			player->DrawWeaponMagicHands(false);
 		}
 

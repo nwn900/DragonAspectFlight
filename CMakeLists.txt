@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(DragonAspectFlight VERSION 1.6.0 LANGUAGES CXX)
+project(DragonAspectFlight VERSION 1.7.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -120,6 +120,10 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Vampire Lord Fallback"
     COMMAND ${CMAKE_COMMAND} -E remove_directory
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Flight Combat"
+    COMMAND ${CMAKE_COMMAND} -E remove_directory
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/actors/character/animations/NickNak"
+    COMMAND ${CMAKE_COMMAND} -E remove_directory
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/Effects/NickNak"
     COMMAND ${CMAKE_COMMAND} -E remove_directory
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/actors/character/animations/OpenAnimationReplacer/More Dragonic Dragon Aspect Can Fly/Flying Mod"
     COMMAND ${CMAKE_COMMAND} -E remove_directory

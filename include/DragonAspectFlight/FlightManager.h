@@ -61,6 +61,7 @@ namespace DragonAspectFlight
 		bool _isDescending{ false };
 		bool _flightCombatActive{ false };
 		bool _flightCombatSheathePending{ false };
+		bool _aerialCombatUnsupportedNotified{ false };
 		float _flightSpeed{ 14.0F };
 		float _verticalSpeed{ 24.0F };
 		float _liftScale{ 1.0F };

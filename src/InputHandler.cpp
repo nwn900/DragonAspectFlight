@@ -31,7 +31,7 @@ namespace
 	constexpr const char* KinectShoutUserEvent = "KinectShout";
 	constexpr std::uint32_t DefaultReadyWeaponKeyboardScanCode = 0x13;       // DIK_R
 	constexpr float ThumbstickDeadzone = 0.25F;
-	constexpr const char* FlightBuildVersion = "v1.6.0-se-ae-vr-flight-combat";
+	constexpr const char* FlightBuildVersion = "v1.7.0-se-ae-vr-aerial-topology";
 
 	bool MatchesBinding(const RE::ButtonEvent* a_event, const DragonAspectFlight::InputBinding& a_binding)
 	{
@@ -353,10 +353,15 @@ namespace DragonAspectFlight
 					return true;
 				}
 
-				fm.BeginFlightCombat();
+				if (!fm.BeginFlightCombat()) {
+					// Never let a grounded combat framework process the input while
+					// the player is physically airborne. SetFlightCombatActive
+					// reports the missing behavior capability to the player.
+					return true;
+				}
 			}
-			// Flight combat leaves the vanilla fighting controls and action
-			// sink enabled. The DLL owns flight; vanilla owns hit/cast rules.
+			// The generated aerial behavior topology owns attack/cast rules once
+			// BeginFlightCombat has proved that the topology is present.
 			return false;
 		}
 

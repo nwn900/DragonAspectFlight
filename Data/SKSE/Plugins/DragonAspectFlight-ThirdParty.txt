@@ -1,29 +1,28 @@
-Dragon Aspect Flight 1.6.0 - third-party animation attribution
+Dragon Aspect Flight 1.7.0 - third-party animation attribution
 ================================================================
 
-The bundled aerial-combat animation clips are derived from:
+The bundled aerial-combat animation clips are from:
 
-  NickNak's Jumping Attack
+  Jumping Attack
   Author: NickNak
   Nexus: https://www.nexusmods.com/skyrimspecialedition/mods/68043
 
-NickNak's published permissions allow redistribution, modification, and use of
-the assets in other mods with credit. Dragon Aspect Flight bundles only the
-NickNak animation subset from the installed donor package. It does not bundle
-the donor package's ESP files, Papyrus scripts, generated behaviors, Mid Air
-Shouts implementation, or other authors' core flight animations.
+NickNak's published permissions allow redistribution, modification, conversion,
+and use of the assets in other mods with credit. Dragon Aspect Flight bundles
+the direct NickNak animation and landing-effect assets only. It does not claim
+authorship of those assets.
 
-The regular attack aliases retain NickNak's original transforms and
-hit/Precision annotations. The dedicated power-attack aliases preserve the
-original transforms and embed the hit/Precision timing that the donor supplied
-through its behavior patch. MCO aliases also add combo, recovery, power-chain,
-and attack-stop annotations using the open-source serde-hkx/hkxc serializer:
+The original Jumping Attack package supplies 81 of the 96 NickNak paths
+referenced by its behavior source. Dragon Aspect Flight supplies the remaining
+15 directional/left-side paths as byte-identical aliases of the nearest
+licensed NickNak clip. The exact alias mapping is recorded in:
 
-  serde-hkx
-  Project: https://github.com/SARDONYX-sard/serde-hkx
-  License: Apache-2.0 OR MIT
+  SKSE\Plugins\DragonAspectFlight-AnimationAliases.txt
 
-Exact source and generated SHA-256 hashes are recorded in:
+SHA-256 hashes for every bundled HKX and NIF are recorded in:
 
-  meshes\actors\character\animations\OpenAnimationReplacer\
-  Dragon Aspect Flight - Flight Combat\animation-manifest.json
+  SKSE\Plugins\DragonAspectFlight-AnimationHashes.txt
+
+Dragon Aspect Flight does not bundle JumpAttack.esp, Nemesis/Pandora source,
+or generated behavior graphs. Install Jumping Attack and generate its behavior
+patch for the user's own behavior stack.

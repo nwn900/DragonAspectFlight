@@ -1,0 +1,20 @@
+Dragon Aspect Flight 1.7.0 - generated NickNak path aliases
+==========================================================
+
+The left-hand/directional target is a byte-identical copy of the source:
+
+1hm_Jump_Left.hkx <- 1hm_Jump.hkx
+2hm_Air_Attack_Left.hkx <- 2hm_Air_Attack.hkx
+2hm_Air_Attack_Left_Land.hkx <- 2hm_Air_Attack_Land.hkx
+2hm_Jump_Left.hkx <- 2hm_Jump.hkx
+2hw_Air_Attack_Left.hkx <- 2hw_Air_Attack.hkx
+2hw_Air_Attack_Left_Land.hkx <- 2hw_Air_Attack_Land.hkx
+2hw_Jump_Left.hkx <- 2hw_Jump.hkx
+Aiming_Jump_Left.hkx <- Aiming_Jump.hkx
+DW_Air_Attack_Left.hkx <- Dw_Air_Attack.hkx
+DW_Air_Attack_Left_Land.hkx <- Dw_Air_Attack_Land.hkx
+H2H_Air_Attack_Left.hkx <- H2h_Air_Attack.hkx
+H2H_Air_Attack_Left_Land.hkx <- H2h_Air_Attack_Land.hkx
+H2h_Jump_Left.hkx <- H2h_Jump.hkx
+LH_1hm_Air_Attack_Left.hkx <- LH_1hm_Air_Attack.hkx
+LH_1hm_Air_Attack_Left_Land.hkx <- LH_1hm_Air_Attack_Land.hkx
