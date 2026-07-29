@@ -14,6 +14,12 @@
     {
         "projectPath": "Actors",
         "type": "kBool",
+        "name": "bDAF_FlightCombatActive",
+        "value": false
+    },
+    {
+        "projectPath": "Actors",
+        "type": "kBool",
         "name": "bDAF_LaunchBoost",
         "value": false
     },

@@ -31,7 +31,7 @@ namespace
 	constexpr const char* KinectShoutUserEvent = "KinectShout";
 	constexpr std::uint32_t DefaultReadyWeaponKeyboardScanCode = 0x13;       // DIK_R
 	constexpr float ThumbstickDeadzone = 0.25F;
-	constexpr const char* FlightBuildVersion = "v1.5.0-se-ae-vr";
+	constexpr const char* FlightBuildVersion = "v1.6.0-se-ae-vr-flight-combat";
 
 	bool MatchesBinding(const RE::ButtonEvent* a_event, const DragonAspectFlight::InputBinding& a_binding)
 	{
@@ -87,7 +87,7 @@ namespace
 			a_event->GetIDCode() == DefaultReadyWeaponKeyboardScanCode;
 	}
 
-	bool IsSpellCastAction(const RE::ButtonEvent* a_event)
+	bool IsCombatAction(const RE::ButtonEvent* a_event)
 	{
 		if (!a_event) return false;
 		const auto ue = a_event->QUserEvent();
@@ -217,14 +217,12 @@ namespace DragonAspectFlight
 		if (a_event->IsUp()) {
 			_shoutHeld = false;
 			fm.NotifyFlightShout();
-			fm.QueueEndFlightShoutInput();
 			logger::info("Dragon Aspect Flight: released vanilla flight shout input after {:.2f}s", a_event->HeldDuration());
 			return false;
 		}
 
 		if (a_event->IsDown() || (a_event->IsPressed() && !_shoutHeld)) {
 			_shoutHeld = true;
-			fm.BeginFlightShoutInput();
 			fm.NotifyFlightShout();
 			logger::info("Dragon Aspect Flight: passing vanilla flight shout input through");
 			return false;
@@ -329,42 +327,36 @@ namespace DragonAspectFlight
 		}
 
 		if (IsReadyWeaponAction(a_event) && fm.IsFlying()) {
-			if ((a_event->IsPressed() || a_event->IsHeld()) && !fm.IsDescending()) {
-				fm.BeginDescent();
-				ResetFlightInputState();
-				ShowMessage("Dragon Aspect Flight: descending");
+			if (a_event->IsUp()) {
+				_readyWeaponHeld = false;
+				return true;
+			}
+			if ((a_event->IsDown() || a_event->IsPressed()) &&
+				!_readyWeaponHeld && !fm.IsDescending()) {
+				_readyWeaponHeld = true;
+				fm.ToggleFlightCombatReady();
 			}
 			return true;
 		}
 
 		if (fm.IsDescending()) {
-			if (IsLaunchAction(a_event) || IsSpellCastAction(a_event) || IsShoutAction(a_event)) {
+			if (IsLaunchAction(a_event) || IsCombatAction(a_event) || IsShoutAction(a_event)) {
 				return true;
 			}
 		}
 
-		if (IsSpellCastAction(a_event)) {
-			bool* ch = nullptr;
-
-			if (ue == LeftCastUserEvent) { ch = &_leftCastHeld; }
-			else if (ue == RightCastUserEvent) { ch = &_rightCastHeld; }
-			else if (ue == DualCastUserEvent) { ch = &_dualCastHeld; }
-
-			if (ch && a_event->IsUp()) {
-				*ch = false;
-				return fm.IsFlying();
-			}
-
-			if (ch && fm.IsFlying() && (a_event->IsPressed() || a_event->IsHeld())) {
+		if (IsCombatAction(a_event)) {
+			if (fm.IsFlying() && (a_event->IsDown() || a_event->IsPressed())) {
 				if (!fm.IsDragonAspectActive()) {
 					fm.StopFlight();
 					ResetFlightInputState();
 					return true;
 				}
 
-				*ch = true;
-				return true;
+				fm.BeginFlightCombat();
 			}
+			// Flight combat leaves the vanilla fighting controls and action
+			// sink enabled. The DLL owns flight; vanilla owns hit/cast rules.
 			return false;
 		}
 
@@ -420,6 +412,10 @@ namespace DragonAspectFlight
 				ResetFlightInputState();
 				ShowMessage("Dragon Aspect Flight: descending");
 			} else {
+				if (auto* player = GetPlayer(); player && player->IsOnMount()) {
+					ShowMessage("Dragon Aspect Flight: unavailable while mounted");
+					return true;
+				}
 				ResetFlightInputState();
 				fm.StartFlight();
 				UpdateMovementInput();
@@ -448,16 +444,13 @@ namespace DragonAspectFlight
 		_keyboardStrafeInput = 0.0F;
 		_thumbstickForwardInput = 0.0F;
 		_thumbstickStrafeInput = 0.0F;
-		_leftCastHeld = false;
-		_rightCastHeld = false;
-		_dualCastHeld = false;
 		_launchHeld = false;
 		_ascendHeld = false;
 		_descendHeld = false;
+		_readyWeaponHeld = false;
 		_shoutHeld = false;
 		_boostHeld = false;
 		FlightManager::GetSingleton().SetBoostHeld(false);
-		FlightManager::GetSingleton().EndFlightShoutInput();
 		UpdateVerticalInput();
 		UpdateMovementInput();
 	}

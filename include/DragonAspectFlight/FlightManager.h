@@ -22,8 +22,11 @@ namespace DragonAspectFlight
 		void StopFlight();
 		[[nodiscard]] bool IsFlying() const;
 		[[nodiscard]] bool IsDescending() const;
+		[[nodiscard]] bool IsFlightCombatActive() const;
 		[[nodiscard]] bool IsDragonAspectActive() const;
 		[[nodiscard]] static bool ShouldSuppressInput();
+		bool ToggleFlightCombatReady();
+		bool BeginFlightCombat();
 
 		void SetFlightSpeed(float a_speed);
 		void SetVerticalSpeed(float a_speed);
@@ -33,9 +36,6 @@ namespace DragonAspectFlight
 		void TriggerLaunchBoost();
 		void SetBoostHeld(bool a_boostHeld);
 		void NotifyFlightShout();
-		void BeginFlightShoutInput();
-		void QueueEndFlightShoutInput();
-		void EndFlightShoutInput();
 
 		[[nodiscard]] float GetFlightSpeed() const;
 		[[nodiscard]] float GetVerticalSpeed() const;
@@ -53,18 +53,14 @@ namespace DragonAspectFlight
 		void QueueUpdate();
 		void UpdateFlight();
 		void QueueStartAfterSheathe();
-		void SuppressFightingControls();
-		void RestoreFightingControls();
-		void EnforceFightingControlsSuppressed();
+		bool SetFlightCombatActive(bool a_active);
 
 		mutable std::shared_mutex _mutex;
 
 		bool _isFlying{ false };
 		bool _isDescending{ false };
-		bool _fightingControlsSuppressed{ false };
-		bool _restoreFightingControls{ false };
-		bool _flightShoutControlsOpen{ false };
-		std::chrono::steady_clock::time_point _flightShoutControlsCloseAfter{};
+		bool _flightCombatActive{ false };
+		bool _flightCombatSheathePending{ false };
 		float _flightSpeed{ 14.0F };
 		float _verticalSpeed{ 24.0F };
 		float _liftScale{ 1.0F };

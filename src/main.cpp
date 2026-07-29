@@ -122,22 +122,21 @@ extern "C" __declspec(dllexport) SKSE::PluginVersionData SKSEPlugin_Version = []
 	SKSE::PluginVersionData data{};
 
 	data.PluginName("DragonAspectFlight");
-	data.PluginVersion(REL::Version{ 1, 4, 0, 0 });
+	data.PluginVersion(REL::Version{ 1, 6, 0, 0 });
 	data.AuthorName("LvxMagick");
 	data.UsesAddressLibrary(true);
 	data.UsesStructsPost629(true);
 	data.CompatibleVersions({
 		SKSE::RUNTIME_SSE_1_5_97,
-		SKSE::RUNTIME_SSE_1_6_317,
-		SKSE::RUNTIME_SSE_1_6_318,
-		SKSE::RUNTIME_SSE_1_6_323,
-		SKSE::RUNTIME_SSE_1_6_342,
 		SKSE::RUNTIME_SSE_1_6_353,
 		SKSE::RUNTIME_SSE_1_6_629,
 		SKSE::RUNTIME_SSE_1_6_640,
 		SKSE::RUNTIME_SSE_1_6_659,
 		SKSE::RUNTIME_SSE_1_6_678,
-		SKSE::RUNTIME_SSE_LATEST_AE
+		REL::Version{ 1, 6, 1130, 0 },
+		REL::Version{ 1, 6, 1170, 0 },
+		REL::Version{ 1, 6, 1179, 0 },
+		SKSE::RUNTIME_VR_1_4_15
 	});
 
 	return data;
@@ -147,7 +146,7 @@ extern "C" __declspec(dllexport) bool SKSEPlugin_Query(const SKSE::QueryInterfac
 {
 	a_info->infoVersion = SKSE::PluginInfo::kVersion;
 	a_info->name = "DragonAspectFlight";
-	a_info->version = 1;
+	a_info->version = 0x01060000;
 	return true;
 }
 

@@ -34,12 +34,10 @@ namespace DragonAspectFlight
 		float _thumbstickForwardInput{ 0.0F };
 		float _thumbstickStrafeInput{ 0.0F };
 
-		bool _leftCastHeld{ false };
-		bool _rightCastHeld{ false };
-		bool _dualCastHeld{ false };
 		bool _launchHeld{ false };
 		bool _ascendHeld{ false };
 		bool _descendHeld{ false };
+		bool _readyWeaponHeld{ false };
 		bool _shoutHeld{ false };
 		bool _boostHeld{ false };
 		bool _registered{ false };

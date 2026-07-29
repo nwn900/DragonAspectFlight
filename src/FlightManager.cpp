@@ -6,7 +6,6 @@
 
 #include "RE/B/bhkCharacterController.h"
 #include "RE/B/BSFixedString.h"
-#include "RE/C/ControlMap.h"
 #include "RE/H/hkVector4.h"
 #include "RE/H/hkpCharacterState.h"
 #include "RE/M/MagicTarget.h"
@@ -44,13 +43,14 @@ namespace
 	constexpr std::uint32_t MaxStartAfterSheatheAttempts = 8;
 	constexpr auto StartAfterSheatheRetryDelay = 250ms;
 	constexpr auto ShoutGraphOverrideDuration = 1400ms;
-	constexpr auto ShoutControlsCloseDelay = 150ms;
-	constexpr std::string_view FlightBuildVersion = "v1.1.0-dragon-aspect";
+	constexpr std::string_view FlightBuildVersion = "v1.6.0-se-ae-vr-flight-combat";
 	constexpr const char* GraphVarDragonAspectActive = "bDAF_DragonAspectActive";
 	constexpr const char* GraphVarFlightActive = "bDAF_FlightActive";
+	constexpr const char* GraphVarFlightCombatActive = "bDAF_FlightCombatActive";
 	constexpr const char* GraphVarLaunchBoost = "bDAF_LaunchBoost";
 	constexpr const char* GraphVarFlightShout = "bDAF_FlightShout";
 	constexpr const char* GraphVarFlightState = "iDAF_FlightState";
+	constexpr const char* GraphVarVanillaInJumpState = "bInJumpState";
 
 	enum class FlightGraphState : std::int32_t
 	{
@@ -267,6 +267,7 @@ namespace
 		RE::PlayerCharacter* a_player,
 		bool a_dragonAspectActive,
 		bool a_flightActive,
+		bool a_flightCombatActive,
 		bool a_launchBoost,
 		bool a_flightShout,
 		FlightGraphState a_state)
@@ -277,9 +278,17 @@ namespace
 
 		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarDragonAspectActive), a_dragonAspectActive);
 		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarFlightActive), a_flightActive);
+		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarFlightCombatActive), a_flightCombatActive);
 		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarLaunchBoost), a_launchBoost);
 		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarFlightShout), a_flightShout);
 		a_player->SetGraphVariableInt(RE::BSFixedString(GraphVarFlightState), static_cast<std::int32_t>(a_state));
+
+		// Keep the vanilla combat state machine available while the controller
+		// remains physically airborne. OAR supplies the aerial clips; vanilla
+		// attack and cast states continue to own combat semantics.
+		if (a_flightActive && a_flightCombatActive) {
+			a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarVanillaInJumpState), false);
+		}
 	}
 
 	void ClampStopVelocityForSafeRelease(RE::PlayerCharacter* a_player)
@@ -656,6 +665,10 @@ namespace DragonAspectFlight
 		}
 
 		auto* player = GetPlayer();
+		if (player && player->IsOnMount()) {
+			logger::info("Dragon Aspect Flight: flight start refused while mounted");
+			return;
+		}
 
 		if (ForceSheatheIfWeaponDrawn(player)) {
 			const auto attempt = _startAfterSheatheAttempts.fetch_add(1);
@@ -681,8 +694,8 @@ namespace DragonAspectFlight
 
 			_isFlying = true;
 			_isDescending = false;
-			_flightShoutControlsOpen = false;
-			_flightShoutControlsCloseAfter = {};
+			_flightCombatActive = false;
+			_flightCombatSheathePending = false;
 			_startAfterSheathePending = false;
 			_startAfterSheatheAttempts = 0;
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kIdle);
@@ -692,8 +705,6 @@ namespace DragonAspectFlight
 			logger::info("Flight started - {}", FlightBuildVersion);
 		}
 
-		SuppressFightingControls();
-
 		// Keep the physics state airborne for OAR without firing sprint/jump
 		// animation graph events that can collide with Better Jumping.
 		if (player && player->Is3DLoaded()) {
@@ -702,7 +713,7 @@ namespace DragonAspectFlight
 				ApplyControlledAirState(player, controller);
 				AddInitialFlightLift(controller);
 			}
-			SetFlightGraphVariables(player, true, true, false, false, FlightGraphState::kIdle);
+			SetFlightGraphVariables(player, true, true, false, false, false, FlightGraphState::kIdle);
 		}
 
 		StartUpdateThread();
@@ -759,20 +770,21 @@ namespace DragonAspectFlight
 			}
 
 			_isDescending = true;
+			_flightCombatActive = false;
+			_flightCombatSheathePending = false;
 			_forwardInput = 0.0F;
 			_strafeInput = 0.0F;
 			_verticalInput = 0.0F;
 			_pendingLaunchBoost = 0.0F;
 			_boostHeld = false;
-			_flightShoutControlsOpen = false;
-			_flightShoutControlsCloseAfter = {};
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kDescent);
 			_landingContactTicks = 0;
 			logger::info("Flight descent started - {}", FlightBuildVersion);
 		}
 
 		if (auto* player = GetPlayer(); player && player->Is3DLoaded()) {
-			SetFlightGraphVariables(player, HasDragonAspectActive(), true, false, false, FlightGraphState::kDescent);
+			player->DrawWeaponMagicHands(false);
+			SetFlightGraphVariables(player, HasDragonAspectActive(), true, false, false, false, FlightGraphState::kDescent);
 		}
 
 		StartUpdateThread();
@@ -811,7 +823,7 @@ namespace DragonAspectFlight
 				controller->SetLinearVelocityImpl(currentVelocity);
 			}
 
-			SetFlightGraphVariables(player, true, true, false, false, FlightGraphState::kIdle);
+			SetFlightGraphVariables(player, true, true, false, false, false, FlightGraphState::kIdle);
 		}
 
 		StartUpdateThread();
@@ -828,12 +840,12 @@ namespace DragonAspectFlight
 
 			_isFlying = false;
 			_isDescending = false;
+			_flightCombatActive = false;
+			_flightCombatSheathePending = false;
 			_forwardInput = 0.0F;
 			_strafeInput = 0.0F;
 			_verticalInput = 0.0F;
 			_boostHeld = false;
-			_flightShoutControlsOpen = false;
-			_flightShoutControlsCloseAfter = {};
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kOff);
 			_landingContactTicks = 0;
 			_smoothedFlightVelocity = RE::hkVector4{ 0.0F, 0.0F, 0.0F, 0.0F };
@@ -841,11 +853,10 @@ namespace DragonAspectFlight
 		}
 
 		ClampStopVelocityForSafeRelease(GetPlayer());
-		RestoreFightingControls();
 
 		// Restore gravity, friction, and ground state.
 		if (auto* player = GetPlayer(); player && player->Is3DLoaded()) {
-			SetFlightGraphVariables(player, HasDragonAspectActive(), false, false, false, FlightGraphState::kOff);
+			SetFlightGraphVariables(player, HasDragonAspectActive(), false, false, false, false, FlightGraphState::kOff);
 			if (auto* controller = player->GetCharController()) {
 				controller->gravity = _originalGravity;
 				controller->flags.reset(RE::CHARACTER_FLAGS::kNoFriction);
@@ -876,9 +887,83 @@ namespace DragonAspectFlight
 		return _isDescending;
 	}
 
+	bool FlightManager::IsFlightCombatActive() const
+	{
+		std::shared_lock lock(_mutex);
+		return _flightCombatActive;
+	}
+
 	bool FlightManager::IsDragonAspectActive() const
 	{
 		return HasDragonAspectActive();
+	}
+
+	bool FlightManager::SetFlightCombatActive(bool a_active)
+	{
+		auto* player = GetPlayer();
+		if (!player || !player->Is3DLoaded()) {
+			return false;
+		}
+
+		{
+			std::unique_lock lock(_mutex);
+			if (!_isFlying || _isDescending || (a_active && !HasDragonAspectActive())) {
+				return false;
+			}
+			_flightCombatActive = a_active;
+			_flightCombatSheathePending = false;
+		}
+
+		player->SetGraphVariableBool(RE::BSFixedString(GraphVarFlightCombatActive), a_active);
+		if (a_active) {
+			player->SetGraphVariableBool(RE::BSFixedString(GraphVarVanillaInJumpState), false);
+		}
+		return true;
+	}
+
+	bool FlightManager::ToggleFlightCombatReady()
+	{
+		auto* player = GetPlayer();
+		if (!player || !player->Is3DLoaded()) {
+			return false;
+		}
+
+		bool activate = false;
+		{
+			std::shared_lock lock(_mutex);
+			activate = !_flightCombatActive || _flightCombatSheathePending;
+		}
+		if (activate) {
+			if (!SetFlightCombatActive(true)) {
+				return false;
+			}
+			player->DrawWeaponMagicHands(true);
+		} else {
+			// Keep the flight-combat selector active until the asynchronous
+			// sheathe request has left the drawn state.
+			{
+				std::unique_lock lock(_mutex);
+				if (!_isFlying || _isDescending) {
+					return false;
+				}
+				_flightCombatSheathePending = true;
+			}
+			player->SetGraphVariableBool(RE::BSFixedString(GraphVarVanillaInJumpState), false);
+			player->DrawWeaponMagicHands(false);
+		}
+
+		logger::info("Dragon Aspect Flight combat {}", activate ? "readied" : "sheathed");
+		return true;
+	}
+
+	bool FlightManager::BeginFlightCombat()
+	{
+		const bool wasActive = IsFlightCombatActive();
+		const bool activated = SetFlightCombatActive(true);
+		if (activated && !wasActive) {
+			logger::info("Dragon Aspect Flight combat activated by attack/cast input");
+		}
+		return activated;
 	}
 
 	bool FlightManager::ShouldSuppressInput()
@@ -960,72 +1045,7 @@ namespace DragonAspectFlight
 		}
 
 		if (applyImmediately) {
-			SetFlightGraphVariables(GetPlayer(), true, true, false, true, FlightGraphState::kMoving);
-		}
-	}
-
-	void FlightManager::BeginFlightShoutInput()
-	{
-		auto* controlMap = RE::ControlMap::GetSingleton();
-
-		if (!controlMap) {
-			return;
-		}
-
-		bool shouldEnable = false;
-
-		{
-			std::unique_lock lock(_mutex);
-
-			if (!_isFlying || _isDescending) {
-				return;
-			}
-
-			if (_fightingControlsSuppressed && !_flightShoutControlsOpen) {
-				_flightShoutControlsOpen = true;
-				_flightShoutControlsCloseAfter = {};
-				shouldEnable = true;
-			}
-		}
-
-		if (shouldEnable && !controlMap->IsFightingControlsEnabled()) {
-			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, true);
-			logger::info("Fighting controls opened for Dragon Aspect flight shout");
-		}
-	}
-
-	void FlightManager::QueueEndFlightShoutInput()
-	{
-		std::unique_lock lock(_mutex);
-
-		if (_flightShoutControlsOpen) {
-			_flightShoutControlsCloseAfter = std::chrono::steady_clock::now() + ShoutControlsCloseDelay;
-		}
-	}
-
-	void FlightManager::EndFlightShoutInput()
-	{
-		auto* controlMap = RE::ControlMap::GetSingleton();
-
-		if (!controlMap) {
-			return;
-		}
-
-		bool shouldDisable = false;
-
-		{
-			std::unique_lock lock(_mutex);
-
-			if (_flightShoutControlsOpen) {
-				_flightShoutControlsOpen = false;
-				_flightShoutControlsCloseAfter = {};
-				shouldDisable = _isFlying && _fightingControlsSuppressed;
-			}
-		}
-
-		if (shouldDisable && controlMap->IsFightingControlsEnabled()) {
-			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, false);
-			logger::info("Fighting controls closed after Dragon Aspect flight shout");
+			SetFlightGraphVariables(GetPlayer(), true, true, IsFlightCombatActive(), false, true, FlightGraphState::kMoving);
 		}
 	}
 
@@ -1091,96 +1111,6 @@ namespace DragonAspectFlight
 	{
 		std::shared_lock lock(_mutex);
 		return _liftScale;
-	}
-
-	void FlightManager::SuppressFightingControls()
-	{
-		auto* controlMap = RE::ControlMap::GetSingleton();
-
-		if (!controlMap) {
-			return;
-		}
-
-		bool shouldDisable = false;
-
-		{
-			std::unique_lock lock(_mutex);
-
-			if (!_isFlying || _fightingControlsSuppressed) {
-				return;
-			}
-
-			_restoreFightingControls = controlMap->IsFightingControlsEnabled();
-			shouldDisable = _restoreFightingControls;
-			_fightingControlsSuppressed = true;
-		}
-
-		if (shouldDisable) {
-			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, false);
-			logger::info("Fighting controls suppressed for Dragon Aspect flight");
-		}
-	}
-
-	void FlightManager::RestoreFightingControls()
-	{
-		auto* controlMap = RE::ControlMap::GetSingleton();
-
-		if (!controlMap) {
-			return;
-		}
-
-		bool shouldRestore = false;
-
-		{
-			std::unique_lock lock(_mutex);
-			shouldRestore = _fightingControlsSuppressed && _restoreFightingControls;
-			_fightingControlsSuppressed = false;
-			_restoreFightingControls = false;
-		}
-
-		if (shouldRestore) {
-			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, true);
-			logger::info("Fighting controls restored after Dragon Aspect flight");
-		}
-	}
-
-	void FlightManager::EnforceFightingControlsSuppressed()
-	{
-		auto* controlMap = RE::ControlMap::GetSingleton();
-
-		if (!controlMap) {
-			return;
-		}
-
-		bool shouldCloseQueuedShout = false;
-
-		{
-			std::unique_lock lock(_mutex);
-
-			if (!_isFlying || !_fightingControlsSuppressed) {
-				return;
-			}
-
-			if (_flightShoutControlsOpen) {
-				if (_flightShoutControlsCloseAfter != std::chrono::steady_clock::time_point{} &&
-					std::chrono::steady_clock::now() >= _flightShoutControlsCloseAfter) {
-					_flightShoutControlsOpen = false;
-					_flightShoutControlsCloseAfter = {};
-					shouldCloseQueuedShout = true;
-				} else {
-					return;
-				}
-			}
-		}
-
-		if (controlMap->IsFightingControlsEnabled()) {
-			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, false);
-			if (shouldCloseQueuedShout) {
-				logger::info("Fighting controls closed after vanilla flight shout pass-through");
-			} else {
-				logger::info("Fighting controls re-suppressed during Dragon Aspect flight");
-			}
-		}
 	}
 
 	void FlightManager::StartUpdateThread()
@@ -1254,6 +1184,8 @@ namespace DragonAspectFlight
 		float launchBoost = 0.0F;
 		bool boostHeld = false;
 		bool descending = false;
+		bool combatActive = false;
+		bool combatSheathePending = false;
 		bool shoutOverrideActive = false;
 		std::uint32_t landingContactTicks = 0;
 		FlightGraphState graphState = FlightGraphState::kOff;
@@ -1272,6 +1204,8 @@ namespace DragonAspectFlight
 			}
 
 			descending = _isDescending;
+			combatActive = _flightCombatActive;
+			combatSheathePending = _flightCombatSheathePending;
 			flightSpeed = _flightSpeed;
 			verticalSpeed = _verticalSpeed;
 			liftScale = _liftScale;
@@ -1297,13 +1231,22 @@ namespace DragonAspectFlight
 		}
 
 		auto* player = GetPlayer();
-		EnforceFightingControlsSuppressed();
-
-		if (!descending && ForceSheatheIfWeaponDrawn(player)) {
-			logger::info("Blocked weapon/magic draw during Dragon Aspect flight");
+		if (combatSheathePending) {
+			auto* actorState = player ? player->AsActorState() : nullptr;
+			if ((!actorState || !actorState->IsWeaponDrawn()) &&
+				SetFlightCombatActive(false)) {
+				combatActive = false;
+				logger::info("Dragon Aspect Flight combat sheathe completed");
+			}
 		}
-
-		SetFlightGraphVariables(player, true, true, graphState == FlightGraphState::kLaunch, shoutOverrideActive, graphState);
+		SetFlightGraphVariables(
+			player,
+			true,
+			true,
+			combatActive,
+			graphState == FlightGraphState::kLaunch,
+			shoutOverrideActive,
+			graphState);
 
 		if (descending) {
 			if (MovePlayerWithControlledDescent(landingContactTicks)) {

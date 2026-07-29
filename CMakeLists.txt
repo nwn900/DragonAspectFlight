@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(DragonAspectFlight VERSION 1.5.0 LANGUAGES CXX)
+project(DragonAspectFlight VERSION 1.6.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -103,11 +103,13 @@ if(MSVC)
 endif()
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E remove_directory
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../SKSE"
     COMMAND ${CMAKE_COMMAND} -E make_directory
-        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../SKSE/Plugins"
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/SKSE/Plugins"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "$<TARGET_FILE:${PROJECT_NAME}>"
-        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../SKSE/Plugins/$<TARGET_FILE_NAME:${PROJECT_NAME}>"
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/SKSE/Plugins/$<TARGET_FILE_NAME:${PROJECT_NAME}>"
     COMMAND ${CMAKE_COMMAND} -E remove_directory
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations"
     COMMAND ${CMAKE_COMMAND} -E remove_directory
@@ -116,6 +118,8 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/actors/character/animations/OpenAnimationReplacer/More Dragonic Dragon Aspect Can Fly"
     COMMAND ${CMAKE_COMMAND} -E remove_directory
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Vampire Lord Fallback"
+    COMMAND ${CMAKE_COMMAND} -E remove_directory
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Flight Combat"
     COMMAND ${CMAKE_COMMAND} -E remove_directory
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/actors/character/animations/OpenAnimationReplacer/More Dragonic Dragon Aspect Can Fly/Flying Mod"
     COMMAND ${CMAKE_COMMAND} -E remove_directory
@@ -129,7 +133,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_CURRENT_SOURCE_DIR}/Data"
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data"
-    COMMENT "Copying DragonAspectFlight.dll to SKSE/Plugins")
+    COMMENT "Staging a Data-shaped Dragon Aspect Flight mod root")
 
 if(DAF_MATERIALIZE_EXTERNAL_ANIMATION_LINKS)
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
