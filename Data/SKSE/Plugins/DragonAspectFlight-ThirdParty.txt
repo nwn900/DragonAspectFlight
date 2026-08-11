@@ -1,28 +1,56 @@
-Dragon Aspect Flight 1.7.0 - third-party animation attribution
+Dragon Aspect Flight 1.8.0 - third-party animation attribution
 ================================================================
 
-The bundled aerial-combat animation clips are from:
+Neutral flight pose
+-------------------
+
+  Flying Mod Beta
+  Original author: porroone
+  Skyrim SE/AE conversion credit: DimitriyKostov
+  Original: https://www.nexusmods.com/skyrim/mods/15775
+
+The bundled flight-idle donor was obtained from the credited Flying Mod OAR
+set distributed with More Draconic Aspect Can Fly. It is redistributed here
+under the animation's open permissions; Dragon Aspect Flight does not claim
+authorship.
+
+Aerial melee animations
+-----------------------
 
   Jumping Attack
   Author: NickNak
   Nexus: https://www.nexusmods.com/skyrimspecialedition/mods/68043
 
-NickNak's published permissions allow redistribution, modification, conversion,
-and use of the assets in other mods with credit. Dragon Aspect Flight bundles
-the direct NickNak animation and landing-effect assets only. It does not claim
-authorship of those assets.
+NickNak's published permissions allow redistribution, modification,
+conversion, and use in other mods with credit. Only the generated OAR paths
+needed by Dragon Aspect Flight are installed; the repository-only source set
+is not duplicated into the release.
 
-The original Jumping Attack package supplies 81 of the 96 NickNak paths
-referenced by its behavior source. Dragon Aspect Flight supplies the remaining
-15 directional/left-side paths as byte-identical aliases of the nearest
-licensed NickNak clip. The exact alias mapping is recorded in:
+Magic and staff animations
+--------------------------
 
-  SKSE\Plugins\DragonAspectFlight-AnimationAliases.txt
+  New Animation for Magic Casting
+  Original author: xp32
+  OAR port: Neumeria
+  Original: https://www.nexusmods.com/skyrimspecialedition/mods/31989
+  OAR port: https://www.nexusmods.com/skyrimspecialedition/mods/104120
 
-SHA-256 hashes for every bundled HKX and NIF are recorded in:
+The original author explicitly permits modification, conversion, upload, and
+reuse with credit. The OAR port publishes the same permissions.
+
+Release composition
+-------------------
+
+The release contains 836 generated, flight-scoped OAR HKX aliases across the
+fallback, unarmed, one-handed, dual-wield, greatsword, axe/warhammer, bow,
+crossbow, magic, and staff families. The exact original-name coverage is in:
+
+  SKSE\Plugins\DragonAspectFlight-AnimationCoverage.json
+
+SHA-256 hashes for every installed HKX are in:
 
   SKSE\Plugins\DragonAspectFlight-AnimationHashes.txt
 
-Dragon Aspect Flight does not bundle JumpAttack.esp, Nemesis/Pandora source,
-or generated behavior graphs. Install Jumping Attack and generate its behavior
-patch for the user's own behavior stack.
+Dragon Aspect Flight does not bundle an ESP, Papyrus scripts, JumpAttack.esp,
+Pandora/Nemesis inputs or outputs, Bethesda behavior files, or raw Stances/MCO
+assets. Jumping Attack, MCO, Stances, Nemesis, and Pandora are not requirements.

@@ -1,0 +1,69 @@
+{
+  "name": "DAF Flight Base - Unarmed",
+  "description": "Root-stable unarmed flight locomotion and aerial attacks.",
+  "priority": 2147483601,
+  "interruptible": true,
+  "replaceOnLoop": true,
+  "conditions": [
+    {
+      "condition": "IsActorBase",
+      "requiredVersion": "1.0.0.0",
+      "Actor base": {
+        "pluginName": "Skyrim.esm",
+        "formID": "7"
+      }
+    },
+    {
+      "condition": "CompareValues",
+      "requiredVersion": "1.0.0.0",
+      "Value A": {
+        "graphVariable": "bDAF_FlightActive",
+        "graphVariableType": "Bool"
+      },
+      "Comparison": "==",
+      "Value B": {
+        "value": 1.0
+      }
+    },
+    {
+      "condition": "CompareValues",
+      "requiredVersion": "1.0.0.0",
+      "Value A": {
+        "graphVariable": "iDAF_FlightState",
+        "graphVariableType": "Int"
+      },
+      "Comparison": ">",
+      "Value B": {
+        "value": 0.0
+      }
+    },
+    {
+      "condition": "OR",
+      "requiredVersion": "1.0.0.0",
+      "Conditions": [
+        {
+          "condition": "IsEquippedType",
+          "requiredVersion": "1.0.0.0",
+          "Type": {
+            "value": 0.0
+          },
+          "Left hand": false
+        }
+      ]
+    },
+    {
+      "condition": "OR",
+      "requiredVersion": "1.0.0.0",
+      "Conditions": [
+        {
+          "condition": "IsEquippedType",
+          "requiredVersion": "1.0.0.0",
+          "Type": {
+            "value": 0.0
+          },
+          "Left hand": true
+        }
+      ]
+    }
+  ]
+}

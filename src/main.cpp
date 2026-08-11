@@ -5,73 +5,28 @@
 #include "DragonAspectFlight/Papyrus.h"
 #include "DragonAspectFlight/Settings.h"
 #include "DragonAspectFlight/UI.h"
-
-#include <Windows.h>
-#include <fstream>
+#include "DragonAspectFlight/Version.h"
 
 namespace
 {
-	std::filesystem::path GetPluginDirectory()
-	{
-		HMODULE module = nullptr;
-		const auto flags = GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT;
-		const auto address = reinterpret_cast<LPCSTR>(&GetPluginDirectory);
-
-		if (!GetModuleHandleExA(flags, address, std::addressof(module)) || !module) {
-			return std::filesystem::current_path() / "Data" / "SKSE" / "Plugins";
-		}
-
-		char pathBuffer[MAX_PATH]{};
-		const auto length = GetModuleFileNameA(module, pathBuffer, static_cast<DWORD>(std::size(pathBuffer)));
-
-		if (length == 0) {
-			return std::filesystem::current_path() / "Data" / "SKSE" / "Plugins";
-		}
-
-		return std::filesystem::path(pathBuffer).parent_path();
-	}
-
-	std::filesystem::path GetLogPath()
-	{
-		return GetPluginDirectory() / "DragonAspectFlight.log";
-	}
-
-	void RawLog(std::string_view a_message)
-	{
-		const auto logPath = GetLogPath();
-
-		std::error_code error;
-		std::filesystem::create_directories(logPath.parent_path(), error);
-
-		std::ofstream file(logPath, std::ios::app);
-
-		if (file.is_open()) {
-			file << a_message << '\n';
-		}
-	}
-
 	void InitializeLogging()
 	{
-		const auto logPath = GetLogPath();
-
-		RawLog("Raw logger reached InitializeLogging");
-
-		try {
-			auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logPath.string(), true);
-			auto log = std::make_shared<spdlog::logger>("DragonAspectFlight", std::move(sink));
-
-			log->set_level(spdlog::level::trace);
-			log->flush_on(spdlog::level::trace);
-
-			spdlog::set_default_logger(std::move(log));
-			spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%l] %v");
-
-			logger::info("DragonAspectFlight logger initialized at {}", logPath.string());
-		} catch (const std::exception& e) {
-			RawLog(std::string("spdlog logger failed: ") + e.what());
-		} catch (...) {
-			RawLog("spdlog logger failed with unknown exception");
+		auto logDirectory = SKSE::log::log_directory();
+		if (!logDirectory) {
+			SKSE::stl::report_and_fail("Unable to resolve the SKSE log directory");
 		}
+
+		*logDirectory /= "DragonAspectFlight.log";
+		auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logDirectory->string(), true);
+		auto log = std::make_shared<spdlog::logger>("DragonAspectFlight", std::move(sink));
+
+		log->set_level(spdlog::level::trace);
+		log->flush_on(spdlog::level::trace);
+
+		spdlog::set_default_logger(std::move(log));
+		spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%l] %v");
+
+		logger::info("DragonAspectFlight logger initialized at {}", logDirectory->string());
 	}
 
 	void InitializePapyrus()
@@ -81,10 +36,8 @@ namespace
 		if (papyrus) {
 			papyrus->Register(DragonAspectFlight::Papyrus::Register);
 			logger::info("Papyrus functions registered");
-			RawLog("Papyrus functions registered");
 		} else {
 			logger::error("Failed to get Papyrus interface");
-			RawLog("Failed to get Papyrus interface");
 		}
 	}
 
@@ -98,17 +51,20 @@ namespace
 		case SKSE::MessagingInterface::kInputLoaded:
 			DragonAspectFlight::InputHandler::GetSingleton()->Register();
 			logger::info("InputLoaded message received");
-			RawLog("InputLoaded message received");
 			break;
 
 	case SKSE::MessagingInterface::kDataLoaded:
 		logger::info("DataLoaded message received");
-		RawLog("DataLoaded message received");
 		DragonAspectFlight::Settings::GetSingleton().Load();
 		DragonAspectFlight::UI::Register();
 		DragonAspectFlight::DragonAspectMonitor::GetSingleton().Start();
+		logger::info(
+			"event=dependency_snapshot oar_loaded={} bdi_loaded={} payload_interpreter_loaded={} "
+			"stanzas_note=actual_animation_winner_is_reported_by_OpenAnimationReplacer.log",
+			GetModuleHandleW(L"OpenAnimationReplacer.dll") != nullptr,
+			GetModuleHandleW(L"BehaviorDataInjector.dll") != nullptr,
+			GetModuleHandleW(L"PayloadInterpreter.dll") != nullptr);
 		logger::info("Dragon Aspect Flight: settings loaded, UI registered, DA monitor started");
-		RawLog("Dragon Aspect Flight: settings loaded, UI registered, DA monitor started");
 		break;
 
 		default:
@@ -117,49 +73,32 @@ namespace
 	}
 }
 
-extern "C" __declspec(dllexport) SKSE::PluginVersionData SKSEPlugin_Version = []()
-{
-	SKSE::PluginVersionData data{};
-
-	data.PluginName("DragonAspectFlight");
-	data.PluginVersion(REL::Version{ 1, 7, 0, 0 });
-	data.AuthorName("LvxMagick");
-	data.UsesAddressLibrary(true);
-	data.UsesStructsPost629(true);
-	data.CompatibleVersions({
-		SKSE::RUNTIME_SSE_1_5_97,
-		SKSE::RUNTIME_SSE_1_6_353,
-		SKSE::RUNTIME_SSE_1_6_629,
-		SKSE::RUNTIME_SSE_1_6_640,
-		SKSE::RUNTIME_SSE_1_6_659,
-		SKSE::RUNTIME_SSE_1_6_678,
-		REL::Version{ 1, 6, 1130, 0 },
-		REL::Version{ 1, 6, 1170, 0 },
-		REL::Version{ 1, 6, 1179, 0 },
-		SKSE::RUNTIME_VR_1_4_15
-	});
-
-	return data;
-}();
-
-extern "C" __declspec(dllexport) bool SKSEPlugin_Query(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* a_info)
-{
-	a_info->infoVersion = SKSE::PluginInfo::kVersion;
-	a_info->name = "DragonAspectFlight";
-	a_info->version = 0x01060000;
-	return true;
-}
+SKSEPluginInfo(
+	.Version = REL::Version{
+		DragonAspectFlight::VersionMajor,
+		DragonAspectFlight::VersionMinor,
+		DragonAspectFlight::VersionPatch,
+		DragonAspectFlight::VersionTweak },
+	.Name = "DragonAspectFlight",
+	.Author = "LvxMagick",
+	.StructCompatibility = SKSE::StructCompatibility::Independent,
+	.RuntimeCompatibility = SKSE::VersionIndependence::AddressLibrary,
+	.MinimumSKSEVersion = REL::Version{ 0, 0, 0, 0 }
+)
 
 extern "C" __declspec(dllexport) bool SKSEPlugin_Load(const SKSE::LoadInterface* a_skse)
 {
-	RawLog("SKSEPlugin_Load entered");
-
-	SKSE::Init(a_skse);
-
 	InitializeLogging();
+	SKSE::Init(a_skse, false);
 
-	logger::info("DragonAspectFlight loading");
-	RawLog("DragonAspectFlight loading");
+	const char* runtimeFamily = REL::Module::IsVR() ? "VR" : (REL::Module::IsAE() ? "AE" : "SE");
+	logger::info(
+		"event=plugin_load version={} build_label={} runtime_family={} runtime_version={} skse_release_index={}",
+		DragonAspectFlight::Version,
+		DragonAspectFlight::BuildVersion,
+		runtimeFamily,
+		a_skse->RuntimeVersion().string("."),
+		a_skse->GetReleaseIndex());
 
 	InitializePapyrus();
 
@@ -168,14 +107,11 @@ extern "C" __declspec(dllexport) bool SKSEPlugin_Load(const SKSE::LoadInterface*
 	if (messaging) {
 		messaging->RegisterListener(MessageHandler);
 		logger::info("Messaging listener registered");
-		RawLog("Messaging listener registered");
 	} else {
 		logger::error("Failed to get messaging interface");
-		RawLog("Failed to get messaging interface");
 	}
 
 	logger::info("DragonAspectFlight loaded");
-	RawLog("DragonAspectFlight loaded");
 
 	return true;
 }

@@ -6,7 +6,7 @@
 namespace DragonAspectFlight
 {
 	// Polls the player's Dragon Aspect magic-effect state and fires a
-	// DebugNotification the moment the full shout is applied (and again when
+	// HUD notification the moment the full shout is applied (and again when
 	// it expires). Runs on its own jthread with a 250 ms tick; all RE:: calls
 	// are marshalled onto the SKSE game thread via the Task interface.
 	class DragonAspectMonitor

@@ -1,0 +1,63 @@
+{
+  "name": "DAF Flight Base - Bow",
+  "description": "Root-stable bow flight locomotion; functional draw/release clips remain intact.",
+  "priority": 2147483606,
+  "interruptible": true,
+  "replaceOnLoop": true,
+  "conditions": [
+    {
+      "condition": "IsActorBase",
+      "requiredVersion": "1.0.0.0",
+      "Actor base": {
+        "pluginName": "Skyrim.esm",
+        "formID": "7"
+      }
+    },
+    {
+      "condition": "CompareValues",
+      "requiredVersion": "1.0.0.0",
+      "Value A": {
+        "graphVariable": "bDAF_FlightActive",
+        "graphVariableType": "Bool"
+      },
+      "Comparison": "==",
+      "Value B": {
+        "value": 1.0
+      }
+    },
+    {
+      "condition": "CompareValues",
+      "requiredVersion": "1.0.0.0",
+      "Value A": {
+        "graphVariable": "iDAF_FlightState",
+        "graphVariableType": "Int"
+      },
+      "Comparison": ">",
+      "Value B": {
+        "value": 0.0
+      }
+    },
+    {
+      "condition": "OR",
+      "requiredVersion": "1.0.0.0",
+      "Conditions": [
+        {
+          "condition": "IsEquippedType",
+          "requiredVersion": "1.0.0.0",
+          "Type": {
+            "value": 7.0
+          },
+          "Left hand": false
+        },
+        {
+          "condition": "IsEquippedType",
+          "requiredVersion": "1.0.0.0",
+          "Type": {
+            "value": 7.0
+          },
+          "Left hand": true
+        }
+      ]
+    }
+  ]
+}

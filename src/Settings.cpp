@@ -184,22 +184,29 @@ namespace DragonAspectFlight
 			} else if (EqualsIgnoreCase(section, "Magicka")) {
 				if (EqualsIgnoreCase(key, "Enabled")) magickaCostEnabled = ParseBool(val, magickaCostEnabled);
 				else if (EqualsIgnoreCase(key, "CostPerSecond")) magickaCostPerSecond = ParseFloat(val, magickaCostPerSecond);
+			} else if (EqualsIgnoreCase(section, "Debug")) {
+				if (EqualsIgnoreCase(key, "DetailedLogging")) detailedLogging = ParseBool(val, detailedLogging);
+				else if (EqualsIgnoreCase(key, "SnapshotIntervalSeconds")) {
+					diagnosticSnapshotIntervalSeconds = ParseFloat(val, diagnosticSnapshotIntervalSeconds);
+				}
 			}
 		}
 
 		// Clamp liftScale to the same range FlightManager uses
 		if (liftScale < 0.25F) liftScale = 0.25F;
 		if (liftScale > 2.50F) liftScale = 2.50F;
+		diagnosticSnapshotIntervalSeconds = std::clamp(diagnosticSnapshotIntervalSeconds, 0.5F, 30.0F);
 
 		logger::info(
 			"Dragon Aspect Flight settings loaded: Activation={} 0x{:X} Ascend={} 0x{:X} Descend={} 0x{:X} "
 			"FlightSpeed={} VerticalSpeed={} LiftScale={} ShowReady={} ShowExpired={} ShowShoutRequired={} SuppressInMenus={} "
-			"MagickaCostEnabled={} MagickaCostPerSecond={}",
+			"MagickaCostEnabled={} MagickaCostPerSecond={} DetailedLogging={} SnapshotIntervalSeconds={}",
 			BindingDeviceToString(activation.device), activation.code,
 			BindingDeviceToString(ascend.device), ascend.code,
 			BindingDeviceToString(descend.device), descend.code, flightSpeed, verticalSpeed, liftScale,
 			showReadyNotification, showExpiredNotification, showShoutRequiredNotification, suppressInMenus,
-			magickaCostEnabled, magickaCostPerSecond);
+			magickaCostEnabled, magickaCostPerSecond,
+			detailedLogging, diagnosticSnapshotIntervalSeconds);
 
 		ApplyToFlightManager();
 	}
@@ -239,7 +246,13 @@ namespace DragonAspectFlight
 		file << "; Drain magicka while flying. When depleted, flight descends safely.\n";
 		file << "; 1=yes, 0=no\n";
 		file << "Enabled=" << (magickaCostEnabled ? 1 : 0) << "\n";
-		file << "CostPerSecond=" << magickaCostPerSecond << "\n";
+		file << "CostPerSecond=" << magickaCostPerSecond << "\n\n";
+
+		file << "[Debug]\n";
+		file << "; Structured diagnostics for flight, equipment, input, graph variables, and controller state.\n";
+		file << "; Keep enabled when reproducing a bug. Snapshot interval is clamped to 0.5-30 seconds.\n";
+		file << "DetailedLogging=" << (detailedLogging ? 1 : 0) << "\n";
+		file << "SnapshotIntervalSeconds=" << diagnosticSnapshotIntervalSeconds << "\n";
 
 		logger::info("Dragon Aspect Flight settings saved to {}", SettingsIniPath);
 	}
@@ -250,5 +263,6 @@ namespace DragonAspectFlight
 		fm.SetFlightSpeed(flightSpeed);
 		fm.SetVerticalSpeed(verticalSpeed);
 		fm.SetLiftScale(liftScale);
+		fm.SetDetailedLogging(detailedLogging, diagnosticSnapshotIntervalSeconds);
 	}
 }

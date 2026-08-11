@@ -3,6 +3,7 @@
 #include "DragonAspectFlight/FlightManager.h"
 #include "DragonAspectFlight/Settings.h"
 #include "DragonAspectFlight/UI.h"
+#include "DragonAspectFlight/Version.h"
 #include "SKSEMenuFramework.h"
 
 #include <cstdio>
@@ -347,7 +348,7 @@ namespace DragonAspectFlight::UI
 		// under a shared lock, then releases it before game-state processing.
 		std::unique_lock lock(s.mutex);
 
-		ImGuiMCP::SeparatorText("Dragon Aspect Flight v1.7.0");
+		ImGuiMCP::SeparatorText(DisplayVersion.data());
 
 		if (ImGuiMCP::CollapsingHeader("Hotkeys", ImGuiMCP::ImGuiTreeNodeFlags_DefaultOpen)) {
 			ImGuiMCP::TextWrapped("Click a binding, then press a key or controller button. Esc cancels keyboard rebinding.");

@@ -3,6 +3,7 @@
 #include "DragonAspectFlight/FlightManager.h"
 #include "DragonAspectFlight/InputHandler.h"
 #include "DragonAspectFlight/Settings.h"
+#include "DragonAspectFlight/Version.h"
 #include "SKSEMenuFramework.h"
 
 #include "RE/C/ControlMap.h"
@@ -31,8 +32,6 @@ namespace
 	constexpr const char* KinectShoutUserEvent = "KinectShout";
 	constexpr std::uint32_t DefaultReadyWeaponKeyboardScanCode = 0x13;       // DIK_R
 	constexpr float ThumbstickDeadzone = 0.25F;
-	constexpr const char* FlightBuildVersion = "v1.7.0-se-ae-vr-aerial-topology";
-
 	bool MatchesBinding(const RE::ButtonEvent* a_event, const DragonAspectFlight::InputBinding& a_binding)
 	{
 		if (!a_event) return false;
@@ -140,7 +139,7 @@ namespace
 
 	void ShowMessage(const char* a_msg)
 	{
-		RE::DebugNotification(a_msg);
+		RE::SendHUDMessage::ShowHUDMessage(a_msg);
 		logger::info("{}", a_msg);
 	}
 
@@ -184,7 +183,7 @@ namespace DragonAspectFlight
 
 		mgr->AddEventSink(this);
 		_registered = true;
-		logger::info("Input handler registered - {}", FlightBuildVersion);
+		logger::info("Input handler registered - {}", BuildVersion);
 	}
 
 	RE::BSEventNotifyControl InputHandler::ProcessEvent(
@@ -193,21 +192,22 @@ namespace DragonAspectFlight
 		if (!a_event) return RE::BSEventNotifyControl::kContinue;
 
 		if (FlightManager::ShouldSuppressInput()) {
+			ResetFlightInputState();
 			return RE::BSEventNotifyControl::kContinue;
 		}
 
+		bool consumeInput = false;
 		for (auto* e = *a_event; e; e = e->next) {
 			if (e->eventType == RE::INPUT_EVENT_TYPE::kButton) {
 				if (auto* btn = e->AsButtonEvent()) {
-					if (HandleButtonEvent(btn))
-						return RE::BSEventNotifyControl::kStop;
+					consumeInput = HandleButtonEvent(btn) || consumeInput;
 				}
 			} else if (e->eventType == RE::INPUT_EVENT_TYPE::kThumbstick) {
 				HandleThumbstickEvent(static_cast<RE::ThumbstickEvent*>(e));
 			}
 		}
 
-		return RE::BSEventNotifyControl::kContinue;
+		return consumeInput ? RE::BSEventNotifyControl::kStop : RE::BSEventNotifyControl::kContinue;
 	}
 
 	bool InputHandler::ProcessFlightShout(const RE::ButtonEvent* a_event)
@@ -216,20 +216,20 @@ namespace DragonAspectFlight
 
 		if (a_event->IsUp()) {
 			_shoutHeld = false;
-			fm.NotifyFlightShout();
+			fm.NotifyFlightShout(true);
 			logger::info("Dragon Aspect Flight: released vanilla flight shout input after {:.2f}s", a_event->HeldDuration());
 			return false;
 		}
 
 		if (a_event->IsDown() || (a_event->IsPressed() && !_shoutHeld)) {
 			_shoutHeld = true;
-			fm.NotifyFlightShout();
+			fm.NotifyFlightShout(false);
 			logger::info("Dragon Aspect Flight: passing vanilla flight shout input through");
 			return false;
 		}
 
 		if (a_event->IsHeld()) {
-			fm.NotifyFlightShout();
+			fm.NotifyFlightShout(false);
 			return false;
 		}
 
@@ -249,7 +249,9 @@ namespace DragonAspectFlight
 		// Gamepad A/Y/bumpers/triggers can be mapped to flight without their
 		// vanilla action pre-empting the configured flight response.
 		if (IsFlightActivationInput(a_event)) {
-			return HandleFlightActivation(a_event);
+			const bool consumed = HandleFlightActivation(a_event);
+			fm.LogInputDiagnostic("flight_activation", a_event, consumed ? "consumed" : "passthrough");
+			return consumed;
 		}
 
 		const bool isConfiguredAscendInput = IsConfiguredAscendInput(a_event);
@@ -297,6 +299,9 @@ namespace DragonAspectFlight
 		}
 
 		if (IsLaunchAction(a_event)) {
+			if (!a_event->IsHeld()) {
+				fm.LogInputDiagnostic("launch", a_event, fm.IsDescending() ? "blocked_descent" : "observed");
+			}
 			if (fm.IsDescending()) return true;
 			if (a_event->IsUp()) { _launchHeld = false; return fm.IsFlying() && fm.IsDragonAspectActive(); }
 			if ((a_event->IsPressed() || a_event->IsHeld()) && fm.IsFlying()) {
@@ -313,6 +318,7 @@ namespace DragonAspectFlight
 		}
 
 		if (IsShoutAction(a_event) && fm.IsFlying()) {
+			fm.LogInputDiagnostic("shout", a_event, fm.IsDescending() ? "blocked_descent" : "observed");
 			if (!fm.IsDragonAspectActive()) {
 				fm.StopFlight();
 				ResetFlightInputState();
@@ -323,29 +329,42 @@ namespace DragonAspectFlight
 				return true;
 			}
 
-			return ProcessFlightShout(a_event);
+			const bool consumed = ProcessFlightShout(a_event);
+			fm.LogInputDiagnostic("shout", a_event, consumed ? "handled" : "passthrough");
+			return consumed;
 		}
 
 		if (IsReadyWeaponAction(a_event) && fm.IsFlying()) {
 			if (a_event->IsUp()) {
 				_readyWeaponHeld = false;
-				return true;
+				fm.LogInputDiagnostic("ready_weapon", a_event, "released_passthrough");
+				return false;
 			}
 			if ((a_event->IsDown() || a_event->IsPressed()) &&
-				!_readyWeaponHeld && !fm.IsDescending()) {
+				!_readyWeaponHeld) {
 				_readyWeaponHeld = true;
-				fm.ToggleFlightCombatReady();
+				const bool synchronized = fm.ToggleFlightCombatReady();
+				fm.LogInputDiagnostic(
+					"ready_weapon",
+					a_event,
+					synchronized ? "graph_sync_requested" : "graph_sync_failed");
 			}
-			return true;
+			// Keep DAF's OAR equipment condition synchronized, but let the game and
+			// other input sinks perform the actual draw/sheathe transition.
+			return false;
 		}
 
 		if (fm.IsDescending()) {
 			if (IsLaunchAction(a_event) || IsCombatAction(a_event) || IsShoutAction(a_event)) {
+				fm.LogInputDiagnostic("combat_or_shout", a_event, "blocked_descent");
 				return true;
 			}
 		}
 
 		if (IsCombatAction(a_event)) {
+			if (!a_event->IsHeld()) {
+				fm.LogInputDiagnostic("combat", a_event, fm.IsFlying() ? "passthrough_to_animation_graph" : "ground_passthrough");
+			}
 			if (fm.IsFlying() && (a_event->IsDown() || a_event->IsPressed())) {
 				if (!fm.IsDragonAspectActive()) {
 					fm.StopFlight();
@@ -354,14 +373,12 @@ namespace DragonAspectFlight
 				}
 
 				if (!fm.BeginFlightCombat()) {
-					// Never let a grounded combat framework process the input while
-					// the player is physically airborne. SetFlightCombatActive
-					// reports the missing behavior capability to the player.
+					// Descent or an invalid Dragon Aspect state still owns the input.
 					return true;
 				}
 			}
-			// The generated aerial behavior topology owns attack/cast rules once
-			// BeginFlightCombat has proved that the topology is present.
+			// Jumping Attack owns the topology when present. Otherwise the normal
+			// vanilla/MCO event continues into DAF's flight-scoped OAR fallback.
 			return false;
 		}
 
@@ -424,7 +441,9 @@ namespace DragonAspectFlight
 				ResetFlightInputState();
 				fm.StartFlight();
 				UpdateMovementInput();
-				ShowMessage("Dragon Aspect Flight: flight toggled on");
+				if (fm.IsFlying()) {
+					ShowMessage("Dragon Aspect Flight: flight toggled on");
+				}
 			}
 			return true;
 		}

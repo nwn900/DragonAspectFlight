@@ -1,0 +1,44 @@
+Dragon Aspect Flight - debugging and bug-report capture
+=======================================================
+
+Detailed diagnostics are enabled by default in DragonAspectFlight.ini:
+
+    [Debug]
+    DetailedLogging=1
+    SnapshotIntervalSeconds=2.0
+
+The plugin logs state changes immediately and emits a bounded state snapshot every
+two seconds during flight. It does not log every frame.
+
+When reproducing a problem
+--------------------------
+
+1. Start Skyrim, load the save, begin Dragon Aspect flight, and reproduce one issue.
+2. Note the weapon or spell, whether it was drawn, and the action that failed.
+3. Exit Skyrim so all logs are flushed.
+4. Include these files with the report:
+
+   Documents\My Games\Skyrim Special Edition\SKSE\DragonAspectFlight.log
+   Documents\My Games\Skyrim Special Edition\SKSE\OpenAnimationReplacer.log
+   Documents\My Games\Skyrim Special Edition\SKSE\BehaviorDataInjector.log
+
+For Skyrim VR, use the corresponding Skyrim VR SKSE log folder.
+
+Useful DragonAspectFlight.log events
+------------------------------------
+
+plugin_load          Plugin/build/runtime identity.
+dependency_snapshot  Whether OAR, BDI, and Payload Interpreter DLLs were loaded.
+flight_start/stop    A correlated flight-session boundary.
+input                Ready-weapon, combat, shout, launch, and activation transitions.
+combat_state         Requested combat state, draw state, and expected OAR family.
+state_snapshot       Equipment FormIDs/types, expected OAR family, graph-variable
+                     readback, controller state/gravity/velocity, position, magicka,
+                     stamina, and movement inputs.
+
+The expected_oar_family field is Dragon Aspect Flight's intended route. The actual
+winning replacement and source submod are recorded by OpenAnimationReplacer.log;
+the two logs are deliberately timestamped so they can be compared.
+
+Privacy note: the diagnostics contain game state and equipped FormIDs/names. They do
+not collect account credentials or upload anything automatically.

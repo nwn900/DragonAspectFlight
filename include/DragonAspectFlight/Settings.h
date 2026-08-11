@@ -42,6 +42,11 @@ namespace DragonAspectFlight
 		bool magickaCostEnabled{ true };
 		float magickaCostPerSecond{ 5.0F };
 
+		// Release diagnostics. Enabled by default so field reports contain enough
+		// state to reproduce animation-routing and controller failures.
+		bool detailedLogging{ true };
+		float diagnosticSnapshotIntervalSeconds{ 2.0F };
+
 		// Thread safety - shared_mutex because reads (InputHandler/game thread)
 		// far outnumber writes (UI render thread).
 		mutable std::shared_mutex mutex;

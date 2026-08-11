@@ -1,6 +1,8 @@
 build/
+build-*/
 out/
 dist/
+artifacts/
 *.user
 *.suo
 *.vcxproj*

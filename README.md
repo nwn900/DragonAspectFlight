@@ -1,27 +1,25 @@
 # Dragon Aspect Flight
 
-Dragon Aspect Flight is an SKSE/CommonLibSSE-NG plugin that lets the player manually fly while the full-strength Dragon Aspect shout is active.
+Dragon Aspect Flight is an SKSE/CommonLibVR-NG plugin that lets the player manually fly while the full-strength Dragon Aspect shout is active.
 
 Flight starts only when the third word of Dragon Aspect is active. The plugin handles flight physics, ascent/descent controls, shout pass-through during flight, weapon and magic combat, and OAR graph variables for animation selection.
 
 ## Version
 
-Current release candidate: `1.7.0`
+Current release candidate: `1.8.0`
 
 ## Requirements
 
-- Skyrim Special Edition or Skyrim VR with a matching SKSE/CommonLibSSE-NG runtime build. The public release DLL is built as one SE, AE, and VR-compatible binary.
-- SKSE64.
+- Skyrim Special Edition, Anniversary Edition, or Skyrim VR with matching SKSE. The candidate DLL is built once against the maintained `alandtse/CommonLibVR` `ng` branch with SE, AE, and VR enabled.
+- SKSE64 for SE/AE, or SKSEVR for VR.
 - Address Library compatible with the target runtime.
 - Behavior Data Injector.
 - Open Animation Replacer.
 - Edmond's More Draconic Aspect - Become The Dragonborn.
-- More Draconic Aspect Can Fly animation package, installed separately.
-- [Jumping Attack](https://www.nexusmods.com/skyrimspecialedition/mods/68043), with its behavior patch generated for the user's own mod list by Pandora or Nemesis.
 
-Dragon Aspect Flight still does not bundle More Draconic's core flight `.hkx` files. It bundles the openly reusable NickNak aerial-combat clips, with attribution, so every animation path used by the Jumping Attack topology resolves from this package.
+[Jumping Attack](https://www.nexusmods.com/skyrimspecialedition/mods/68043) is not a runtime requirement. DAF deliberately keeps `bInJumpState` clear and lets the normal vanilla or MCO combat graph handle draw, sheathe, block, bash, shout, bow, crossbow, staff, and magic transitions. The behavior-free path does not require Nemesis or Pandora.
 
-MCO/ADXP, Precision, and Payload Interpreter are optional. MCO is not required: Jumping Attack has vanilla and MCO behavior variants, and DAF uses whichever variant the user generated. One Click Power Attack is not claimed compatible because Jumping Attack's author documents that it can prevent midair power attacks.
+Dragon Aspect Flight bundles a credited Flying Mod Beta flight pose, aerial melee clips from NickNak's openly reusable Jumping Attack assets, and credited xp32/Neumeria magic and staff clips. More Draconic Aspect Can Fly is no longer an external animation-file dependency. MCO/ADXP, Precision, Payload Interpreter, Jumping Attack, Stances, Nemesis, and Pandora are optional. MCO users and non-MCO users receive the same package.
 
 ## Optional: In-Game Settings Panel
 
@@ -29,19 +27,27 @@ MCO/ADXP, Precision, and Payload Interpreter are optional. MCO is not required: 
 
 ## Load Order
 
-Install Dragon Aspect Flight after More Draconic Aspect Can Fly and Jumping Attack in your mod manager.
+Install Dragon Aspect Flight after other animation replacers. Its OAR priorities are deliberately above the enabled Nolvus animation stack, but normal mod-file precedence still matters if another mod writes into DAF's own folder.
 
 Do not enable `More Draconic Aspect - Flight Combat` or `Mid Air Shouts - Shout while falling` alongside this release. Their plugins, scripts, and generated behaviors implement competing airborne state ownership. Dragon Aspect Flight does not override Dragon Aspect's duration.
 
-The release ships two config-only OAR submods under:
+The release ships ten equipment-aware OAR submods under:
 
 ```text
-meshes\actors\character\animations\OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly
+meshes\actors\character\animations\OpenAnimationReplacer\Dragon Aspect Flight
 ```
 
-Those patches use OAR's `overrideAnimationsFolder` to read core flight HKX files from More Draconic's installed `Flying Mod` and `Elegant Flying Animations` folders.
+The fallback, unarmed, one-handed, dual-wield, greatsword, axe/warhammer, bow, crossbow, magic, and staff families replace the original filenames that the vanilla, Stances, and MCO graphs actually request. That filename coverage is what prevents Stances from retaining a grounded walk or idle just because it uses `1hm_*`, `2hw_*`, `dw*`, `mco_*`, `mag_*`, or another equipment-specific original instead of generic `mt_*`.
 
-The bundled NickNak clips use the direct paths requested by Jumping Attack's behavior graph. DAF does not replace ordinary `1hm_*`, `mco_*`, Stances, or grounded movement filenames. When flight combat starts, the DLL holds `bInJumpState=true`, so the generated aerial graph requests NickNak paths instead of entering a grounded combat framework.
+The equipment families require `bDAF_FlightCombatActive`, so a sheathed player remains in the neutral flight pose. Ready Weapon is passed through untouched to Skyrim; DAF only changes its OAR visual state. Draw/sheathe, bow release, crossbow reload, and shout transitions are deliberately not replaced with static loops because their annotations drive weapon placement, projectiles, reload state, and shout release.
+
+All neutral and equipment locomotion uses the actual credited Flying Mod Beta idle pose rather than a falling or grounded-walking clip. DAF does not use the donor's jump/fall animation, avoiding the animation path suspected of producing the recurring invisible-platform jump.
+
+## Compatibility Boundaries
+
+DAF's OAR conditions are limited to the player and require DAF flight to be active, so they do not change NPC or grounded animation winners. The same archive supports vanilla combat and MCO and never takes ownership of a generated Jumping Attack behavior state.
+
+The bundled namespace covers vanilla originals plus every combat original and all non-transition locomotion originals found in the enabled Nolvus Stances/MCO providers audited for v1.8.0. A custom moveset can still escape DAF if it requests a different original filename, and another replacer can win if it uses a priority above `2147483609`. Input or behavior mods that consume attacks before Skyrim's normal event path also require an explicit in-game check. SE, AE, and VR share one compiled binary, but each runtime still needs launch and gameplay validation; successful compilation is not proof of VR behavior.
 
 ## What The Release Ships
 
@@ -51,14 +57,17 @@ The bundled NickNak clips use the direct paths requested by Jumping Attack's beh
 - `SKSE\Plugins\DragonAspectFlight-ThirdParty.txt`
 - `SKSE\Plugins\DragonAspectFlight-AnimationAliases.txt`
 - `SKSE\Plugins\DragonAspectFlight-AnimationHashes.txt`
-- OAR config-only patches for More Draconic's installed animation folders.
-- 96 direct NickNak HKX paths: the 81 published clips plus 15 documented, byte-identical directional aliases required by the behavior source.
-- Two NickNak landing-effect NIF files.
+- `SKSE\Plugins\DragonAspectFlight-AnimationCoverage.json`
+- Ten DAF-owned OAR families with 836 flight-scoped HKX aliases.
+- One credited Flying Mod Beta flight-pose donor used for neutral and equipment locomotion.
+- Credited NickNak aerial melee clips mapped into the OAR families; repository-only source paths are not duplicated into the installed mod.
+- Credited xp32/Neumeria magic and staff clips used by the magic and staff families.
 
 It does not ship:
 
-- More Draconic core flight animation `.hkx` files.
+- More Draconic's full animation set; only the credited Flying Mod Beta flight-idle donor is bundled.
 - Pandora/Nemesis behavior-generator files.
+- Bethesda, Stances, MCO, or other installed-mod animation assets.
 - ESP/ESL/ESM plugins or Papyrus scripts.
 - Pre-generated behavior HKX files that would overwrite the user's merged behavior stack.
 - A nested `Data` folder inside the mod root.
@@ -96,9 +105,11 @@ Defaults are `B` for activation, `Space` for ascent, and `Left Shift` for descen
 
 Supported gamepad bindings are D-Pad Up/Down/Left/Right, Start/Menu, Back/View, Left/Right Stick, Left/Right Bumper, A/Cross, B/Circle, X/Square, Y/Triangle, and Left/Right Trigger. Configure them manually in the INI or through the SMF3 rebinder. Custom bindings take precedence over Skyrim's vanilla semantic input while flying, so controller A, Y, bumpers, and triggers can drive flight instead of their normal action.
 
-While flying, Ready Weapon toggles the flight-combat state. Attack, power-attack, bow, crossbow, staff, and spell inputs also activate combat automatically and continue into the generated aerial behavior graph. Sheathing exits the combat pose without ending flight. Shouts continue through Dragon Aspect Flight's own midair shout path.
+While flying, Ready Weapon toggles the flight-combat state. Attack, power-attack, bow, crossbow, staff, and spell inputs also activate combat automatically. Sheathing exits the combat pose without ending flight. Shouts continue through Dragon Aspect Flight's own midair shout path.
 
-Before activating flight combat, the DLL probes for Jumping Attack's `jumpAttack` graph variable. If it is missing, DAF blocks the combat input and displays a behavior-generation warning instead of allowing a grounded/Stances animation to walk on air.
+DAF always keeps `bInJumpState=false` while its character controller owns flight. This is intentional: the generated Jumping Attack branch could attack but could not reliably transition to draw, sheathe, block, bash, or shout. Normal vanilla/MCO input therefore remains authoritative, while DAF's high-priority OAR families own only flight-scoped visual replacements.
+
+If flight is activated while weapons or magic are already drawn, DAF keeps them drawn and activates the appropriate combat path immediately. Missing generated behavior no longer cancels flight.
 
 Flight activation is refused while the player is mounted. This keeps the flight controller and its player-only OAR state mutually exclusive with horse, dragon-riding, and custom mount animation stacks.
 
@@ -125,14 +136,29 @@ Flight activation is refused while the player is mounted. This keeps the flight 
 ### New v1.7.0 Aerial Topology Update
 
 - **Midair melee attacks** for one-handed, left-handed, dual-wield, greatsword, battleaxe/warhammer, and unarmed combat.
-- **Bow, crossbow, staff, and magic support** through Jumping Attack's ranged/magic aerial branches and bundled aiming clips.
-- **Vanilla and MCO in one package**: DAF follows the Jumping Attack variant generated for the user's behavior stack and does not require MCO.
-- **Stances isolation**: flight combat keeps `bInJumpState=true`, causing the aerial topology to request `Animations\NickNak\...` rather than grounded/Stances filenames.
-- **Safe capability gate**: if the `jumpAttack` variable is absent, DAF suppresses the attack and explains that behaviors must be generated.
+- **Bow, crossbow, staff, and magic support** through the matching equipment-aware flight families.
+- **Vanilla and MCO in one package**: MCO is optional and no separate binary is required.
+- **Behavior-free topology**: DAF does not require or enter Jumping Attack's generated behavior branch.
 - **Complete clip namespace**: all 96 NickNak paths referenced by the behavior source are present; 15 missing directional paths are documented byte-identical aliases.
 - **No Mid Air Shouts dependency and no duration plugin**: the package contains no ESP or Papyrus scripts, so the live load order's Dragon Aspect duration remains authoritative.
 
-The withdrawn v1.6.0 design attempted to keep grounded combat states reachable and replace their clips through OAR. That allowed high-complexity Stances/MCO graphs to retain state ownership and has been removed.
+The withdrawn v1.6.0 design tried to solve this with a small generic OAR set. It failed because Stances and MCO requested different equipment-specific original filenames, so DAF was not a candidate regardless of priority. v1.8.0 replaces that incomplete namespace with explicit per-family coverage.
+
+### New v1.8.0 Event-Driven Topology Fix
+
+- **Behavior-free combat path**: Jumping Attack, Nemesis, and Pandora are not requirements. Normal vanilla/MCO input always continues into DAF's flight-scoped animation namespace.
+- **Normal transition ownership**: DAF keeps `bInJumpState=false` so Skyrim's combat graph remains able to draw, sheathe, block, bash, and shout.
+- **Stances winner fix**: ten high-priority OAR families cover the equipment-specific originals actually requested by the enabled Stances and MCO stacks; priority alone was not sufficient when DAF only supplied generic `mt_*` filenames.
+- **Open-permission magic assets**: credited xp32/Neumeria casting and staff clips are bundled for magic-specific paths.
+- **No forced activation sheathe**: weapons, staves, and magic stay drawn when flight begins; already-drawn equipment enters the aerial topology immediately.
+- **Working mid-flight sheathe**: Ready Weapon now passes through to Skyrim instead of DAF calling a draw helper directly. Sheathing and drawing remain available during controlled descent.
+- **No artificial launch bump**: the old unconditional upward velocity injection was removed. Height changes now come only from explicit ascent, boost, or controller physics.
+- **Stuck-ascent protection**: menu suppression clears held flight inputs, every event in an input chain is processed before consumption, and pending launch boost is cleared on stop.
+- **True flight pose**: neutral/equipment locomotion now uses the credited Flying Mod Beta flight idle instead of NickNak fall clips, eliminating the RC4 stuck-falling presentation. The donor's jump/fall clip is not used.
+- **Whirlwind Sprint handoff**: after shout release DAF temporarily stops writing controller velocity, allowing the shout's forward impulse to move the player.
+- **Compact animation layout**: a single root scope and non-duplicated generic locomotion reduce the OAR tree from 4,209 HKX files (about 1.87 GiB) to 836 HKX files (about 90.8 MiB), a 95% reduction.
+- **One authoritative version**: CMake, the modern SKSE export, the legacy SKSE query export, logs, and the settings UI all report `1.8.0`.
+- **Maintained unified runtime base**: the DLL builds against `alandtse/CommonLibVR` `ng` with SE, AE, and VR enabled.
 
 ### v1.1.0 Features
 
@@ -159,9 +185,9 @@ Behavior Data Injector registers these graph variables:
 - `bDAF_FlightShout`
 - `iDAF_FlightState`
 
-The SKSE plugin drives those variables while Dragon Aspect Flight is active. OAR uses them only to select More Draconic's core flight clips. Combat uses the generated Jumping Attack topology: DAF verifies `jumpAttack` exists and sets `bInJumpState=true` only while flight combat is active.
+The SKSE plugin drives those variables while Dragon Aspect Flight is active. OAR uses them to select DAF's bundled root-stable base loop and the matching combat-ready equipment branch. The conditions are player-only and flight-only, so DAF does not replace NPC or grounded animation winners.
 
-BDI and OAR cannot add behavior states. Users must generate Jumping Attack for their own behavior stack with Pandora or Nemesis. DAF intentionally does not ship final behavior HKX files because they would overwrite merged outputs for TK Dodge, Jump Behavior Overhaul, MCO, Stances, and other behavior mods.
+DAF keeps `bInJumpState=false` and the normal vanilla/MCO attack event continues. BDI and OAR cannot add behavior states, so the behavior-free route still needs in-game validation for every input family; the package intentionally does not ship final behavior HKX files that would overwrite merged outputs for TK Dodge, Jump Behavior Overhaul, MCO, Stances, or other behavior mods.
 
 ## Installation
 
@@ -170,21 +196,20 @@ Install the release ZIP with MO2 or another mod manager. The ZIP root is already
 Make sure:
 
 - Edmond's More Draconic Aspect - Become The Dragonborn is installed and enabled.
-- More Draconic Aspect Can Fly is installed and enabled.
-- Dragon Aspect Flight is enabled after More Draconic Aspect Can Fly.
 - Behavior Data Injector and Open Animation Replacer are installed and enabled.
-- Jumping Attack is installed and its patch is present in the profile's generated behavior output.
 - `More Draconic Aspect - Flight Combat` and `Mid Air Shouts - Shout while falling` are disabled.
+
+Jumping Attack may remain installed for other gameplay, but DAF does not enter its generated topology. Do not install another mod into DAF's own OAR folder.
 
 ## Build From Source
 
-This project expects `CommonLibSSE-NG` next to this folder by default:
+This project expects the maintained `alandtse/CommonLibVR` `ng` branch in a sibling folder named `CommonLibVR-NG` by default. Its CMake package dependencies must be available through vcpkg or `CMAKE_PREFIX_PATH`:
 
 ```powershell
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release
 ```
 
-The build stages the DLL and deployable `Data` files under `build/bin`, including the hash-pinned NickNak combat assets. The release audit verifies the 98 hash-manifest entries and validates the 96 HKX clips with the headless Skyrim HKX toolchain.
+The build stages the DLL and deployable `Data` files under `build/Data`, including the hash-pinned animation stack. The current release manifest contains 836 installed HKX assets. The generator checks the packfile headers and attempts TAGXML deserialization with `hkxcmd`; the bundled 64-bit Skyrim sources are accepted by header when that legacy tool cannot deserialize them.
 
-For local diagnostics only, `DAF_MATERIALIZE_EXTERNAL_ANIMATION_LINKS=ON` can recreate the old hardlink staging layout from an installed More Draconic folder. Do not use that option for release packaging.
+Regenerate the ten DAF-owned equipment families with `tools\BuildFlightAnimationStack.py --hkxcmd <path-to-hkxcmd.exe>`. The tool verifies the credited source hashes/packfile headers, creates one root-scope alias set, records coverage, and refreshes the SHA-256 manifest.

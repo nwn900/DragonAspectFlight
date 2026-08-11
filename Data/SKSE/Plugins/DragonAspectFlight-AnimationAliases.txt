@@ -1,20 +1,54 @@
-Dragon Aspect Flight 1.7.0 - generated NickNak path aliases
-==========================================================
+Dragon Aspect Flight 1.8.0 - generated flight animation stack
+============================================================
 
-The left-hand/directional target is a byte-identical copy of the source:
+The release contains 899 player-only, flight-only OAR HKX aliases across ten
+equipment families. Equipment families use OAR's root scope for both sexes. The
+neutral fallback also includes a male scope because some installed animation
+stacks request Animations\\male\\MT_* paths directly.
 
-1hm_Jump_Left.hkx <- 1hm_Jump.hkx
-2hm_Air_Attack_Left.hkx <- 2hm_Air_Attack.hkx
-2hm_Air_Attack_Left_Land.hkx <- 2hm_Air_Attack_Land.hkx
-2hm_Jump_Left.hkx <- 2hm_Jump.hkx
-2hw_Air_Attack_Left.hkx <- 2hw_Air_Attack.hkx
-2hw_Air_Attack_Left_Land.hkx <- 2hw_Air_Attack_Land.hkx
-2hw_Jump_Left.hkx <- 2hw_Jump.hkx
-Aiming_Jump_Left.hkx <- Aiming_Jump.hkx
-DW_Air_Attack_Left.hkx <- Dw_Air_Attack.hkx
-DW_Air_Attack_Left_Land.hkx <- Dw_Air_Attack_Land.hkx
-H2H_Air_Attack_Left.hkx <- H2h_Air_Attack.hkx
-H2H_Air_Attack_Left_Land.hkx <- H2h_Air_Attack_Land.hkx
-H2h_Jump_Left.hkx <- H2h_Jump.hkx
-LH_1hm_Air_Attack_Left.hkx <- LH_1hm_Air_Attack.hkx
-LH_1hm_Air_Attack_Left_Land.hkx <- LH_1hm_Air_Attack_Land.hkx
+Neutral and equipment locomotion
+--------------------------------
+
+All locomotion, idle, block-idle, bash-intro, and attack recovery paths use the
+credited Flying Mod Beta flight idle:
+
+  Flying_Mod_Idle.hkx
+  SHA-256 21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451
+
+Only the fallback family carries generic mt_* locomotion. Equipment families
+carry their own requested 1hm_*, 2hm_*, 2hw_*, dw*, bow_*, crossbow_*, mag_*,
+and staff* originals, preventing grounded Stances/MCO locomotion without
+duplicating the generic set ten times.
+
+Aerial attacks
+--------------
+
+Vanilla and MCO melee attack originals map to the corresponding credited
+NickNak aerial normal/power clips. Directional left-side aliases are
+byte-identical where NickNak shipped one animation for both directions.
+
+Magic and staff
+---------------
+
+Magic and staff action originals use the credited xp32/Neumeria clips. Weapon
+draw/sheathe, bow release, crossbow release/reload, and shout transitions are
+not replaced with static poses because their annotations drive gameplay.
+
+Generated family counts
+-----------------------
+
+  Fallback                 63
+  Unarmed                  82
+  One Handed              135
+  Dual Wield               96
+  Greatsword              118
+  Axe and Warhammer       121
+  Bow                       60
+  Crossbow                  37
+  Magic                    113
+  Staff                     11
+  Total                    836
+
+The complete original-name coverage is recorded in:
+
+  SKSE\Plugins\DragonAspectFlight-AnimationCoverage.json

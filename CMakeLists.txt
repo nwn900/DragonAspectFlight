@@ -1,38 +1,20 @@
 cmake_minimum_required(VERSION 3.21)
-project(DragonAspectFlight VERSION 1.7.0 LANGUAGES CXX)
+project(DragonAspectFlight VERSION 1.8.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(COMMONLIBSSE_NG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../CommonLibSSE-NG"
-    CACHE PATH "Path to CommonLibSSE-NG root")
+set(COMMONLIBSSE_NG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../CommonLibVR-NG"
+    CACHE PATH "Path to the maintained CommonLibVR ng root")
 
 option(ENABLE_SKYRIM_SE "Build for Skyrim SE (1.5.97)" ON)
 option(ENABLE_SKYRIM_AE "Build for Skyrim AE (1.6.x)" ON)
 option(ENABLE_SKYRIM_VR "Build for Skyrim VR" ON)
-option(DAF_MATERIALIZE_EXTERNAL_ANIMATION_LINKS
-    "Materialize external More Draconic animation hardlinks into the staged build output"
-    OFF)
-
-set(DAF_MORE_DRACONIC_OAR_ROOT
-    "C:/Games/Nolvus/Instances/Nolvus Awakening/MODS/mods/[NoDelete] [001.00202] More Draconic Aspect Can Fly (With Collisions)/meshes/actors/character/animations/OpenAnimationReplacer/More Dragonic Dragon Aspect Can Fly"
-    CACHE PATH "Path to the installed More Dragonic Dragon Aspect Can Fly OAR root")
-
-if(DAF_MATERIALIZE_EXTERNAL_ANIMATION_LINKS)
-    find_program(POWERSHELL_EXECUTABLE powershell)
-    if(NOT POWERSHELL_EXECUTABLE)
-        find_program(POWERSHELL_EXECUTABLE pwsh)
-    endif()
-
-    if(NOT POWERSHELL_EXECUTABLE)
-        message(FATAL_ERROR "PowerShell is required to materialize external More Draconic animation hardlinks")
-    endif()
-endif()
 
 if(NOT EXISTS "${COMMONLIBSSE_NG_PATH}/CMakeLists.txt")
     message(FATAL_ERROR
-        "CommonLibSSE-NG not found at ${COMMONLIBSSE_NG_PATH}. "
-        "Clone it from https://github.com/CharmedBaryon/CommonLibSSE-NG")
+        "CommonLibVR ng not found at ${COMMONLIBSSE_NG_PATH}. "
+        "Clone the ng branch from https://github.com/alandtse/CommonLibVR")
 endif()
 
 add_subdirectory("${COMMONLIBSSE_NG_PATH}" "${CMAKE_BINARY_DIR}/CommonLibSSE-NG"
@@ -64,6 +46,7 @@ set(HEADERS
     include/DragonAspectFlight/Settings.h
     include/DragonAspectFlight/UI.h
     include/DragonAspectFlight/DragonAspectMonitor.h
+    include/DragonAspectFlight/Version.h
     include/SKSEMenuFramework.h
 )
 
@@ -80,6 +63,14 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC CommonLibSSE)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    DAF_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
+    DAF_VERSION_MINOR=${PROJECT_VERSION_MINOR}
+    DAF_VERSION_PATCH=${PROJECT_VERSION_PATCH}
+    DAF_VERSION_STRING="${PROJECT_VERSION}"
+    DAF_BUILD_LABEL="v${PROJECT_VERSION}-se-ae-vr-flight-stack"
+)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     PREFIX ""
@@ -121,6 +112,8 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E remove_directory
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Flight Combat"
     COMMAND ${CMAKE_COMMAND} -E remove_directory
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight"
+    COMMAND ${CMAKE_COMMAND} -E remove_directory
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/actors/character/animations/NickNak"
     COMMAND ${CMAKE_COMMAND} -E remove_directory
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/Effects/NickNak"
@@ -138,16 +131,6 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         "${CMAKE_CURRENT_SOURCE_DIR}/Data"
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data"
     COMMENT "Staging a Data-shaped Dragon Aspect Flight mod root")
-
-if(DAF_MATERIALIZE_EXTERNAL_ANIMATION_LINKS)
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND "${POWERSHELL_EXECUTABLE}" -NoProfile -ExecutionPolicy Bypass
-            -File "${CMAKE_CURRENT_SOURCE_DIR}/tools/MaterializeExternalAnimationLinks.ps1"
-            -ManifestPath "${CMAKE_CURRENT_SOURCE_DIR}/tools/dragon-aspect-flight-animation-links.json"
-            -TargetDataRoot "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data"
-            -ExternalOarRoot "${DAF_MORE_DRACONIC_OAR_ROOT}"
-        COMMENT "Materializing optional external More Draconic animation hardlinks")
-endif()
 
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION "Data/SKSE/Plugins"
