@@ -1,5 +1,5 @@
 {
-  "version": "1.8.0",
+  "version": "1.8.1",
   "scopes": [
     ".",
     "male"
@@ -8,7 +8,7 @@
     "Flight Base 00 - Fallback": {
       "priority": 2147483600,
       "baseSource": "Flying_Mod_Idle.hkx",
-      "animationCountPerScope": 63,
+      "animationCountPerScope": 106,
       "motionNames": [
         "mt_idle.hkx",
         "mt_jump.hkx",
@@ -75,11 +75,60 @@
         "sneakwalk_right.hkx"
       ],
       "attackNames": [],
+      "actionNames": [
+        "1hm_boundswordequip.hkx",
+        "1hm_equip.hkx",
+        "1hm_shout_exhale.hkx",
+        "1hm_shout_exhale_long.hkx",
+        "1hm_shout_exhale_medium.hkx",
+        "1hm_shout_inhale.hkx",
+        "1hm_unequip.hkx",
+        "2hc_equip.hkx",
+        "2hc_unequip.hkx",
+        "2hw_equip.hkx",
+        "2hw_unequip.hkx",
+        "axe_equip.hkx",
+        "axe_unequip.hkx",
+        "bow_boundbowequip.hkx",
+        "bow_equip.hkx",
+        "bow_unequip.hkx",
+        "dag_equip.hkx",
+        "dag_unequip.hkx",
+        "dlc01/crossbow_equip.hkx",
+        "h2h_equip.hkx",
+        "h2h_unequip.hkx",
+        "mac_equip.hkx",
+        "mac_unequip.hkx",
+        "mlh_1hm_equip.hkx",
+        "mlh_equip.hkx",
+        "mlh_unequip.hkx",
+        "mrh_and_mlh_equip.hkx",
+        "mrh_and_mlh_forceequip.hkx",
+        "mrh_and_mlh_unequip.hkx",
+        "mrh_equip.hkx",
+        "mrh_unequip.hkx",
+        "mt_shout_exhale.hkx",
+        "mt_shout_exhale_long.hkx",
+        "mt_shout_exhale_medium.hkx",
+        "mt_shout_inhale.hkx",
+        "shd_equip_1hmout.hkx",
+        "sneak1hm_shout_exhale.hkx",
+        "sneak1hm_shout_exhale_long.hkx",
+        "sneak1hm_shout_exhale_medium.hkx",
+        "sneak1hm_shout_inhale.hkx",
+        "staffright_equip.hkx",
+        "stf_equip.hkx",
+        "weapsoloequip.hkx"
+      ],
       "scopes": [
         ".",
         "male"
       ],
-      "aerializedMagicSources": false
+      "aerializedMagicSources": false,
+      "blockProfile": null,
+      "usesVanillaActionComposites": true,
+      "usesAnimatedArmouryQuarterstaffComposites": false,
+      "actionSourceAliases": {}
     },
     "Flight Base 10 - Unarmed": {
       "priority": 2147483601,
@@ -171,15 +220,20 @@
         "scar_1hmreadydummy.hkx",
         "sneakrun_forwardroll.hkx"
       ],
+      "actionNames": [],
       "scopes": [
         "."
       ],
-      "aerializedMagicSources": false
+      "aerializedMagicSources": false,
+      "blockProfile": null,
+      "usesVanillaActionComposites": false,
+      "usesAnimatedArmouryQuarterstaffComposites": false,
+      "actionSourceAliases": {}
     },
     "Flight Base 20 - One Handed": {
       "priority": 2147483602,
       "baseSource": "Flying_Mod_Idle.hkx",
-      "animationCountPerScope": 135,
+      "animationCountPerScope": 158,
       "motionNames": [
         "1hm_blockidle.hkx",
         "1hm_idle.hkx",
@@ -319,15 +373,52 @@
         "sneak_1hmattackpowerlefthand.hkx",
         "sneakrun_forwardroll.hkx"
       ],
+      "actionNames": [
+        "1hm_blockanticipate.hkx",
+        "1hm_blockbash.hkx",
+        "1hm_blockbashintro.hkx",
+        "1hm_blockbashpower.hkx",
+        "1hm_blockhit.hkx",
+        "1hm_blockhita.hkx",
+        "1hm_blockhitb.hkx",
+        "1hm_blockidle.hkx",
+        "maxsu_shieldblockhit.hkx",
+        "maxsu_weaponblockhit.hkx",
+        "shd_blockanticipate.hkx",
+        "shd_blockbash.hkx",
+        "shd_blockbashintro.hkx",
+        "shd_blockbashpower.hkx",
+        "shd_blockbashsprint.hkx",
+        "shd_blockhit.hkx",
+        "shd_blockhit_vara.hkx",
+        "shd_blockhit_varb.hkx",
+        "shd_blockidle.hkx",
+        "shd_blocktimed.hkx",
+        "tor_blockanticipate.hkx",
+        "tor_blockanticipatemt.hkx",
+        "tor_blockbash.hkx",
+        "tor_blockbashintro.hkx",
+        "tor_blockbashpower.hkx",
+        "tor_blockhit.hkx",
+        "tor_blockhitmt.hkx",
+        "tor_blockidle.hkx"
+      ],
       "scopes": [
         "."
       ],
-      "aerializedMagicSources": false
+      "aerializedMagicSources": false,
+      "blockProfile": "one_handed",
+      "usesVanillaActionComposites": true,
+      "usesAnimatedArmouryQuarterstaffComposites": false,
+      "actionSourceAliases": {
+        "maxsu_shieldblockhit.hkx": "shd_blockhit.hkx",
+        "maxsu_weaponblockhit.hkx": "1hm_blockhit.hkx"
+      }
     },
     "Flight Base 30 - Dual Wield": {
       "priority": 2147483603,
       "baseSource": "Flying_Mod_Idle.hkx",
-      "animationCountPerScope": 96,
+      "animationCountPerScope": 97,
       "motionNames": [
         "1hm_blockidle.hkx",
         "1hm_idle.hkx",
@@ -428,15 +519,29 @@
         "scar_1hmreadydummy.hkx",
         "sneakrun_forwardroll.hkx"
       ],
+      "actionNames": [
+        "dw1hm1hmblockbash.hkx",
+        "dw1hm1hmblockbashintro.hkx",
+        "dw1hm1hmblockbashpower.hkx",
+        "dw1hm1hmblockidle.hkx",
+        "dw1hm1hmmovingblockidle.hkx",
+        "maxsu_weaponblockhit.hkx"
+      ],
       "scopes": [
         "."
       ],
-      "aerializedMagicSources": false
+      "aerializedMagicSources": false,
+      "blockProfile": "dual_wield",
+      "usesVanillaActionComposites": true,
+      "usesAnimatedArmouryQuarterstaffComposites": false,
+      "actionSourceAliases": {
+        "maxsu_weaponblockhit.hkx": "1hm_blockhit.hkx"
+      }
     },
     "Flight Base 40 - Greatsword": {
       "priority": 2147483604,
       "baseSource": "Flying_Mod_Idle.hkx",
-      "animationCountPerScope": 118,
+      "animationCountPerScope": 123,
       "motionNames": [
         "2hm_blockidle.hkx",
         "2hm_idle.hkx",
@@ -559,15 +664,32 @@
         "scar_1hmreadydummy.hkx",
         "sneakrun_forwardroll.hkx"
       ],
+      "actionNames": [
+        "2hm_blockanticipate.hkx",
+        "2hm_blockbash.hkx",
+        "2hm_blockbashintro.hkx",
+        "2hm_blockbashpower.hkx",
+        "2hm_blockhit.hkx",
+        "2hm_blockhita.hkx",
+        "2hm_blockhitb.hkx",
+        "2hm_blockidle.hkx",
+        "maxsu_weaponblockhit.hkx"
+      ],
       "scopes": [
         "."
       ],
-      "aerializedMagicSources": false
+      "aerializedMagicSources": false,
+      "blockProfile": "greatsword",
+      "usesVanillaActionComposites": true,
+      "usesAnimatedArmouryQuarterstaffComposites": false,
+      "actionSourceAliases": {
+        "maxsu_weaponblockhit.hkx": "2hm_blockhit.hkx"
+      }
     },
     "Flight Base 50 - Axe and Warhammer": {
       "priority": 2147483605,
       "baseSource": "Flying_Mod_Idle.hkx",
-      "animationCountPerScope": 121,
+      "animationCountPerScope": 128,
       "motionNames": [
         "2hw_blockidle.hkx",
         "2hw_idle.hkx",
@@ -693,15 +815,189 @@
         "scar_1hmreadydummy.hkx",
         "sneakrun_forwardroll.hkx"
       ],
+      "actionNames": [
+        "2hw_blockanticipate.hkx",
+        "2hw_blockbash.hkx",
+        "2hw_blockbashintro.hkx",
+        "2hw_blockbashpower.hkx",
+        "2hw_blockhit.hkx",
+        "2hw_blockhita.hkx",
+        "2hw_blockhitb.hkx",
+        "2hw_blockidle.hkx",
+        "2hw_blockstart.hkx",
+        "2hw_blockstop.hkx",
+        "maxsu_weaponblockhit.hkx"
+      ],
       "scopes": [
         "."
       ],
-      "aerializedMagicSources": false
+      "aerializedMagicSources": false,
+      "blockProfile": "axe_warhammer",
+      "usesVanillaActionComposites": true,
+      "usesAnimatedArmouryQuarterstaffComposites": false,
+      "actionSourceAliases": {
+        "maxsu_weaponblockhit.hkx": "2hw_blockhit.hkx"
+      }
+    },
+    "Flight Base 55 - Quarterstaff": {
+      "priority": 2147483610,
+      "baseSource": "Flying_Mod_Idle.hkx",
+      "animationCountPerScope": 130,
+      "motionNames": [
+        "2hw_blockidle.hkx",
+        "2hw_idle.hkx",
+        "2hw_runarmblend-1.hkx",
+        "2hw_runarmblend.hkx",
+        "2hw_runarmblend2.hkx",
+        "2hw_runbackward.hkx",
+        "2hw_runbackwardleft.hkx",
+        "2hw_runbackwardright.hkx",
+        "2hw_runforward.hkx",
+        "2hw_runforwardleft.hkx",
+        "2hw_runforwardright.hkx",
+        "2hw_runleft.hkx",
+        "2hw_runright.hkx",
+        "2hw_runstrafeleft.hkx",
+        "2hw_runstraferight.hkx",
+        "2hw_sprint.hkx",
+        "2hw_sprintforward.hkx",
+        "2hw_sprintforwardsword.hkx",
+        "2hw_turnleft180.hkx",
+        "2hw_turnleft60.hkx",
+        "2hw_turnright180.hkx",
+        "2hw_turnright60.hkx",
+        "2hw_walkarmblend.hkx",
+        "2hw_walkbackward.hkx",
+        "2hw_walkbackwardleft.hkx",
+        "2hw_walkbackwardright.hkx",
+        "2hw_walkforward.hkx",
+        "2hw_walkforwardleft.hkx",
+        "2hw_walkforwardright.hkx",
+        "2hw_walkleft.hkx",
+        "2hw_walkright.hkx",
+        "2hw_walkstrafeleft.hkx",
+        "2hw_walkstraferight.hkx"
+      ],
+      "attackNames": [
+        "2hw_attackforwardsprint.hkx",
+        "2hw_attackleft.hkx",
+        "2hw_attackleftintro.hkx",
+        "2hw_attackpower.hkx",
+        "2hw_attackpower3slashcombo.hkx",
+        "2hw_attackpowerbwd.hkx",
+        "2hw_attackpowerforward.hkx",
+        "2hw_attackpowerforwardsprint.hkx",
+        "2hw_attackpowerfwd.hkx",
+        "2hw_attackpowerleft.hkx",
+        "2hw_attackpowerright.hkx",
+        "2hw_attackright.hkx",
+        "2hw_attackrightintro.hkx",
+        "2hw_blockbash.hkx",
+        "2hw_blockbashintro.hkx",
+        "2hw_blockbashpower.hkx",
+        "2hw_runbwdattackleft.hkx",
+        "2hw_runbwdattackleftintro.hkx",
+        "2hw_runbwdattackright.hkx",
+        "2hw_runbwdattackrightintro.hkx",
+        "2hw_runfwdattackleft.hkx",
+        "2hw_runfwdattackleftintro.hkx",
+        "2hw_runfwdattackright.hkx",
+        "2hw_runfwdattackrightintro.hkx",
+        "2hw_runleftattackleft.hkx",
+        "2hw_runleftattackleftintro.hkx",
+        "2hw_runleftattackright.hkx",
+        "2hw_runleftattackrightintro.hkx",
+        "2hw_runrightattackleft.hkx",
+        "2hw_runrightattackleftintro.hkx",
+        "2hw_runrightattackrt.hkx",
+        "2hw_runrightattackrtintro.hkx",
+        "2hw_walkbwdattackleft.hkx",
+        "2hw_walkbwdattackleftintro.hkx",
+        "2hw_walkbwdattackright.hkx",
+        "2hw_walkbwdattackrightintro.hkx",
+        "2hw_walkfwdattackleft.hkx",
+        "2hw_walkfwdattackleftintro.hkx",
+        "2hw_walkfwdattackright.hkx",
+        "2hw_walkfwdattackrightintro.hkx",
+        "2hw_walkleftattackleft.hkx",
+        "2hw_walkleftattackleftintro.hkx",
+        "2hw_walkleftattackright.hkx",
+        "2hw_walkleftattackrightintro.hkx",
+        "2hw_walkrightattackleft.hkx",
+        "2hw_walkrightattackleftintro.hkx",
+        "2hw_walkrtattackright.hkx",
+        "2hw_walkrtattackrightintro.hkx",
+        "mco_attack1.hkx",
+        "mco_attack10.hkx",
+        "mco_attack2.hkx",
+        "mco_attack3.hkx",
+        "mco_attack4.hkx",
+        "mco_attack5.hkx",
+        "mco_attack6.hkx",
+        "mco_attack7.hkx",
+        "mco_attack8.hkx",
+        "mco_attack9.hkx",
+        "mco_dodge-b-1.hkx",
+        "mco_dodge-f-1.hkx",
+        "mco_dodge-l-1.hkx",
+        "mco_dodge-lb-1.hkx",
+        "mco_dodge-lf-1.hkx",
+        "mco_dodge-r-1.hkx",
+        "mco_dodge-rb-1.hkx",
+        "mco_dodge-rf-1.hkx",
+        "mco_dodge_attack1.hkx",
+        "mco_dodge_powerattack1.hkx",
+        "mco_dodgeleft1.hkx",
+        "mco_powerattack1.hkx",
+        "mco_powerattack10.hkx",
+        "mco_powerattack2.hkx",
+        "mco_powerattack3.hkx",
+        "mco_powerattack4.hkx",
+        "mco_powerattack5.hkx",
+        "mco_powerattack6.hkx",
+        "mco_powerattack7.hkx",
+        "mco_powerattack8.hkx",
+        "mco_powerattack9.hkx",
+        "mco_powerattackloop1.hkx",
+        "mco_powerattackoutro1.hkx",
+        "mco_powerattackoutro4.hkx",
+        "mco_sprintattack.hkx",
+        "mco_sprintpoweattackr.hkx",
+        "mco_sprintpowerattack.hkx",
+        "mco_weaponart.hkx",
+        "scar_1hmreadydummy.hkx",
+        "sneakrun_forwardroll.hkx"
+      ],
+      "actionNames": [
+        "2hw_blockanticipate.hkx",
+        "2hw_blockbash.hkx",
+        "2hw_blockbashintro.hkx",
+        "2hw_blockbashpower.hkx",
+        "2hw_blockhit.hkx",
+        "2hw_blockhita.hkx",
+        "2hw_blockhitb.hkx",
+        "2hw_blockidle.hkx",
+        "2hw_blockstart.hkx",
+        "2hw_blockstop.hkx",
+        "2hw_equip.hkx",
+        "2hw_unequip.hkx",
+        "maxsu_weaponblockhit.hkx"
+      ],
+      "scopes": [
+        "."
+      ],
+      "aerializedMagicSources": false,
+      "blockProfile": "axe_warhammer",
+      "usesVanillaActionComposites": true,
+      "usesAnimatedArmouryQuarterstaffComposites": true,
+      "actionSourceAliases": {
+        "maxsu_weaponblockhit.hkx": "2hw_blockhit.hkx"
+      }
     },
     "Flight Base 60 - Bow": {
       "priority": 2147483606,
       "baseSource": "Flying_Mod_Idle.hkx",
-      "animationCountPerScope": 60,
+      "animationCountPerScope": 73,
       "motionNames": [
         "bow_blockidle.hkx",
         "bow_idle.hkx",
@@ -765,15 +1061,41 @@
         "xpe0_sneakbow_idledrawn.hkx"
       ],
       "attackNames": [],
+      "actionNames": [
+        "bow_blockanticipate.hkx",
+        "bow_blockbash.hkx",
+        "bow_blockbashintro.hkx",
+        "bow_blockbashpower.hkx",
+        "bow_blockhit.hkx",
+        "bow_blockidle.hkx",
+        "bow_drawheavy.hkx",
+        "bow_drawlight.hkx",
+        "sneakbow_drawlight.hkx",
+        "xpe0_bow_drawheavy.hkx",
+        "xpe0_bow_drawlight.hkx",
+        "xpe0_bow_equip.hkx",
+        "xpe0_bow_unequip.hkx",
+        "xpe0_sneakbow_drawlight.hkx"
+      ],
       "scopes": [
         "."
       ],
-      "aerializedMagicSources": false
+      "aerializedMagicSources": false,
+      "blockProfile": "bow",
+      "usesVanillaActionComposites": true,
+      "usesAnimatedArmouryQuarterstaffComposites": false,
+      "actionSourceAliases": {
+        "xpe0_bow_drawheavy.hkx": "bow_drawheavy.hkx",
+        "xpe0_bow_drawlight.hkx": "bow_drawlight.hkx",
+        "xpe0_bow_equip.hkx": "bow_equip.hkx",
+        "xpe0_bow_unequip.hkx": "bow_unequip.hkx",
+        "xpe0_sneakbow_drawlight.hkx": "sneakbow_drawlight.hkx"
+      }
     },
     "Flight Base 70 - Crossbow": {
       "priority": 2147483607,
       "baseSource": "Flying_Mod_Idle.hkx",
-      "animationCountPerScope": 37,
+      "animationCountPerScope": 38,
       "motionNames": [
         "crossbow_aim.hkx",
         "crossbow_aimdwarven.hkx",
@@ -814,10 +1136,17 @@
         "sneakcrossbow_idledrawndwarven.hkx"
       ],
       "attackNames": [],
+      "actionNames": [
+        "dlc01/crossbow_blockbash.hkx"
+      ],
       "scopes": [
         "."
       ],
-      "aerializedMagicSources": false
+      "aerializedMagicSources": false,
+      "blockProfile": "crossbow",
+      "usesVanillaActionComposites": true,
+      "usesAnimatedArmouryQuarterstaffComposites": false,
+      "actionSourceAliases": {}
     },
     "Flight Base 80 - Magic": {
       "priority": 2147483608,
@@ -894,15 +1223,20 @@
         "mrh_idle.hkx"
       ],
       "attackNames": [],
+      "actionNames": [],
       "scopes": [
         "."
       ],
-      "aerializedMagicSources": true
+      "aerializedMagicSources": true,
+      "blockProfile": null,
+      "usesVanillaActionComposites": false,
+      "usesAnimatedArmouryQuarterstaffComposites": false,
+      "actionSourceAliases": {}
     },
     "Flight Base 90 - Staff": {
       "priority": 2147483609,
       "baseSource": "Flying_Mod_Idle.hkx",
-      "animationCountPerScope": 11,
+      "animationCountPerScope": 13,
       "motionNames": [
         "staff_idle.hkx",
         "staffmagic_runarm.hkx",
@@ -917,11 +1251,19 @@
         "staffrightleft_sprint.hkx"
       ],
       "attackNames": [],
+      "actionNames": [
+        "staff_bash.hkx",
+        "staff_bashintro.hkx"
+      ],
       "scopes": [
         "."
       ],
-      "aerializedMagicSources": true
+      "aerializedMagicSources": true,
+      "blockProfile": "staff",
+      "usesVanillaActionComposites": true,
+      "usesAnimatedArmouryQuarterstaffComposites": false,
+      "actionSourceAliases": {}
     }
   },
-  "totalOarHkx": 899
+  "totalOarHkx": 1167
 }

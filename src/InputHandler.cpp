@@ -30,7 +30,6 @@ namespace
 	constexpr const char* DualCastUserEvent = "Dual Attack";
 	constexpr const char* ShoutUserEvent = "Shout";
 	constexpr const char* KinectShoutUserEvent = "KinectShout";
-	constexpr std::uint32_t DefaultReadyWeaponKeyboardScanCode = 0x13;       // DIK_R
 	constexpr float ThumbstickDeadzone = 0.25F;
 	bool MatchesBinding(const RE::ButtonEvent* a_event, const DragonAspectFlight::InputBinding& a_binding)
 	{
@@ -82,8 +81,12 @@ namespace
 			return true;
 		}
 
-		return a_event->GetDevice() == RE::INPUT_DEVICE::kKeyboard &&
-			a_event->GetIDCode() == DefaultReadyWeaponKeyboardScanCode;
+		auto* controlMap = RE::ControlMap::GetSingleton();
+		if (!controlMap) {
+			return false;
+		}
+		const auto mappedKey = controlMap->GetMappedKey(ReadyWeaponUserEvent, a_event->GetDevice());
+		return mappedKey != RE::ControlMap::kInvalid && a_event->GetIDCode() == mappedKey;
 	}
 
 	bool IsCombatAction(const RE::ButtonEvent* a_event)
@@ -318,14 +321,10 @@ namespace DragonAspectFlight
 		}
 
 		if (IsShoutAction(a_event) && fm.IsFlying()) {
-			fm.LogInputDiagnostic("shout", a_event, fm.IsDescending() ? "blocked_descent" : "observed");
+			fm.LogInputDiagnostic("shout", a_event, fm.IsDescending() ? "observed_descent" : "observed");
 			if (!fm.IsDragonAspectActive()) {
 				fm.StopFlight();
 				ResetFlightInputState();
-				return true;
-			}
-
-			if (fm.IsDescending()) {
 				return true;
 			}
 
@@ -347,25 +346,44 @@ namespace DragonAspectFlight
 				fm.LogInputDiagnostic(
 					"ready_weapon",
 					a_event,
-					synchronized ? "graph_sync_requested" : "graph_sync_failed");
+					synchronized ? "observer_armed_passthrough" : "observer_arm_failed_passthrough");
 			}
-			// Keep DAF's OAR equipment condition synchronized, but let the game and
-			// other input sinks perform the actual draw/sheathe transition.
+			// Vanilla and installed equipment-state/input mods keep first ownership.
+			// FlightManager only invokes the relocated native fallback later if the
+			// actor state does not begin moving toward the requested target.
 			return false;
 		}
 
-		if (fm.IsDescending()) {
-			if (IsLaunchAction(a_event) || IsCombatAction(a_event) || IsShoutAction(a_event)) {
-				fm.LogInputDiagnostic("combat_or_shout", a_event, "blocked_descent");
-				return true;
-			}
-		}
-
 		if (IsCombatAction(a_event)) {
-			if (!a_event->IsHeld()) {
-				fm.LogInputDiagnostic("combat", a_event, fm.IsFlying() ? "passthrough_to_animation_graph" : "ground_passthrough");
+			const bool blockInput = ue == LeftCastUserEvent;
+			const bool bashInput = ue == RightCastUserEvent && fm.IsFlightBlockRequested();
+			if (fm.IsFlying() && blockInput) {
+				if (a_event->IsUp()) {
+					const bool synchronized = fm.SetFlightBlockRequested(false);
+					fm.LogInputDiagnostic(
+						"block",
+						a_event,
+						synchronized ? "released_passthrough" : "release_sync_failed_passthrough");
+				} else if (a_event->IsDown()) {
+					const bool synchronized = fm.SetFlightBlockRequested(true);
+					fm.LogInputDiagnostic(
+						"block",
+						a_event,
+						synchronized ? "requested_passthrough" : "unsupported_passthrough");
+				}
 			}
-			if (fm.IsFlying() && (a_event->IsDown() || a_event->IsPressed())) {
+			if (fm.IsFlying() && bashInput && a_event->IsDown()) {
+				fm.LogInputDiagnostic("bash", a_event, "blocking_state_primed_passthrough");
+			}
+			if (!a_event->IsHeld()) {
+				fm.LogInputDiagnostic(
+					"combat",
+					a_event,
+					fm.IsFlying() ?
+						(fm.IsDescending() ? "descent_passthrough_to_animation_graph" : "passthrough_to_animation_graph") :
+						"ground_passthrough");
+			}
+			if (fm.IsFlying() && a_event->IsDown()) {
 				if (!fm.IsDragonAspectActive()) {
 					fm.StopFlight();
 					ResetFlightInputState();
@@ -373,8 +391,10 @@ namespace DragonAspectFlight
 				}
 
 				if (!fm.BeginFlightCombat()) {
-					// Descent or an invalid Dragon Aspect state still owns the input.
-					return true;
+					// Do not swallow combat if DAF could not synchronize its graph state.
+					// Vanilla, MCO, and other input handlers still need the original event.
+					fm.LogInputDiagnostic("combat", a_event, "graph_sync_failed_passthrough");
+					return false;
 				}
 			}
 			// Jumping Attack owns the topology when present. Otherwise the normal

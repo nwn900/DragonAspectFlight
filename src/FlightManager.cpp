@@ -42,6 +42,10 @@ namespace
 	constexpr std::uint32_t StableFallbackLandingContactTicks = 18;
 	constexpr auto ShoutGraphOverrideDuration = 1400ms;
 	constexpr auto WhirlwindSprintControlWindow = 1200ms;
+	constexpr auto WeaponTransitionTimeout = 2200ms;
+	constexpr auto WeaponNativeFallbackDelay = 500ms;
+	constexpr auto WeaponNativeFallbackRetryDelay = 250ms;
+	constexpr auto WeaponNativeFallbackSafetyMargin = 350ms;
 	constexpr const char* GraphVarDragonAspectActive = "bDAF_DragonAspectActive";
 	constexpr const char* GraphVarFlightActive = "bDAF_FlightActive";
 	constexpr const char* GraphVarFlightCombatActive = "bDAF_FlightCombatActive";
@@ -49,6 +53,10 @@ namespace
 	constexpr const char* GraphVarFlightShout = "bDAF_FlightShout";
 	constexpr const char* GraphVarFlightState = "iDAF_FlightState";
 	constexpr const char* GraphVarVanillaInJumpState = "bInJumpState";
+	constexpr const char* GraphVarVanillaIsBlocking = "IsBlocking";
+	constexpr const char* QuarterstaffKeyword = "WeapTypeQtrStaff";
+	constexpr const char* BlockStartEvent = "blockStart";
+	constexpr const char* BlockStopEvent = "blockStop";
 	std::atomic_bool GraphVariableWriteFailureLogged{ false };
 
 	enum class FlightGraphState : std::int32_t
@@ -67,6 +75,8 @@ namespace
 		std::int32_t rightWeaponType{ -1 };
 		std::int32_t leftWeaponType{ -1 };
 		const char* expectedOarFamily{ "unarmed" };
+		bool quarterstaffEquipped{ false };
+		bool blockCapable{ false };
 		std::uint64_t signature{ 0 };
 	};
 
@@ -89,6 +99,60 @@ namespace
 		return a_form && !a_form->As<RE::TESObjectWEAP>() && a_form->As<RE::MagicItem>();
 	}
 
+	bool IsQuarterstaff(RE::TESForm* a_form)
+	{
+		const auto* weapon = a_form ? a_form->As<RE::TESObjectWEAP>() : nullptr;
+		return weapon && weapon->HasKeywordString(QuarterstaffKeyword);
+	}
+
+	bool IsShield(RE::TESForm* a_form)
+	{
+		const auto* armor = a_form ? a_form->As<RE::TESObjectARMO>() : nullptr;
+		return armor && armor->IsShield();
+	}
+
+	bool IsTwoHandedWeaponType(std::int32_t a_type)
+	{
+		return a_type == static_cast<std::int32_t>(RE::WEAPON_TYPE::kTwoHandSword) ||
+			a_type == static_cast<std::int32_t>(RE::WEAPON_TYPE::kTwoHandAxe);
+	}
+
+	bool IsBlockCapableEquipment(const EquipmentDiagnostic& a_equipment)
+	{
+		if (IsShield(a_equipment.left) || IsShield(a_equipment.right) ||
+			IsTwoHandedWeaponType(a_equipment.rightWeaponType) ||
+			IsTwoHandedWeaponType(a_equipment.leftWeaponType)) {
+			return true;
+		}
+
+		// Skyrim permits a one-handed weapon to block when the opposite hand is
+		// empty. Dual wield, magic, bows, crossbows, and ordinary staves do not.
+		return (IsOneHandedWeaponType(a_equipment.rightWeaponType) && !a_equipment.left) ||
+			(IsOneHandedWeaponType(a_equipment.leftWeaponType) && !a_equipment.right);
+	}
+
+	bool IsWeaponTransitionInProgress(RE::WEAPON_STATE a_state, bool a_targetDrawn)
+	{
+		if (a_targetDrawn) {
+			return a_state == RE::WEAPON_STATE::kWantToDraw || a_state == RE::WEAPON_STATE::kDrawing;
+		}
+		return a_state == RE::WEAPON_STATE::kWantToSheathe || a_state == RE::WEAPON_STATE::kSheathing;
+	}
+
+	bool IsWeaponStateAtTarget(RE::WEAPON_STATE a_state, bool a_targetDrawn)
+	{
+		return a_targetDrawn ?
+			a_state == RE::WEAPON_STATE::kDrawn :
+			a_state == RE::WEAPON_STATE::kSheathed;
+	}
+
+	bool WeaponStateIntendsDrawn(RE::WEAPON_STATE a_state)
+	{
+		return a_state == RE::WEAPON_STATE::kWantToDraw ||
+			a_state == RE::WEAPON_STATE::kDrawing ||
+			a_state == RE::WEAPON_STATE::kDrawn;
+	}
+
 	EquipmentDiagnostic GetEquipmentDiagnostic(RE::PlayerCharacter* a_player)
 	{
 		EquipmentDiagnostic result;
@@ -100,8 +164,11 @@ namespace
 		result.left = a_player->GetEquippedObject(true);
 		result.rightWeaponType = GetWeaponType(result.right);
 		result.leftWeaponType = GetWeaponType(result.left);
+		result.quarterstaffEquipped = IsQuarterstaff(result.right) || IsQuarterstaff(result.left);
 
-		if (IsEquippedMagic(result.right) || IsEquippedMagic(result.left)) {
+		if (result.quarterstaffEquipped) {
+			result.expectedOarFamily = "quarterstaff";
+		} else if (IsEquippedMagic(result.right) || IsEquippedMagic(result.left)) {
 			result.expectedOarFamily = "magic";
 		} else if (result.rightWeaponType == static_cast<std::int32_t>(RE::WEAPON_TYPE::kBow) ||
 			result.leftWeaponType == static_cast<std::int32_t>(RE::WEAPON_TYPE::kBow)) {
@@ -122,6 +189,7 @@ namespace
 		} else if (IsOneHandedWeaponType(result.rightWeaponType) || IsOneHandedWeaponType(result.leftWeaponType)) {
 			result.expectedOarFamily = "one_handed";
 		}
+		result.blockCapable = IsBlockCapableEquipment(result);
 
 		const auto rightFormID = result.right ? result.right->GetFormID() : 0;
 		const auto leftFormID = result.left ? result.left->GetFormID() : 0;
@@ -131,6 +199,7 @@ namespace
 			(static_cast<std::uint64_t>(leftFormID) << 32U);
 		result.signature ^= static_cast<std::uint64_t>(result.rightWeaponType + 1) << 8U;
 		result.signature ^= static_cast<std::uint64_t>(result.leftWeaponType + 1) << 16U;
+		result.signature ^= result.quarterstaffEquipped ? (std::uint64_t{ 1 } << 62U) : 0;
 		result.signature ^= drawn ? (std::uint64_t{ 1 } << 63U) : 0;
 		return result;
 	}
@@ -793,6 +862,12 @@ namespace DragonAspectFlight
 			_isFlying = true;
 			_isDescending = false;
 			_flightCombatActive = false;
+			_flightBlockRequested = false;
+			_weaponTransitionPending = false;
+			_weaponTransitionTargetDrawn = startWithWeaponsDrawn;
+			_weaponTransitionNativeFallbackArmed = false;
+			_weaponTransitionDeadline = {};
+			_weaponTransitionNativeFallbackAt = {};
 			_useGeneratedCombatTopology = false;
 			_aerialCombatUnsupportedNotified = false;
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kIdle);
@@ -931,6 +1006,7 @@ namespace DragonAspectFlight
 
 	void FlightManager::StopFlight()
 	{
+		SetFlightBlockRequested(false);
 		SetFlightCombatActive(false);
 
 		{
@@ -943,6 +1019,12 @@ namespace DragonAspectFlight
 			_isFlying = false;
 			_isDescending = false;
 			_flightCombatActive = false;
+			_flightBlockRequested = false;
+			_weaponTransitionPending = false;
+			_weaponTransitionTargetDrawn = false;
+			_weaponTransitionNativeFallbackArmed = false;
+			_weaponTransitionDeadline = {};
+			_weaponTransitionNativeFallbackAt = {};
 			_useGeneratedCombatTopology = false;
 			_forwardInput = 0.0F;
 			_strafeInput = 0.0F;
@@ -1003,6 +1085,12 @@ namespace DragonAspectFlight
 		return _flightCombatActive;
 	}
 
+	bool FlightManager::IsFlightBlockRequested() const
+	{
+		std::shared_lock lock(_mutex);
+		return _flightBlockRequested;
+	}
+
 	bool FlightManager::IsDragonAspectActive() const
 	{
 		return HasDragonAspectActive();
@@ -1015,6 +1103,12 @@ namespace DragonAspectFlight
 			return false;
 		}
 
+		const auto* actorState = player->AsActorState();
+		const bool weaponsDrawn = actorState && actorState->IsWeaponDrawn();
+		const auto weaponState = actorState ? actorState->GetWeaponState() : RE::WEAPON_STATE::kSheathed;
+		bool transitionPending = false;
+		bool transitionTargetDrawn = false;
+		std::uint64_t transitionSequence = 0;
 		{
 			std::unique_lock lock(_mutex);
 			if (!_isFlying || (a_active && !HasDragonAspectActive())) {
@@ -1022,6 +1116,29 @@ namespace DragonAspectFlight
 			}
 			_flightCombatActive = a_active;
 			_useGeneratedCombatTopology = false;
+			if (IsWeaponStateAtTarget(weaponState, a_active)) {
+				// The requested state is already authoritative. Cancel any stale
+				// transition, including one that was targeting the opposite state.
+				_weaponTransitionPending = false;
+				_weaponTransitionTargetDrawn = a_active;
+				_weaponTransitionNativeFallbackArmed = false;
+				_weaponTransitionDeadline = {};
+				_weaponTransitionNativeFallbackAt = {};
+			} else {
+				if (!_weaponTransitionPending || _weaponTransitionTargetDrawn != a_active) {
+					++_weaponTransitionSequence;
+					_weaponTransitionPending = true;
+					_weaponTransitionTargetDrawn = a_active;
+					_weaponTransitionNativeFallbackArmed = false;
+					_weaponTransitionDeadline = std::chrono::steady_clock::now() + WeaponTransitionTimeout;
+					_weaponTransitionNativeFallbackAt = {};
+				}
+				// A repeated request for the same target keeps the original deadline
+				// and any Ready Weapon fallback already armed for that transition.
+			}
+			transitionPending = _weaponTransitionPending;
+			transitionTargetDrawn = _weaponTransitionTargetDrawn;
+			transitionSequence = _weaponTransitionSequence;
 		}
 
 		const bool combatVariableWritten =
@@ -1044,14 +1161,21 @@ namespace DragonAspectFlight
 		}
 		if (enabled) {
 			const auto equipment = GetEquipmentDiagnostic(player);
-			const auto* actorState = player->AsActorState();
 			logger::info(
-				"event=combat_state session={} active={} graph_write_ok={} weapons_drawn={} expected_oar_family={}",
+				"event=combat_state session={} active={} graph_write_ok={} weapons_drawn={} weapon_state={} "
+				"transition_pending={} transition_target_drawn={} transition_sequence={} "
+				"expected_oar_family={} quarterstaff={} block_capable={}",
 				session,
 				a_active,
 				combatVariableWritten,
-				actorState && actorState->IsWeaponDrawn(),
-				equipment.expectedOarFamily);
+				weaponsDrawn,
+				static_cast<std::int32_t>(weaponState),
+				transitionPending,
+				transitionTargetDrawn,
+				transitionSequence,
+				equipment.expectedOarFamily,
+				equipment.quarterstaffEquipped,
+				equipment.blockCapable);
 		}
 
 		return true;
@@ -1064,23 +1188,54 @@ namespace DragonAspectFlight
 			return false;
 		}
 
-		bool combatActive = false;
+		const auto* actorState = player->AsActorState();
+		const bool weaponsDrawn = actorState && actorState->IsWeaponDrawn();
+		const auto weaponState = actorState ? actorState->GetWeaponState() : RE::WEAPON_STATE::kSheathed;
+		bool referenceDrawn = WeaponStateIntendsDrawn(weaponState);
 		{
 			std::shared_lock lock(_mutex);
 			if (!_isFlying) {
 				return false;
 			}
-			combatActive = _flightCombatActive;
+			if (_weaponTransitionPending) {
+				referenceDrawn = _weaponTransitionTargetDrawn;
+			}
 		}
 
-		const bool nextCombatActive = !combatActive;
+		const bool nextCombatActive = !referenceDrawn;
+		if (!nextCombatActive) {
+			SetFlightBlockRequested(false);
+		}
 		if (!SetFlightCombatActive(nextCombatActive)) {
 			return false;
 		}
 
+		std::uint64_t session = 0;
+		std::uint64_t sequence = 0;
+		{
+			std::unique_lock lock(_mutex);
+			if (!_weaponTransitionPending) {
+				// The actor already reached the requested state synchronously.
+				return true;
+			}
+			_weaponTransitionNativeFallbackArmed = true;
+			_weaponTransitionNativeFallbackAt =
+				std::chrono::steady_clock::now() + WeaponNativeFallbackDelay;
+			session = _flightSessionId;
+			sequence = _weaponTransitionSequence;
+		}
+
 		logger::info(
-			"Dragon Aspect Flight combat visual state {} for vanilla draw/sheathe input",
-			nextCombatActive ? "readied" : "sheathed");
+			"event=weapon_transition_request session={} sequence={} actual_drawn={} weapon_state={} reference_drawn={} "
+			"target_drawn={} native_fallback_delay_ms={} timeout_ms={}",
+			session,
+			sequence,
+			weaponsDrawn,
+			static_cast<std::int32_t>(weaponState),
+			referenceDrawn,
+			nextCombatActive,
+			std::chrono::duration_cast<std::chrono::milliseconds>(WeaponNativeFallbackDelay).count(),
+			std::chrono::duration_cast<std::chrono::milliseconds>(WeaponTransitionTimeout).count());
 		return true;
 	}
 
@@ -1092,6 +1247,75 @@ namespace DragonAspectFlight
 			logger::info("Dragon Aspect Flight combat activated by attack/cast input");
 		}
 		return activated;
+	}
+
+	bool FlightManager::SetFlightBlockRequested(bool a_requested)
+	{
+		auto* player = GetPlayer();
+		if (a_requested && (!player || !player->Is3DLoaded())) {
+			return false;
+		}
+
+		const auto equipment = GetEquipmentDiagnostic(player);
+		const bool supported = !a_requested || equipment.blockCapable;
+		bool effectiveRequest = a_requested && supported;
+		bool requestChanged = false;
+		bool detailedLogging = false;
+		std::uint64_t session = 0;
+		{
+			std::unique_lock lock(_mutex);
+			if (a_requested && (!_isFlying || !HasDragonAspectActive())) {
+				return false;
+			}
+			requestChanged = _flightBlockRequested != effectiveRequest;
+			_flightBlockRequested = effectiveRequest;
+			detailedLogging = _detailedLogging;
+			session = _flightSessionId;
+		}
+
+		if (!player || !player->Is3DLoaded()) {
+			return !a_requested;
+		}
+
+		auto* actorState = player->AsActorState();
+		const bool previousWantBlocking = actorState && actorState->actorState2.wantBlocking;
+		const bool previousBlocking = player->IsBlocking();
+		if (actorState) {
+			actorState->actorState2.wantBlocking = effectiveRequest;
+		}
+		const bool graphWriteOk = player->SetGraphVariableBool(
+			RE::BSFixedString(GraphVarVanillaIsBlocking), effectiveRequest);
+		bool graphEventOk = true;
+		if (requestChanged || previousWantBlocking != effectiveRequest || previousBlocking != effectiveRequest) {
+			graphEventOk = player->NotifyAnimationGraph(RE::BSFixedString(
+				effectiveRequest ? BlockStartEvent : BlockStopEvent));
+		}
+
+		if (effectiveRequest) {
+			SetFlightCombatActive(true);
+		}
+
+		if (detailedLogging || !supported) {
+			logger::info(
+				"event=block_state session={} requested={} supported={} effective={} changed={} "
+				"previous_want_blocking={} previous_is_blocking={} graph_write_ok={} graph_event_ok={} "
+				"expected_oar_family={} quarterstaff={} right_weapon_type={} left_weapon_type={}",
+				session,
+				a_requested,
+				supported,
+				effectiveRequest,
+				requestChanged,
+				previousWantBlocking,
+				previousBlocking,
+				graphWriteOk,
+				graphEventOk,
+				equipment.expectedOarFamily,
+				equipment.quarterstaffEquipped,
+				equipment.rightWeaponType,
+				equipment.leftWeaponType);
+		}
+
+		return supported;
 	}
 
 	bool FlightManager::ShouldSuppressInput()
@@ -1160,16 +1384,26 @@ namespace DragonAspectFlight
 	{
 		bool applyImmediately = false;
 		bool releaseWhirlwindSprint = false;
+		bool combatActive = false;
+		bool useGeneratedCombatTopology = false;
+		bool descending = false;
+		std::uint64_t session = 0;
+		FlightGraphState graphState = FlightGraphState::kMoving;
 		const bool currentShoutIsWhirlwindSprint = IsWhirlwindSprintSelected(GetPlayer());
 
 		{
 			std::unique_lock lock(_mutex);
 
-			if (!_isFlying || _isDescending || !HasDragonAspectActive()) {
+			if (!_isFlying || !HasDragonAspectActive()) {
 				return;
 			}
 
 			const auto now = std::chrono::steady_clock::now();
+			descending = _isDescending;
+			graphState = descending ? FlightGraphState::kDescent : FlightGraphState::kMoving;
+			combatActive = _flightCombatActive;
+			useGeneratedCombatTopology = _useGeneratedCombatTopology;
+			session = _flightSessionId;
 			_shoutGraphOverrideUntil = now + ShoutGraphOverrideDuration;
 			if (!a_released) {
 				_whirlwindSprintShoutPending =
@@ -1182,25 +1416,29 @@ namespace DragonAspectFlight
 			if (releaseWhirlwindSprint) {
 				_whirlwindSprintUntil = now + WhirlwindSprintControlWindow;
 			}
-			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kMoving);
+			_lastGraphState = static_cast<std::int32_t>(graphState);
 			applyImmediately = true;
 		}
 
 		if (applyImmediately) {
-			bool useGeneratedCombatTopology = false;
-			{
-				std::unique_lock lock(_mutex);
-				useGeneratedCombatTopology = _useGeneratedCombatTopology;
-			}
 			SetFlightGraphVariables(
 				GetPlayer(),
 				true,
 				true,
-				IsFlightCombatActive(),
+				combatActive,
 				useGeneratedCombatTopology,
 				false,
 				true,
-				FlightGraphState::kMoving);
+				graphState);
+			logger::info(
+				"event=shout_state session={} released={} descending={} whirlwind_selected={} "
+				"whirlwind_release_window={} graph_state={}",
+				session,
+				a_released,
+				descending,
+				currentShoutIsWhirlwindSprint,
+				releaseWhirlwindSprint,
+				static_cast<std::int32_t>(graphState));
 			if (releaseWhirlwindSprint) {
 				logger::info(
 					"Dragon Aspect Flight: yielding controller velocity to Whirlwind Sprint for {} ms",
@@ -1306,6 +1544,10 @@ namespace DragonAspectFlight
 		bool flying = false;
 		bool descending = false;
 		bool combatActive = false;
+		bool blockRequested = false;
+		bool transitionPending = false;
+		bool transitionTargetDrawn = false;
+		bool transitionNativeFallbackArmed = false;
 		{
 			std::shared_lock lock(_mutex);
 			enabled = _detailedLogging;
@@ -1313,6 +1555,10 @@ namespace DragonAspectFlight
 			flying = _isFlying;
 			descending = _isDescending;
 			combatActive = _flightCombatActive;
+			blockRequested = _flightBlockRequested;
+			transitionPending = _weaponTransitionPending;
+			transitionTargetDrawn = _weaponTransitionTargetDrawn;
+			transitionNativeFallbackArmed = _weaponTransitionNativeFallbackArmed;
 		}
 		if (!enabled || !a_event) {
 			return;
@@ -1325,7 +1571,9 @@ namespace DragonAspectFlight
 		const auto userEvent = a_event->QUserEvent();
 		logger::info(
 			"event=input session={} action={} user_event=\"{}\" device={} code=0x{:X} phase={} "
-			"flying={} descending={} combat_active={} outcome={}",
+			"flying={} descending={} combat_active={} block_requested={} "
+			"weapon_transition_pending={} weapon_transition_target_drawn={} "
+			"weapon_transition_native_fallback_armed={} outcome={}",
 			session,
 			a_action,
 			userEvent.c_str(),
@@ -1335,6 +1583,10 @@ namespace DragonAspectFlight
 			flying,
 			descending,
 			combatActive,
+			blockRequested,
+			transitionPending,
+			transitionTargetDrawn,
+			transitionNativeFallbackArmed,
 			a_outcome);
 	}
 
@@ -1354,6 +1606,11 @@ namespace DragonAspectFlight
 		float verticalInput = 0.0F;
 		bool descending = false;
 		bool combatActive = false;
+		bool blockRequested = false;
+		bool weaponTransitionPending = false;
+		bool weaponTransitionTargetDrawn = false;
+		bool weaponTransitionNativeFallbackArmed = false;
+		std::uint64_t weaponTransitionSequence = 0;
 		bool boostHeld = false;
 		std::int32_t requestedGraphState = 0;
 		const char* reason = "heartbeat";
@@ -1368,6 +1625,10 @@ namespace DragonAspectFlight
 			stateSignature |= _isDescending ? (std::uint64_t{ 1 } << 32U) : 0;
 			stateSignature |= _flightCombatActive ? (std::uint64_t{ 1 } << 33U) : 0;
 			stateSignature |= _boostHeld ? (std::uint64_t{ 1 } << 34U) : 0;
+			stateSignature |= _flightBlockRequested ? (std::uint64_t{ 1 } << 35U) : 0;
+			stateSignature |= _weaponTransitionPending ? (std::uint64_t{ 1 } << 36U) : 0;
+			stateSignature |= _weaponTransitionTargetDrawn ? (std::uint64_t{ 1 } << 37U) : 0;
+			stateSignature |= _weaponTransitionNativeFallbackArmed ? (std::uint64_t{ 1 } << 38U) : 0;
 			const bool equipmentChanged = equipment.signature != _lastDiagnosticEquipmentSignature;
 			const bool stateChanged = stateSignature != _lastDiagnosticStateSignature;
 			const bool heartbeatDue = _lastDiagnosticSnapshot.time_since_epoch().count() == 0 ||
@@ -1386,6 +1647,11 @@ namespace DragonAspectFlight
 			verticalInput = _verticalInput;
 			descending = _isDescending;
 			combatActive = _flightCombatActive;
+			blockRequested = _flightBlockRequested;
+			weaponTransitionPending = _weaponTransitionPending;
+			weaponTransitionTargetDrawn = _weaponTransitionTargetDrawn;
+			weaponTransitionNativeFallbackArmed = _weaponTransitionNativeFallbackArmed;
+			weaponTransitionSequence = _weaponTransitionSequence;
 			boostHeld = _boostHeld;
 			requestedGraphState = _lastGraphState;
 		}
@@ -1396,6 +1662,7 @@ namespace DragonAspectFlight
 		bool graphLaunch = false;
 		bool graphShout = false;
 		bool graphInJump = false;
+		bool graphBlocking = false;
 		std::int32_t graphState = -1;
 		std::uint32_t graphReadMask = 0;
 		graphReadMask |= a_player->GetGraphVariableBool(RE::BSFixedString(GraphVarDragonAspectActive), graphDragonAspect) ? 1U << 0U : 0;
@@ -1405,9 +1672,14 @@ namespace DragonAspectFlight
 		graphReadMask |= a_player->GetGraphVariableBool(RE::BSFixedString(GraphVarFlightShout), graphShout) ? 1U << 4U : 0;
 		graphReadMask |= a_player->GetGraphVariableInt(RE::BSFixedString(GraphVarFlightState), graphState) ? 1U << 5U : 0;
 		graphReadMask |= a_player->GetGraphVariableBool(RE::BSFixedString(GraphVarVanillaInJumpState), graphInJump) ? 1U << 6U : 0;
+		graphReadMask |= a_player->GetGraphVariableBool(RE::BSFixedString(GraphVarVanillaIsBlocking), graphBlocking) ? 1U << 7U : 0;
 
 		const auto* actorState = a_player->AsActorState();
 		const bool weaponsDrawn = actorState && actorState->IsWeaponDrawn();
+		const bool wantBlocking = actorState && actorState->actorState2.wantBlocking;
+		const auto weaponState = actorState ? static_cast<std::int32_t>(actorState->actorState2.weaponState) : -1;
+		const auto meleeAttackState = actorState ? static_cast<std::int32_t>(actorState->actorState1.meleeAttackState) : -1;
+		const bool isBlocking = a_player->IsBlocking();
 		const auto position = a_player->GetPosition();
 		float magicka = 0.0F;
 		float stamina = 0.0F;
@@ -1428,18 +1700,23 @@ namespace DragonAspectFlight
 		}
 
 		logger::info(
-			"event=state_snapshot session={} reason={} version={} expected_oar_family={} "
+			"event=state_snapshot session={} reason={} version={} expected_oar_family={} quarterstaff={} block_capable={} "
 			"weapons_drawn={} right_form=0x{:08X} right_form_type={} right_weapon_type={} right_name=\"{}\" "
 			"left_form=0x{:08X} left_form_type={} left_weapon_type={} left_name=\"{}\" "
-			"descending={} combat_active={} boost_held={} input_fwd={:.3f} input_strafe={:.3f} input_vertical={:.3f} "
+			"descending={} combat_active={} block_requested={} want_blocking={} is_blocking={} "
+			"weapon_state={} attack_state={} weapon_transition_pending={} weapon_transition_target_drawn={} "
+			"weapon_transition_native_fallback_armed={} "
+			"weapon_transition_sequence={} boost_held={} input_fwd={:.3f} input_strafe={:.3f} input_vertical={:.3f} "
 			"requested_graph_state={} graph_read_mask=0x{:02X} graph_da={} graph_flight={} graph_combat={} "
-			"graph_launch={} graph_shout={} graph_state={} graph_in_jump={} "
+			"graph_launch={} graph_shout={} graph_state={} graph_in_jump={} graph_blocking={} "
 			"controller_current={} controller_want={} gravity={:.3f} velocity=({:.3f},{:.3f},{:.3f}) "
 			"position=({:.3f},{:.3f},{:.3f}) magicka={:.3f} stamina={:.3f}",
 			session,
 			reason,
 			BuildVersion,
 			equipment.expectedOarFamily,
+			equipment.quarterstaffEquipped,
+			equipment.blockCapable,
 			weaponsDrawn,
 			equipment.right ? equipment.right->GetFormID() : 0,
 			GetFormTypeValue(equipment.right),
@@ -1451,6 +1728,15 @@ namespace DragonAspectFlight
 			GetFormName(equipment.left),
 			descending,
 			combatActive,
+			blockRequested,
+			wantBlocking,
+			isBlocking,
+			weaponState,
+			meleeAttackState,
+			weaponTransitionPending,
+			weaponTransitionTargetDrawn,
+			weaponTransitionNativeFallbackArmed,
+			weaponTransitionSequence,
 			boostHeld,
 			forwardInput,
 			strafeInput,
@@ -1464,6 +1750,7 @@ namespace DragonAspectFlight
 			graphShout,
 			graphState,
 			graphInJump,
+			graphBlocking,
 			controllerCurrentState,
 			controllerWantState,
 			gravity,
@@ -1549,11 +1836,24 @@ namespace DragonAspectFlight
 		bool boostHeld = false;
 		bool descending = false;
 		bool combatActive = false;
+		bool blockRequested = false;
+		bool blockAutoCleared = false;
 		bool useGeneratedCombatTopology = false;
 		bool shoutOverrideActive = false;
 		bool whirlwindSprintActive = false;
+		bool transitionTargetDrawn = false;
+		bool issueNativeWeaponFallback = false;
+		std::uint64_t transitionSequence = 0;
+		std::uint64_t session = 0;
+		std::string_view transitionOutcome;
 		std::uint32_t landingContactTicks = 0;
 		FlightGraphState graphState = FlightGraphState::kOff;
+		const auto now = std::chrono::steady_clock::now();
+		auto* player = GetPlayer();
+		const auto equipment = GetEquipmentDiagnostic(player);
+		const auto* actorState = player ? player->AsActorState() : nullptr;
+		const bool weaponsDrawn = actorState && actorState->IsWeaponDrawn();
+		const auto weaponState = actorState ? actorState->GetWeaponState() : RE::WEAPON_STATE::kSheathed;
 
 		{
 			std::unique_lock lock(_mutex);
@@ -1568,9 +1868,57 @@ namespace DragonAspectFlight
 				return;
 			}
 
+			if (_weaponTransitionPending) {
+				transitionTargetDrawn = _weaponTransitionTargetDrawn;
+				transitionSequence = _weaponTransitionSequence;
+				if (IsWeaponStateAtTarget(weaponState, _weaponTransitionTargetDrawn)) {
+					_weaponTransitionPending = false;
+					_weaponTransitionNativeFallbackArmed = false;
+					_weaponTransitionDeadline = {};
+					_weaponTransitionNativeFallbackAt = {};
+					_flightCombatActive = weaponsDrawn;
+					transitionOutcome = "completed";
+				} else if (now >= _weaponTransitionDeadline) {
+					_weaponTransitionPending = false;
+					_weaponTransitionNativeFallbackArmed = false;
+					_weaponTransitionDeadline = {};
+					_weaponTransitionNativeFallbackAt = {};
+					_flightCombatActive = weaponsDrawn;
+					transitionOutcome = "timed_out_reconciled_to_actor";
+				} else {
+					_flightCombatActive = _weaponTransitionTargetDrawn;
+					if (_weaponTransitionNativeFallbackArmed && now >= _weaponTransitionNativeFallbackAt) {
+						const bool transitionInProgress =
+							IsWeaponTransitionInProgress(weaponState, _weaponTransitionTargetDrawn);
+						const bool enoughTimeToRetry =
+							now + WeaponNativeFallbackRetryDelay + WeaponNativeFallbackSafetyMargin <
+							_weaponTransitionDeadline;
+						if (transitionInProgress && enoughTimeToRetry) {
+							_weaponTransitionNativeFallbackAt = now + WeaponNativeFallbackRetryDelay;
+						} else {
+							_weaponTransitionNativeFallbackArmed = false;
+							_weaponTransitionNativeFallbackAt = {};
+							issueNativeWeaponFallback = true;
+						}
+					}
+				}
+			} else if (_flightCombatActive != weaponsDrawn) {
+				_flightCombatActive = weaponsDrawn;
+				transitionTargetDrawn = weaponsDrawn;
+				transitionSequence = _weaponTransitionSequence;
+				transitionOutcome = "actor_state_reconciled";
+			}
+
+			if (_flightBlockRequested && !equipment.blockCapable) {
+				_flightBlockRequested = false;
+				blockAutoCleared = true;
+			}
+
 			descending = _isDescending;
 			combatActive = _flightCombatActive;
+			blockRequested = _flightBlockRequested;
 			useGeneratedCombatTopology = _useGeneratedCombatTopology;
+			session = _flightSessionId;
 			flightSpeed = _flightSpeed;
 			verticalSpeed = _verticalSpeed;
 			liftScale = _liftScale;
@@ -1581,8 +1929,8 @@ namespace DragonAspectFlight
 			boostHeld = _boostHeld;
 			landingContactTicks = _landingContactTicks;
 			_pendingLaunchBoost = 0.0F;
-			shoutOverrideActive = !descending && std::chrono::steady_clock::now() < _shoutGraphOverrideUntil;
-			whirlwindSprintActive = !descending && std::chrono::steady_clock::now() < _whirlwindSprintUntil;
+			shoutOverrideActive = now < _shoutGraphOverrideUntil;
+			whirlwindSprintActive = now < _whirlwindSprintUntil;
 
 			const bool hasMovementInput = !descending && HasFlightControlInput(forwardInput, strafeInput, verticalInput);
 			const bool hasLaunchBoost = launchBoost > 0.0F;
@@ -1596,7 +1944,34 @@ namespace DragonAspectFlight
 			_lastGraphState = nextGraphState;
 		}
 
-		auto* player = GetPlayer();
+		if (issueNativeWeaponFallback && player && player->Is3DLoaded()) {
+			player->DrawWeaponMagicHands(transitionTargetDrawn);
+			logger::info(
+				"event=weapon_transition_native_fallback session={} sequence={} target_drawn={} "
+				"actual_drawn={} weapon_state={} expected_oar_family={} quarterstaff={}",
+				session,
+				transitionSequence,
+				transitionTargetDrawn,
+				weaponsDrawn,
+				static_cast<std::int32_t>(weaponState),
+				equipment.expectedOarFamily,
+				equipment.quarterstaffEquipped);
+		}
+
+		if (!transitionOutcome.empty()) {
+			logger::info(
+				"event=weapon_transition_result session={} sequence={} outcome={} target_drawn={} actual_drawn={} weapon_state={} "
+				"expected_oar_family={} quarterstaff={}",
+				session,
+				transitionSequence,
+				transitionOutcome,
+				transitionTargetDrawn,
+				weaponsDrawn,
+				static_cast<std::int32_t>(weaponState),
+				equipment.expectedOarFamily,
+				equipment.quarterstaffEquipped);
+		}
+
 		SetFlightGraphVariables(
 			player,
 			true,
@@ -1606,7 +1981,38 @@ namespace DragonAspectFlight
 			graphState == FlightGraphState::kLaunch,
 			shoutOverrideActive,
 			graphState);
+
+		if (player && player->Is3DLoaded()) {
+			auto* mutableActorState = player->AsActorState();
+			const bool previousWantBlocking = mutableActorState && mutableActorState->actorState2.wantBlocking;
+			if (mutableActorState) {
+				mutableActorState->actorState2.wantBlocking = blockRequested;
+			}
+			const bool blockGraphWriteOk = player->SetGraphVariableBool(
+				RE::BSFixedString(GraphVarVanillaIsBlocking), blockRequested);
+			bool blockGraphEventOk = true;
+			if (blockAutoCleared || previousWantBlocking != blockRequested) {
+				blockGraphEventOk = player->NotifyAnimationGraph(RE::BSFixedString(
+					blockRequested ? BlockStartEvent : BlockStopEvent));
+				logger::info(
+					"event=block_reconcile session={} requested={} auto_cleared={} previous_want_blocking={} "
+					"is_blocking={} graph_write_ok={} graph_event_ok={} expected_oar_family={} quarterstaff={}",
+					session,
+					blockRequested,
+					blockAutoCleared,
+					previousWantBlocking,
+					player->IsBlocking(),
+					blockGraphWriteOk,
+					blockGraphEventOk,
+					equipment.expectedOarFamily,
+					equipment.quarterstaffEquipped);
+			}
+		}
 		LogDiagnosticSnapshot(player);
+
+		if (whirlwindSprintActive && PreserveWhirlwindSprintVelocity(player, _smoothedFlightVelocity)) {
+			return;
+		}
 
 		if (descending) {
 			if (MovePlayerWithControlledDescent(landingContactTicks)) {
@@ -1624,10 +2030,6 @@ namespace DragonAspectFlight
 			logger::info("Dragon Aspect Flight: magicka depleted, beginning controlled descent");
 			RE::SendHUDMessage::ShowHUDMessage("Dragon Aspect Flight: magicka exhausted, descending");
 			BeginDescent();
-			return;
-		}
-
-		if (whirlwindSprintActive && PreserveWhirlwindSprintVelocity(player, _smoothedFlightVelocity)) {
 			return;
 		}
 

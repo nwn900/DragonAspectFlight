@@ -1,4 +1,4 @@
-Dragon Aspect Flight 1.8.0 - third-party animation attribution
+Dragon Aspect Flight 1.8.1 - third-party animation attribution
 ================================================================
 
 Neutral flight pose
@@ -38,12 +38,36 @@ Magic and staff animations
 The original author explicitly permits modification, conversion, upload, and
 reuse with credit. The OAR port publishes the same permissions.
 
+Quarterstaff action animations
+------------------------------
+
+  Animated Armoury - New Weapons with animations SSE Version
+  Author: NickNak
+  Nexus: https://www.nexusmods.com/skyrimspecialedition/mods/35978
+
+The author permits reworking, reanimation, and use of the animation sources
+with credit. Seven third-person quarterstaff donors are kept in the source
+tree: block anticipate, bash intro, power bash, block hit, block idle, equip,
+and unequip. The installed mod contains only DAF-generated flight composites,
+not the 200+ MiB Animated Armoury package.
+
+Skyrim action composite inputs
+------------------------------
+
+Block, bash, draw, sheathe, and shout composites use the matching animations
+from the user's legally installed Skyrim Special Edition game as local build
+inputs. DAF preserves their upper-body timing, binding, and annotations, then
+replaces only root/lower-body tracks with the credited flight pose. Raw game
+animation source files are not kept in the repository and are not installed
+as a separate source set.
+
 Release composition
 -------------------
 
-The release contains 836 generated, flight-scoped OAR HKX aliases across the
-fallback, unarmed, one-handed, dual-wield, greatsword, axe/warhammer, bow,
-crossbow, magic, and staff families. The exact original-name coverage is in:
+The release contains 1,167 generated, flight-scoped OAR HKX aliases across the
+fallback, unarmed, one-handed, dual-wield, greatsword, axe/warhammer,
+quarterstaff, bow, crossbow, magic, and staff families. The exact
+original-name coverage is in:
 
   SKSE\Plugins\DragonAspectFlight-AnimationCoverage.json
 

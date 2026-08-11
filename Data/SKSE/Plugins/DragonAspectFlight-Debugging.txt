@@ -8,7 +8,9 @@ Detailed diagnostics are enabled by default in DragonAspectFlight.ini:
     SnapshotIntervalSeconds=2.0
 
 The plugin logs state changes immediately and emits a bounded state snapshot every
-two seconds during flight. It does not log every frame.
+two seconds during flight. It does not log every frame. The log appends across
+launches and rotates at 5 MiB, retaining three files so a later launch does not
+erase the failed session.
 
 When reproducing a problem
 --------------------------
@@ -19,6 +21,8 @@ When reproducing a problem
 4. Include these files with the report:
 
    Documents\My Games\Skyrim Special Edition\SKSE\DragonAspectFlight.log
+   Documents\My Games\Skyrim Special Edition\SKSE\DragonAspectFlight.1.log
+   Any other numbered DragonAspectFlight rotated logs present in that folder
    Documents\My Games\Skyrim Special Edition\SKSE\OpenAnimationReplacer.log
    Documents\My Games\Skyrim Special Edition\SKSE\BehaviorDataInjector.log
 
@@ -32,9 +36,16 @@ dependency_snapshot  Whether OAR, BDI, and Payload Interpreter DLLs were loaded.
 flight_start/stop    A correlated flight-session boundary.
 input                Ready-weapon, combat, shout, launch, and activation transitions.
 combat_state         Requested combat state, draw state, and expected OAR family.
-state_snapshot       Equipment FormIDs/types, expected OAR family, graph-variable
-                     readback, controller state/gravity/velocity, position, magicka,
-                     stamina, and movement inputs.
+weapon_transition_*  Requested draw/sheathe target, actual WEAPON_STATE, delayed
+                     native-fallback use, completion, reconciliation, or timeout.
+block_state          Eligibility, wantBlocking/IsBlocking state, graph writes,
+                     blockStart/blockStop event result, and quarterstaff routing.
+block_reconcile      Any state reassertion or automatic clear after equipment change.
+shout_state          Press/release state, descent state, selected Whirlwind Sprint,
+                     and controller handoff window.
+state_snapshot       Equipment FormIDs/types, quarterstaff keyword route, weapon and
+                     attack state, block state, graph-variable readback, controller
+                     state/gravity/velocity, position, magicka, stamina, and inputs.
 
 The expected_oar_family field is Dragon Aspect Flight's intended route. The actual
 winning replacement and source submod are recorded by OpenAnimationReplacer.log;

@@ -17,6 +17,7 @@ from AerializeHkx import aerialize, load_backend
 
 
 ROOT_SCOPE = pathlib.Path()
+RELEASE_VERSION = "1.8.1"
 
 
 def names(value: str) -> set[str]:
@@ -121,6 +122,83 @@ STAFF_MOTION = names(
     staffmagicright_runarm.hkx staffmagicright_walkarm.hkx
     staffmagiccast_turnleft180.hkx staffmagiccast_turnleft60.hkx
     staffmagiccast_turnright180.hkx staffmagiccast_turnright60.hkx
+    """
+)
+
+COMMON_VANILLA_ACTIONS = names(
+    """
+    1hm_boundswordequip.hkx 1hm_equip.hkx 1hm_unequip.hkx
+    2hc_equip.hkx 2hc_unequip.hkx 2hw_equip.hkx 2hw_unequip.hkx
+    axe_equip.hkx axe_unequip.hkx bow_boundbowequip.hkx
+    bow_equip.hkx bow_unequip.hkx dag_equip.hkx dag_unequip.hkx
+    h2h_equip.hkx h2h_unequip.hkx mac_equip.hkx mac_unequip.hkx
+    mlh_1hm_equip.hkx mlh_equip.hkx mlh_unequip.hkx
+    mrh_and_mlh_equip.hkx mrh_and_mlh_forceequip.hkx mrh_and_mlh_unequip.hkx
+    mrh_equip.hkx mrh_unequip.hkx shd_equip_1hmout.hkx
+    staffright_equip.hkx stf_equip.hkx weapsoloequip.hkx
+    mt_shout_inhale.hkx mt_shout_exhale.hkx
+    mt_shout_exhale_medium.hkx mt_shout_exhale_long.hkx
+    1hm_shout_inhale.hkx 1hm_shout_exhale.hkx
+    1hm_shout_exhale_medium.hkx 1hm_shout_exhale_long.hkx
+    sneak1hm_shout_inhale.hkx sneak1hm_shout_exhale.hkx
+    sneak1hm_shout_exhale_medium.hkx sneak1hm_shout_exhale_long.hkx
+    """
+) | {
+    "dlc01/crossbow_equip.hkx",
+}
+
+BLOCK_ACTION_PROFILES: dict[str, set[str]] = {
+    "one_handed": names(
+        """
+        1hm_blockanticipate.hkx 1hm_blockbash.hkx 1hm_blockbashintro.hkx
+        1hm_blockbashpower.hkx 1hm_blockhit.hkx 1hm_blockhita.hkx
+        1hm_blockhitb.hkx 1hm_blockidle.hkx
+        shd_blockanticipate.hkx shd_blockbash.hkx shd_blockbashintro.hkx
+        shd_blockbashpower.hkx shd_blockbashsprint.hkx shd_blockhit.hkx
+        shd_blockhit_vara.hkx shd_blockhit_varb.hkx shd_blockidle.hkx
+        shd_blocktimed.hkx
+        tor_blockanticipate.hkx tor_blockanticipatemt.hkx tor_blockbash.hkx
+        tor_blockbashintro.hkx tor_blockbashpower.hkx tor_blockhit.hkx
+        tor_blockhitmt.hkx tor_blockidle.hkx
+        """
+    ),
+    "dual_wield": names(
+        """
+        dw1hm1hmblockbash.hkx dw1hm1hmblockbashintro.hkx
+        dw1hm1hmblockbashpower.hkx dw1hm1hmblockidle.hkx
+        dw1hm1hmmovingblockidle.hkx
+        """
+    ),
+    "greatsword": names(
+        """
+        2hm_blockanticipate.hkx 2hm_blockbash.hkx 2hm_blockbashintro.hkx
+        2hm_blockbashpower.hkx 2hm_blockhit.hkx 2hm_blockhita.hkx
+        2hm_blockhitb.hkx 2hm_blockidle.hkx
+        """
+    ),
+    "axe_warhammer": names(
+        """
+        2hw_blockanticipate.hkx 2hw_blockbash.hkx 2hw_blockbashintro.hkx
+        2hw_blockbashpower.hkx 2hw_blockhit.hkx 2hw_blockhita.hkx
+        2hw_blockhitb.hkx 2hw_blockidle.hkx 2hw_blockstart.hkx
+        2hw_blockstop.hkx
+        """
+    ),
+    "bow": names(
+        """
+        bow_blockanticipate.hkx bow_blockbash.hkx bow_blockbashintro.hkx
+        bow_blockbashpower.hkx bow_blockhit.hkx bow_blockidle.hkx
+        bow_drawheavy.hkx bow_drawlight.hkx sneakbow_drawlight.hkx
+        """
+    ),
+    "crossbow": {"dlc01/crossbow_blockbash.hkx"},
+    "staff": names("staff_bash.hkx staff_bashintro.hkx"),
+}
+
+QUARTERSTAFF_AA_ACTIONS = names(
+    """
+    2hw_blockanticipate.hkx 2hw_blockbashintro.hkx 2hw_blockbashpower.hkx
+    2hw_blockhit.hkx 2hw_blockidle.hkx 2hw_equip.hkx 2hw_unequip.hkx
     """
 )
 
@@ -272,6 +350,15 @@ def equipped_any(types: tuple[int, ...], *, hands: tuple[bool, ...] = (False, Tr
     }
 
 
+def equipped_keyword(editor_id: str, left_hand: bool = False) -> dict[str, object]:
+    return {
+        "condition": "IsEquippedHasKeyword",
+        "requiredVersion": "1.0.0.0",
+        "Keyword": {"editorID": editor_id},
+        "Left hand": left_hand,
+    }
+
+
 def flight_conditions(*equipment: dict[str, object]) -> list[dict[str, object]]:
     result = [actor_base_condition(), graph_bool("bDAF_FlightActive"), graph_state_active()]
     # Equipment transitions can request their OAR originals before the engine's
@@ -294,6 +381,10 @@ class Family:
     attack_prefix: str | None = None
     magic_sources: bool = False
     staff_sources: bool = False
+    block_profile: str | None = None
+    common_vanilla_actions: bool = False
+    quarterstaff_actions: bool = False
+    action_aliases: tuple[tuple[str, str], ...] = ()
     scopes: tuple[pathlib.Path, ...] = (ROOT_SCOPE,)
 
 
@@ -306,6 +397,7 @@ FAMILIES = (
         "Flying_Mod_Idle.hkx",
         GENERIC_MOTION,
         flight_conditions(),
+        common_vanilla_actions=True,
         scopes=(ROOT_SCOPE, pathlib.Path("male")),
     ),
     Family(
@@ -332,6 +424,11 @@ FAMILIES = (
         flight_conditions(equipped_any((1, 2, 3, 4))),
         ONE_HANDED_ATTACKS | MCO_ATTACKS,
         "1hm",
+        block_profile="one_handed",
+        action_aliases=(
+            ("maxsu_shieldblockhit.hkx", "shd_blockhit.hkx"),
+            ("maxsu_weaponblockhit.hkx", "1hm_blockhit.hkx"),
+        ),
     ),
     Family(
         "Flight Base 30 - Dual Wield",
@@ -346,6 +443,8 @@ FAMILIES = (
         ),
         DUAL_WIELD_ATTACKS | MCO_ATTACKS,
         "Dw",
+        block_profile="dual_wield",
+        action_aliases=(("maxsu_weaponblockhit.hkx", "1hm_blockhit.hkx"),),
     ),
     Family(
         "Flight Base 40 - Greatsword",
@@ -357,6 +456,8 @@ FAMILIES = (
         flight_conditions(equipped_any((5,))),
         GREATSWORD_ATTACKS | MCO_ATTACKS,
         "2hm",
+        block_profile="greatsword",
+        action_aliases=(("maxsu_weaponblockhit.hkx", "2hm_blockhit.hkx"),),
     ),
     Family(
         "Flight Base 50 - Axe and Warhammer",
@@ -368,6 +469,22 @@ FAMILIES = (
         flight_conditions(equipped_any((6, 10))),
         AXE_WARHAMMER_ATTACKS | MCO_ATTACKS,
         "2hw",
+        block_profile="axe_warhammer",
+        action_aliases=(("maxsu_weaponblockhit.hkx", "2hw_blockhit.hkx"),),
+    ),
+    Family(
+        "Flight Base 55 - Quarterstaff",
+        "DAF Flight Base - Quarterstaff",
+        "Keyword-routed quarterstaff flight locomotion, attacks, block, bash, draw, and sheathe.",
+        2147483610,
+        "Flying_Mod_Idle.hkx",
+        AXE_WARHAMMER_MOTION,
+        flight_conditions(equipped_keyword("WeapTypeQtrStaff")),
+        AXE_WARHAMMER_ATTACKS | MCO_ATTACKS,
+        "2hw",
+        block_profile="axe_warhammer",
+        quarterstaff_actions=True,
+        action_aliases=(("maxsu_weaponblockhit.hkx", "2hw_blockhit.hkx"),),
     ),
     Family(
         "Flight Base 60 - Bow",
@@ -377,6 +494,14 @@ FAMILIES = (
         "Flying_Mod_Idle.hkx",
         BOW_MOTION,
         flight_conditions(equipped_any((7,))),
+        block_profile="bow",
+        action_aliases=(
+            ("xpe0_bow_drawheavy.hkx", "bow_drawheavy.hkx"),
+            ("xpe0_bow_drawlight.hkx", "bow_drawlight.hkx"),
+            ("xpe0_bow_equip.hkx", "bow_equip.hkx"),
+            ("xpe0_bow_unequip.hkx", "bow_unequip.hkx"),
+            ("xpe0_sneakbow_drawlight.hkx", "sneakbow_drawlight.hkx"),
+        ),
     ),
     Family(
         "Flight Base 70 - Crossbow",
@@ -386,6 +511,7 @@ FAMILIES = (
         "Flying_Mod_Idle.hkx",
         CROSSBOW_MOTION,
         flight_conditions(equipped_any((9,))),
+        block_profile="crossbow",
     ),
     Family(
         "Flight Base 80 - Magic",
@@ -406,6 +532,7 @@ FAMILIES = (
         STAFF_MOTION,
         flight_conditions(equipped_any((8,))),
         staff_sources=True,
+        block_profile="staff",
     ),
 )
 
@@ -419,6 +546,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--hkxcmd", type=pathlib.Path, required=True)
     parser.add_argument("--pynifly-hkx-dir", type=pathlib.Path, required=True)
+    parser.add_argument(
+        "--vanilla-animation-root",
+        type=pathlib.Path,
+        required=True,
+        help="Extracted Skyrim Data/meshes/actors/character/animations directory",
+    )
     return parser.parse_args()
 
 
@@ -494,7 +627,7 @@ def write_hash_manifest(data_root: pathlib.Path) -> int:
         key=lambda path: path.relative_to(data_root).as_posix().lower(),
     )
     lines = [
-        "Dragon Aspect Flight 1.8.0 bundled animation/effect asset SHA-256",
+        f"Dragon Aspect Flight {RELEASE_VERSION} bundled animation/effect asset SHA-256",
         "=================================================================",
         "",
     ]
@@ -510,12 +643,16 @@ def main() -> int:
     hkxcmd = args.hkxcmd.resolve()
     if not hkxcmd.is_file():
         raise FileNotFoundError(f"hkxcmd not found: {hkxcmd}")
+    vanilla_root = args.vanilla_animation_root.resolve()
+    if not vanilla_root.is_dir():
+        raise FileNotFoundError(f"Vanilla animation root not found: {vanilla_root}")
     anim_skyrim = load_backend(args.pynifly_hkx_dir)
 
     data_root = repo_root / "Data"
     nicknak_root = repo_root / "third_party/nicknak/animations"
     flying_root = repo_root / "third_party/flying-mod"
     magic_root = repo_root / "third_party/xp32-magic"
+    animated_armoury_root = repo_root / "third_party/animated-armoury/quarterstaff"
     oar_root = data_root / "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight"
     magic_sources = {path.name.lower(): path for path in magic_root.glob("*.hkx")}
     if len(magic_sources) != 79:
@@ -538,6 +675,15 @@ def main() -> int:
         if family.attack_prefix:
             for attack_name in family.attack_names:
                 required_sources.add(attack_source_name(family, attack_name))
+
+    required_vanilla_actions: set[str] = set()
+    for family in FAMILIES:
+        if family.common_vanilla_actions:
+            required_vanilla_actions.update(COMMON_VANILLA_ACTIONS)
+        if family.block_profile:
+            required_vanilla_actions.update(BLOCK_ACTION_PROFILES[family.block_profile])
+        for _, source_name in family.action_aliases:
+            required_vanilla_actions.add(source_name)
 
     built_sources: dict[str, pathlib.Path] = {}
     coverage: dict[str, object] = {}
@@ -569,6 +715,45 @@ def main() -> int:
             aerial_magic_sources[name] = composite
             print(f"aerialized {name}: replaced_tracks={len(replaced_tracks)} sha256={sha256(composite)}")
 
+        aerial_vanilla_actions: dict[str, pathlib.Path] = {}
+        for action_name in sorted(required_vanilla_actions):
+            source = vanilla_root.joinpath(*pathlib.PurePosixPath(action_name).parts)
+            if not source.is_file():
+                raise FileNotFoundError(f"Required vanilla animation missing: {source}")
+            safe_name = action_name.replace("/", "-")
+            validate_hkx(hkxcmd, source, temp_root / f"vanilla-{safe_name}-validation.xml")
+            composite = temp_root / "aerialized-vanilla" / pathlib.PurePosixPath(action_name)
+            replaced_tracks = aerialize(
+                anim_skyrim,
+                flying_root / "Flying_Mod_Idle.hkx",
+                source,
+                composite,
+            )
+            aerial_vanilla_actions[action_name] = composite
+            print(
+                f"aerialized vanilla {action_name}: "
+                f"replaced_tracks={len(replaced_tracks)} sha256={sha256(composite)}"
+            )
+
+        aerial_quarterstaff_actions: dict[str, pathlib.Path] = {}
+        for action_name in sorted(QUARTERSTAFF_AA_ACTIONS):
+            source = animated_armoury_root / action_name
+            if not source.is_file():
+                raise FileNotFoundError(f"Bundled Animated Armoury source missing: {source}")
+            validate_hkx(hkxcmd, source, temp_root / f"aa-{action_name}-validation.xml")
+            composite = temp_root / "aerialized-animated-armoury" / action_name
+            replaced_tracks = aerialize(
+                anim_skyrim,
+                flying_root / "Flying_Mod_Idle.hkx",
+                source,
+                composite,
+            )
+            aerial_quarterstaff_actions[action_name] = composite
+            print(
+                f"aerialized Animated Armoury {action_name}: "
+                f"replaced_tracks={len(replaced_tracks)} sha256={sha256(composite)}"
+            )
+
         for family in FAMILIES:
             mappings = {name: built_sources[family.base_source] for name in family.motion_names}
             for attack_name in family.attack_names:
@@ -582,6 +767,23 @@ def main() -> int:
                     mappings[target_name] = aerial_magic_sources[source_name]
                 for name in family.motion_names:
                     mappings[name] = built_sources[family.base_source]
+
+            action_names: set[str] = set()
+            if family.common_vanilla_actions:
+                for action_name in COMMON_VANILLA_ACTIONS:
+                    mappings[action_name] = aerial_vanilla_actions[action_name]
+                    action_names.add(action_name)
+            if family.block_profile:
+                for action_name in BLOCK_ACTION_PROFILES[family.block_profile]:
+                    mappings[action_name] = aerial_vanilla_actions[action_name]
+                    action_names.add(action_name)
+            if family.quarterstaff_actions:
+                for action_name, source in aerial_quarterstaff_actions.items():
+                    mappings[action_name] = source
+                    action_names.add(action_name)
+            for target_name, source_name in family.action_aliases:
+                mappings[target_name] = mappings.get(source_name, aerial_vanilla_actions[source_name])
+                action_names.add(target_name)
             if family.staff_sources:
                 for name, source in aerial_magic_sources.items():
                     if name.startswith("staff"):
@@ -614,8 +816,13 @@ def main() -> int:
                 "animationCountPerScope": len(mappings),
                 "motionNames": sorted(family.motion_names),
                 "attackNames": sorted(family.attack_names),
+                "actionNames": sorted(action_names),
                 "scopes": [scope.as_posix() or "." for scope in family.scopes],
                 "aerializedMagicSources": family.magic_sources or family.staff_sources,
+                "blockProfile": family.block_profile,
+                "usesVanillaActionComposites": bool(action_names),
+                "usesAnimatedArmouryQuarterstaffComposites": family.quarterstaff_actions,
+                "actionSourceAliases": dict(sorted(family.action_aliases)),
             }
             print(f"{family.directory}: {len(mappings)} originals x {len(family.scopes)} scopes")
 
@@ -629,7 +836,7 @@ def main() -> int:
     write_json(
         coverage_path,
         {
-            "version": "1.8.0",
+            "version": RELEASE_VERSION,
             "scopes": sorted({scope.as_posix() or "." for family in FAMILIES for scope in family.scopes}),
             "families": coverage,
             "totalOarHkx": len(existing_outputs),

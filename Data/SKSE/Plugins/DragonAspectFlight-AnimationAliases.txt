@@ -1,54 +1,76 @@
-Dragon Aspect Flight 1.8.0 - generated flight animation stack
+Dragon Aspect Flight 1.8.1 - generated flight animation stack
 ============================================================
 
-The release contains 899 player-only, flight-only OAR HKX aliases across ten
-equipment families. Equipment families use OAR's root scope for both sexes. The
-neutral fallback also includes a male scope because some installed animation
-stacks request Animations\\male\\MT_* paths directly.
+The candidate contains 1,167 player-only, flight-only OAR HKX aliases across
+eleven equipment families. Equipment families use OAR's root scope for both
+sexes. The neutral fallback also includes a male scope because some animation
+stacks request Animations\male\MT_* and action paths directly.
 
 Neutral and equipment locomotion
 --------------------------------
 
-All locomotion, idle, block-idle, bash-intro, and attack recovery paths use the
-credited Flying Mod Beta flight idle:
+All ordinary locomotion and idle originals use the credited Flying Mod Beta
+flight idle rather than a falling or grounded-walking clip:
 
   Flying_Mod_Idle.hkx
   SHA-256 21FD87DF7C0D5D9718183944576DC5510A580D530FBD88D0ECF8C36B3DB5F451
 
 Only the fallback family carries generic mt_* locomotion. Equipment families
-carry their own requested 1hm_*, 2hm_*, 2hw_*, dw*, bow_*, crossbow_*, mag_*,
-and staff* originals, preventing grounded Stances/MCO locomotion without
-duplicating the generic set ten times.
+carry their requested 1hm_*, 2hm_*, 2hw_*, dw*, bow_*, crossbow_*, mag_*, and
+staff* originals. A separate WeapTypeQtrStaff family overrides the general
+two-handed route at priority 2147483610.
 
 Aerial attacks
 --------------
 
-Vanilla and MCO melee attack originals map to the corresponding credited
-NickNak aerial normal/power clips. Directional left-side aliases are
-byte-identical where NickNak shipped one animation for both directions.
+Vanilla and recognized MCO melee attack originals map to the corresponding
+credited NickNak aerial normal/power clips. The same names remain available
+while descending; DAF no longer consumes attack input in that state.
+
+Block, bash, draw, sheathe, and shout
+------------------------------------
+
+These action originals are not static poses. Each generated clip keeps its
+source upper-body tracks, duration, binding, and annotation events, while its
+root and lower-body tracks are sampled from Flying_Mod_Idle.hkx. This preserves
+weapon placement, block/bash timing, and shout release without grounded legs.
+
+The quarterstaff route overrides seven action originals with composites made
+from Animated Armoury's open-permission quarterstaff animations. Its normal
+2hw_blockbash uses the compatible vanilla source because Animated Armoury's
+normal bash donor uses an unsupported interleaved representation. Dawnguard's
+crossbow shout offset has no lower-body tracks and is intentionally left as an
+upper-body overlay.
+
+Optional modlist aliases are also flight-scoped. Maxsu's weapon/shield block-hit
+originals resolve to the matching family composite, and Dynamic Bow Animation's
+xpe0_* draw/equip originals resolve to the matching bow composite. Those mods
+remain optional; the aliases are dormant when their custom originals are not
+requested.
 
 Magic and staff
 ---------------
 
-Magic and staff action originals use the credited xp32/Neumeria clips. Weapon
-draw/sheathe, bow release, crossbow release/reload, and shout transitions are
-not replaced with static poses because their annotations drive gameplay.
+Magic and staff action originals continue to use the credited xp32/Neumeria
+clips with flight lower-body tracks. Their successful v1.8.0 routing was kept.
 
 Generated family counts
 -----------------------
 
-  Fallback                 63
+  Fallback (root + male)  212
   Unarmed                  82
-  One Handed              135
-  Dual Wield               96
-  Greatsword              118
-  Axe and Warhammer       121
-  Bow                       60
-  Crossbow                  37
+  One Handed              158
+  Dual Wield               97
+  Greatsword              123
+  Axe and Warhammer       128
+  Quarterstaff            130
+  Bow                       73
+  Crossbow                  38
   Magic                    113
-  Staff                     11
-  Total                    836
+  Staff                     13
+  Total                  1,167
 
-The complete original-name coverage is recorded in:
+The complete original-name coverage and per-family source flags are recorded
+in:
 
   SKSE\Plugins\DragonAspectFlight-AnimationCoverage.json

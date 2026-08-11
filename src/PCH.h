@@ -23,7 +23,7 @@
 #include <thread>
 #include <vector>
 
-#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/rotating_file_sink.h>
 
 namespace logger = SKSE::log;
 

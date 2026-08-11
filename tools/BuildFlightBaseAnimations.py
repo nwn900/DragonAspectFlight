@@ -165,7 +165,7 @@ def write_hash_manifest(data_root: pathlib.Path) -> int:
         key=lambda path: path.relative_to(data_root).as_posix().lower(),
     )
     lines = [
-        "Dragon Aspect Flight 1.8.0 bundled animation/effect asset SHA-256",
+        "Dragon Aspect Flight 1.8.1 bundled animation/effect asset SHA-256",
         "=================================================================",
         "",
     ]

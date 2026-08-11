@@ -17,7 +17,13 @@ namespace
 		}
 
 		*logDirectory /= "DragonAspectFlight.log";
-		auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logDirectory->string(), true);
+		constexpr std::size_t MaxLogFileSize = 5U * 1024U * 1024U;
+		constexpr std::size_t RetainedLogFiles = 3U;
+		auto sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
+			logDirectory->string(),
+			MaxLogFileSize,
+			RetainedLogFiles,
+			false);
 		auto log = std::make_shared<spdlog::logger>("DragonAspectFlight", std::move(sink));
 
 		log->set_level(spdlog::level::trace);
@@ -26,7 +32,11 @@ namespace
 		spdlog::set_default_logger(std::move(log));
 		spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%l] %v");
 
-		logger::info("DragonAspectFlight logger initialized at {}", logDirectory->string());
+		logger::info(
+			"DragonAspectFlight logger initialized at {} (append/rotate, {} MiB x {} files)",
+			logDirectory->string(),
+			MaxLogFileSize / (1024U * 1024U),
+			RetainedLogFiles);
 	}
 
 	void InitializePapyrus()

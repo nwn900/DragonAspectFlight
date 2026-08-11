@@ -1,6 +1,60 @@
-Dragon Aspect Flight 1.8.0 bundled animation/effect asset SHA-256
+Dragon Aspect Flight 1.8.1 bundled animation/effect asset SHA-256
 =================================================================
 
+8f813204b2c5aba590ca8810940b45db57277a502e4103b1393709875d79cf92 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/1hm_boundswordequip.hkx
+d086f73fa87aedb9ff398f93a4bbc76b6a49626cb81bc53eebaa6d6c51eaac97 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/1hm_equip.hkx
+5b449ef7610c2fe02d708c3b2af4b2544c3fa6f018bc32678befd9c7e2179475 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/1hm_shout_exhale.hkx
+1d28c1a42e6c7e18596863109d35ce53f8366096964ee93334317d30c1980dd4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/1hm_shout_exhale_long.hkx
+b5d8f26ea8f0c9cfaf65ace8387cb201aabce3c1c3f894c8b17d2bf01d383d5b *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/1hm_shout_exhale_medium.hkx
+e1f7acdf77360ca48086aa028bc21360b38e9ca3cb8ba6100f2972c4257022b9 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/1hm_shout_inhale.hkx
+5902cdcba4681724a03b733395be7c49f1205ea8264aa2e247d8234a2a2db0bd *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/1hm_unequip.hkx
+6f98521147e09c2e9b48739f75f3db7587dfa62658b0334fec27daca183c34c0 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/2hc_equip.hkx
+dbf64278efc93b772ce6d441b5758685b0ac35fe6a57e2106c90693854647171 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/2hc_unequip.hkx
+fda2ae3a39e9189e9cd66b74f61f4afa8cb0f0df1246d6ae5a4c7f96159432bf *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/2hw_equip.hkx
+c41cd0fd2028ebfc803e494f0b815e290d168d09d4590b1d958787030d2d868e *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/2hw_unequip.hkx
+cccde39d237a795a9d672bcd22db8b4b0eda73f00d9a2d49fbc7f85a0e7c4e5f *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/axe_equip.hkx
+f428dbcdbfd2547d59700c861e371157be70c02a1c9fd17ebbd2c712589e4800 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/axe_unequip.hkx
+596976acc53fd3dca706b6481c839f017662bd29bc34af57fe9221c2c1103e72 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/bow_boundbowequip.hkx
+ae4d5182838e5a6319b6a5488667e9211c33bebc10812ed9f8a03a8566f8453b *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/bow_equip.hkx
+e54af1a0cae9642d65eda0074650cbc4e49d6c87e634dcfb4ddad0db930bc7d0 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/bow_unequip.hkx
+26546b03089147d1e3aa5d6caeb3bdd195c0da1afb0ab56c2f1400b5e29f4810 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/dag_equip.hkx
+1daadda1d298acc4f36c38e0b4cf5724205f29def3361b3b96ec4741bb0a3846 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/dag_unequip.hkx
+8f8a0208e23bff54bf99cd3b5f6910b5b1d3e5d1a0311cccc81bf009e98f4926 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/dlc01/crossbow_equip.hkx
+e489f5a5c855d7b95d3683a0540f5e64541382b7bd5762f11190db0b5aef2381 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/h2h_equip.hkx
+94a511cf61d18353829989c37e4b9a6d8656cd10b5a19ced9cc26f785deba312 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/h2h_unequip.hkx
+3063c66dae6db2bc0bceb6b5475420f5f2ee141d53aa12b1e25922082abf15dc *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mac_equip.hkx
+466b142ecf97ef5faeb13381814c3b00376c7d8a226c6edac052cf248b4ca052 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mac_unequip.hkx
+8f813204b2c5aba590ca8810940b45db57277a502e4103b1393709875d79cf92 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/1hm_boundswordequip.hkx
+d086f73fa87aedb9ff398f93a4bbc76b6a49626cb81bc53eebaa6d6c51eaac97 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/1hm_equip.hkx
+5b449ef7610c2fe02d708c3b2af4b2544c3fa6f018bc32678befd9c7e2179475 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/1hm_shout_exhale.hkx
+1d28c1a42e6c7e18596863109d35ce53f8366096964ee93334317d30c1980dd4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/1hm_shout_exhale_long.hkx
+b5d8f26ea8f0c9cfaf65ace8387cb201aabce3c1c3f894c8b17d2bf01d383d5b *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/1hm_shout_exhale_medium.hkx
+e1f7acdf77360ca48086aa028bc21360b38e9ca3cb8ba6100f2972c4257022b9 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/1hm_shout_inhale.hkx
+5902cdcba4681724a03b733395be7c49f1205ea8264aa2e247d8234a2a2db0bd *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/1hm_unequip.hkx
+6f98521147e09c2e9b48739f75f3db7587dfa62658b0334fec27daca183c34c0 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/2hc_equip.hkx
+dbf64278efc93b772ce6d441b5758685b0ac35fe6a57e2106c90693854647171 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/2hc_unequip.hkx
+fda2ae3a39e9189e9cd66b74f61f4afa8cb0f0df1246d6ae5a4c7f96159432bf *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/2hw_equip.hkx
+c41cd0fd2028ebfc803e494f0b815e290d168d09d4590b1d958787030d2d868e *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/2hw_unequip.hkx
+cccde39d237a795a9d672bcd22db8b4b0eda73f00d9a2d49fbc7f85a0e7c4e5f *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/axe_equip.hkx
+f428dbcdbfd2547d59700c861e371157be70c02a1c9fd17ebbd2c712589e4800 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/axe_unequip.hkx
+596976acc53fd3dca706b6481c839f017662bd29bc34af57fe9221c2c1103e72 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/bow_boundbowequip.hkx
+ae4d5182838e5a6319b6a5488667e9211c33bebc10812ed9f8a03a8566f8453b *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/bow_equip.hkx
+e54af1a0cae9642d65eda0074650cbc4e49d6c87e634dcfb4ddad0db930bc7d0 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/bow_unequip.hkx
+26546b03089147d1e3aa5d6caeb3bdd195c0da1afb0ab56c2f1400b5e29f4810 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/dag_equip.hkx
+1daadda1d298acc4f36c38e0b4cf5724205f29def3361b3b96ec4741bb0a3846 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/dag_unequip.hkx
+8f8a0208e23bff54bf99cd3b5f6910b5b1d3e5d1a0311cccc81bf009e98f4926 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/dlc01/crossbow_equip.hkx
+e489f5a5c855d7b95d3683a0540f5e64541382b7bd5762f11190db0b5aef2381 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/h2h_equip.hkx
+94a511cf61d18353829989c37e4b9a6d8656cd10b5a19ced9cc26f785deba312 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/h2h_unequip.hkx
+3063c66dae6db2bc0bceb6b5475420f5f2ee141d53aa12b1e25922082abf15dc *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mac_equip.hkx
+466b142ecf97ef5faeb13381814c3b00376c7d8a226c6edac052cf248b4ca052 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mac_unequip.hkx
+5771db18356fb7f994fdf43eb147445420f04f80c28e080134740346f99674fe *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mlh_1hm_equip.hkx
+e6271d7bed6b4cb84dc9c643d37798bcadd32a39f26549bc8ae0d98daab8f512 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mlh_equip.hkx
+fa2e7caa2f3c012b5856e473ebfc9ee1cb8b70882616e2c0604df788e034d4e1 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mlh_unequip.hkx
+b753a58f77e3e84659d91231dd566f5091054d3ecf39ee92f6eb6287549fd971 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mrh_and_mlh_equip.hkx
+bf374b5ea7958573a34e7869227d417a1e1df7311131c5390452f75be7989af7 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mrh_and_mlh_forceequip.hkx
+0fe84e176d89ef700a2a02fe84dace0ff71253f43cbfb87e84bd3598d6daab4a *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mrh_and_mlh_unequip.hkx
+8f48a247dc0436476e627cb154859244512a520d30c5f33c0c13dcb57dcefb2a *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mrh_equip.hkx
+e4070024942fb10579c6bfc84f2b7ff3f070d9397cfe94c9066bde96904dc131 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mrh_unequip.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mt_idle.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mt_jump.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mt_jumpfall.hkx
@@ -26,6 +80,10 @@ Dragon Aspect Flight 1.8.0 bundled animation/effect asset SHA-256
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mt_runright.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mt_runstrafeleft.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mt_runstraferight.hkx
+8109e39cb21b207913dd516b64b759f7845ed0425d9934ceae3e9a6dc658aa31 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mt_shout_exhale.hkx
+189c851730a5852cb91b7e7e2e3275b7d038627f5551239f0b495a7ea5fb5982 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mt_shout_exhale_long.hkx
+ac0fd9a0860d9c33c509498acd36aa18faf120c80af2c7be6188a3103a452a4a *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mt_shout_exhale_medium.hkx
+fae7ccd39e0f116b67efa64cc86817390a40b3a6b71334c4b0121d78b30beec8 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mt_shout_inhale.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mt_sprint.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mt_sprintforward.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mt_sprintforwardsword.hkx
@@ -43,6 +101,11 @@ Dragon Aspect Flight 1.8.0 bundled animation/effect asset SHA-256
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mt_walkright.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mt_walkstrafeleft.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/mt_walkstraferight.hkx
+2dc8850dbb503a0f51cf31a1219019c12ee55e4600ef8db72b5880e000bcea33 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/shd_equip_1hmout.hkx
+48b930b7aea5a89d13ab0846429c1ebaae2a5c65807c644c50f9da3d3f33ee0b *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/sneak1hm_shout_exhale.hkx
+43fe4ba0c3426b4e7575cab084aedfade6f368a74f6c9146d9c5a4408de03b8f *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/sneak1hm_shout_exhale_long.hkx
+7a0f8eba16d9c67b71ed74c8ed9c27c351e781c42ae84e437156f40d9cdfcf44 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/sneak1hm_shout_exhale_medium.hkx
+f39dbde265391024ad5d25e1126e45968c4f610c33342a2fe4a4910089a9caac *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/sneak1hm_shout_inhale.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/sneak_turnleft180.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/sneak_turnleft60.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/sneak_turnright180.hkx
@@ -64,6 +127,17 @@ Dragon Aspect Flight 1.8.0 bundled animation/effect asset SHA-256
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/sneakwalk_fwrwrdleft.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/sneakwalk_left.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/sneakwalk_right.hkx
+033fa2dd0e8f9064a2e910c296f26c872f2146c471963f39ab12dd25238f8f12 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/staffright_equip.hkx
+4ade733d11ff9ddb6530a88aa9457ef36da2fc16d17df4322fcca1eaee33f3d8 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/stf_equip.hkx
+9fc4aa2cf88d76531bf54b0ef891118225c461caa5696d13daec3c835f990127 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/male/weapsoloequip.hkx
+5771db18356fb7f994fdf43eb147445420f04f80c28e080134740346f99674fe *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mlh_1hm_equip.hkx
+e6271d7bed6b4cb84dc9c643d37798bcadd32a39f26549bc8ae0d98daab8f512 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mlh_equip.hkx
+fa2e7caa2f3c012b5856e473ebfc9ee1cb8b70882616e2c0604df788e034d4e1 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mlh_unequip.hkx
+b753a58f77e3e84659d91231dd566f5091054d3ecf39ee92f6eb6287549fd971 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mrh_and_mlh_equip.hkx
+bf374b5ea7958573a34e7869227d417a1e1df7311131c5390452f75be7989af7 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mrh_and_mlh_forceequip.hkx
+0fe84e176d89ef700a2a02fe84dace0ff71253f43cbfb87e84bd3598d6daab4a *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mrh_and_mlh_unequip.hkx
+8f48a247dc0436476e627cb154859244512a520d30c5f33c0c13dcb57dcefb2a *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mrh_equip.hkx
+e4070024942fb10579c6bfc84f2b7ff3f070d9397cfe94c9066bde96904dc131 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mrh_unequip.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mt_idle.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mt_jump.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mt_jumpfall.hkx
@@ -89,6 +163,10 @@ Dragon Aspect Flight 1.8.0 bundled animation/effect asset SHA-256
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mt_runright.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mt_runstrafeleft.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mt_runstraferight.hkx
+8109e39cb21b207913dd516b64b759f7845ed0425d9934ceae3e9a6dc658aa31 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mt_shout_exhale.hkx
+189c851730a5852cb91b7e7e2e3275b7d038627f5551239f0b495a7ea5fb5982 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mt_shout_exhale_long.hkx
+ac0fd9a0860d9c33c509498acd36aa18faf120c80af2c7be6188a3103a452a4a *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mt_shout_exhale_medium.hkx
+fae7ccd39e0f116b67efa64cc86817390a40b3a6b71334c4b0121d78b30beec8 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mt_shout_inhale.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mt_sprint.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mt_sprintforward.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mt_sprintforwardsword.hkx
@@ -106,6 +184,11 @@ Dragon Aspect Flight 1.8.0 bundled animation/effect asset SHA-256
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mt_walkright.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mt_walkstrafeleft.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/mt_walkstraferight.hkx
+2dc8850dbb503a0f51cf31a1219019c12ee55e4600ef8db72b5880e000bcea33 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/shd_equip_1hmout.hkx
+48b930b7aea5a89d13ab0846429c1ebaae2a5c65807c644c50f9da3d3f33ee0b *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/sneak1hm_shout_exhale.hkx
+43fe4ba0c3426b4e7575cab084aedfade6f368a74f6c9146d9c5a4408de03b8f *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/sneak1hm_shout_exhale_long.hkx
+7a0f8eba16d9c67b71ed74c8ed9c27c351e781c42ae84e437156f40d9cdfcf44 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/sneak1hm_shout_exhale_medium.hkx
+f39dbde265391024ad5d25e1126e45968c4f610c33342a2fe4a4910089a9caac *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/sneak1hm_shout_inhale.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/sneak_turnleft180.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/sneak_turnleft60.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/sneak_turnright180.hkx
@@ -127,6 +210,9 @@ Dragon Aspect Flight 1.8.0 bundled animation/effect asset SHA-256
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/sneakwalk_fwrwrdleft.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/sneakwalk_left.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/sneakwalk_right.hkx
+033fa2dd0e8f9064a2e910c296f26c872f2146c471963f39ab12dd25238f8f12 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/staffright_equip.hkx
+4ade733d11ff9ddb6530a88aa9457ef36da2fc16d17df4322fcca1eaee33f3d8 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/stf_equip.hkx
+9fc4aa2cf88d76531bf54b0ef891118225c461caa5696d13daec3c835f990127 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 00 - Fallback/weapsoloequip.hkx
 469e2b807a82847a43ee714c3325c2a8d0bd7afd056965b3eec688b32a018b05 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 10 - Unarmed/h2h_attackleft.hkx
 cd2a67c5d7abf50a9bfc34a5c7407eb43e9805a598533e103c1252529cda03e3 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 10 - Unarmed/h2h_attackpowerforwardlefthand.hkx
 cd2a67c5d7abf50a9bfc34a5c7407eb43e9805a598533e103c1252529cda03e3 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 10 - Unarmed/h2h_attackpowerforwardrighthand.hkx
@@ -222,10 +308,14 @@ c8964a6a217669cc4be29b5a98c2ca21ea2188435e754b49c0c5e7054b42b2b5 *meshes/actors/
 52edfc8f19a3a18ac35bd2c3357326dde58f698bdef26fe144d203fcfbb3f7e5 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_attackpowerright.hkx
 c8964a6a217669cc4be29b5a98c2ca21ea2188435e754b49c0c5e7054b42b2b5 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_attackright.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_attackrightintro.hkx
-c8964a6a217669cc4be29b5a98c2ca21ea2188435e754b49c0c5e7054b42b2b5 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_blockbash.hkx
-21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_blockbashintro.hkx
-52edfc8f19a3a18ac35bd2c3357326dde58f698bdef26fe144d203fcfbb3f7e5 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_blockbashpower.hkx
-21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_blockidle.hkx
+2846db6a417aa16b3bc3110b357e588b0f0246ab3ef3cfeec1a232e4acd4db8d *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_blockanticipate.hkx
+0ff3e451bc642abc9be677db6ee44185a537b4d83373f738eb3293d11d7944f7 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_blockbash.hkx
+debb27f47bc5c5b5dbfc46e1d5e7a6284cb131f94c3f4704933bea1c005376c2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_blockbashintro.hkx
+21fc3396737d49d245c943a6b98d966e5c64906e4554db2377cfd472e083cbec *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_blockbashpower.hkx
+d06b06aef66a88797486949a1f3dbe6095cbd2640528b4d639fc58d7157c4e92 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_blockhit.hkx
+8f650ae7391b44ff46085f21d19ca5ea4a634032e65cfc65d1182b4575f8b249 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_blockhita.hkx
+1243cd26203b76c657c6c11c4c35ea1f4ffbbb824390be1c4e549513c9ec4fb5 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_blockhitb.hkx
+78fa5f22157483e508272a1adcd17c9642665b6556cb05227b485fa0f1f20d12 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_blockidle.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_idle.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_runbackward.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_runbackwardleft.hkx
@@ -296,6 +386,8 @@ c8964a6a217669cc4be29b5a98c2ca21ea2188435e754b49c0c5e7054b42b2b5 *meshes/actors/
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hm_walkstraferight.hkx
 c4865ab2f3f9fb08c9ee813792e1d7021b8700ecf476a6a0ea61103d087c8559 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hmlefthand_attackforwardsprint.hkx
 7f3ef17e45f687e9ec40b36855950b17d2095a47e11ada7ee96e33cbcd70bead *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/1hmlefthand_attackpowerforwardsprint.hkx
+50ad3a4d65259f445ece160c0ccc20a6b4fde14894a2cb4a1c49f0a10b8deb77 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/maxsu_shieldblockhit.hkx
+d06b06aef66a88797486949a1f3dbe6095cbd2640528b4d639fc58d7157c4e92 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/maxsu_weaponblockhit.hkx
 c8964a6a217669cc4be29b5a98c2ca21ea2188435e754b49c0c5e7054b42b2b5 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/mco_attack1.hkx
 2da12ec7611f2c88147dcb308fb2421ef13957a5dea8903ba3b598f1c7afc656 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/mco_attack10.hkx
 2da12ec7611f2c88147dcb308fb2421ef13957a5dea8903ba3b598f1c7afc656 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/mco_attack2.hkx
@@ -337,13 +429,30 @@ c8964a6a217669cc4be29b5a98c2ca21ea2188435e754b49c0c5e7054b42b2b5 *meshes/actors/
 c4865ab2f3f9fb08c9ee813792e1d7021b8700ecf476a6a0ea61103d087c8559 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/mlh_1hm_attackforward.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/mlh_1hm_attackforwardintro.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/scar_1hmreadydummy.hkx
-21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/shd_blockidle.hkx
+76266715c5fb01d85420e6562af85c1a8e6dbe7b914ae0924d4a930b91c35cd8 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/shd_blockanticipate.hkx
+94f24e3a4c0895812dd7206def26561eed86b3bf6015337c5f72dd59de4595f3 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/shd_blockbash.hkx
+fc69657545e3f7f834c4470f571193b6f764e76446580db66f4bf3a36d293686 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/shd_blockbashintro.hkx
+5a6317d58cd5616b81f25639d58b38414b320311fb0fd81a89fb4cabab35f79c *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/shd_blockbashpower.hkx
+1f18b35dbf8946ccda3a351068947dfd4029f22ef9a061b49b83536d8c2dafb7 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/shd_blockbashsprint.hkx
+50ad3a4d65259f445ece160c0ccc20a6b4fde14894a2cb4a1c49f0a10b8deb77 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/shd_blockhit.hkx
+153f489b04372d8edecdbe1cf914f9562cde4d9002fa9deafb4fa8c56ccbde8d *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/shd_blockhit_vara.hkx
+c7b59dd19143cfe5206d22debe0bed9fe9420591ed0376d54f7af6b776e2bd4a *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/shd_blockhit_varb.hkx
+20cd5a080a83ab16048ecabea2b69f412ef70031a341caed6c03d9ddd239f559 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/shd_blockidle.hkx
+4b21c308e9eb3bedcd55c7ac3a3aa21272ea582a21bb4214e5ca625cc03e6517 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/shd_blocktimed.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/sneak1hm_idle.hkx
 c8964a6a217669cc4be29b5a98c2ca21ea2188435e754b49c0c5e7054b42b2b5 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/sneak_1hmattack.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/sneak_1hmattackintro.hkx
 c4865ab2f3f9fb08c9ee813792e1d7021b8700ecf476a6a0ea61103d087c8559 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/sneak_1hmattacklefthand.hkx
 7f3ef17e45f687e9ec40b36855950b17d2095a47e11ada7ee96e33cbcd70bead *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/sneak_1hmattackpowerlefthand.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/sneakrun_forwardroll.hkx
+20235caa349b37f480b56809b0feafd6376d80f76d2ad288ec84e59cb3b1473c *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/tor_blockanticipate.hkx
+7bd988be7a2b517dde24ed952dd35c9861be9271ad6828c3b9bc50cfe1ac57be *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/tor_blockanticipatemt.hkx
+1999843a4db3d906a9ce9820a148ba1d306b4c2d85f0b5cfe438557763abc74c *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/tor_blockbash.hkx
+2a6c7837a9e260adc24736b2ee48ebded017d5a8e3a7bb4c0de4993ee47777a3 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/tor_blockbashintro.hkx
+20812bbe58b8276477026f406a7b389732ed98ec143e08fedb58e4a88176f6d7 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/tor_blockbashpower.hkx
+2d54aa6263d0d0a0df365ec3eae9990fd7afef4471dfc8dcecefb35ebccb74e5 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/tor_blockhit.hkx
+c9765927ec45bdba846b1724754a7f9d4c61b04624ec6a336f0ac3533e4b36d1 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/tor_blockhitmt.hkx
+89555ce9d762577d42f149b411503ddf527564ea8a0f7d0b6b8e0eaea0cd677b *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 20 - One Handed/tor_blockidle.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/1hm_blockidle.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/1hm_idle.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/1hm_runbackward.hkx
@@ -376,12 +485,12 @@ e86bb5f4e8a631fa5448bd9b7a998ef8f4ceb8c176518616cb13bdc99ca446b8 *meshes/actors/
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dw1hm1hm_attackrightintro.hkx
 0fae44deeb9b2ec001f5fd0ba3e8b4b175c77271d5cc8fc5784657f0c566ba68 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dw1hm1hm_powerattack.hkx
 0fae44deeb9b2ec001f5fd0ba3e8b4b175c77271d5cc8fc5784657f0c566ba68 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dw1hm1hm_specialattackpower.hkx
-e86bb5f4e8a631fa5448bd9b7a998ef8f4ceb8c176518616cb13bdc99ca446b8 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dw1hm1hmblockbash.hkx
-21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dw1hm1hmblockbashintro.hkx
-0fae44deeb9b2ec001f5fd0ba3e8b4b175c77271d5cc8fc5784657f0c566ba68 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dw1hm1hmblockbashpower.hkx
-21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dw1hm1hmblockidle.hkx
+6fb2517eaebe2b5104dadebab9c0364f87b50b533c0c5db96103e98c8f3d28ed *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dw1hm1hmblockbash.hkx
+b3cdb4b94bc91023375a3630bd63501adf6395e6408ad236810966875b695a7b *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dw1hm1hmblockbashintro.hkx
+a957a142896aba433493f6b07cfe0fe2a447553b563500ba5cc87315e1cf8513 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dw1hm1hmblockbashpower.hkx
+6447d7b85bc7e07a1e45ac7e9e49757da00f0bf413c64b6d20ca0b94ce795cae *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dw1hm1hmblockidle.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dw1hm1hmidle.hkx
-21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dw1hm1hmmovingblockidle.hkx
+c16656a06829598f676c7ac9d0fd2bec5a0915f6b48f4bd4636f888168b89e6e *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dw1hm1hmmovingblockidle.hkx
 0fae44deeb9b2ec001f5fd0ba3e8b4b175c77271d5cc8fc5784657f0c566ba68 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dw_attackpowerback.hkx
 0fae44deeb9b2ec001f5fd0ba3e8b4b175c77271d5cc8fc5784657f0c566ba68 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dw_attackpowerforward.hkx
 0fae44deeb9b2ec001f5fd0ba3e8b4b175c77271d5cc8fc5784657f0c566ba68 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dw_attackpowerknifeslashcombo.hkx
@@ -398,6 +507,7 @@ e86bb5f4e8a631fa5448bd9b7a998ef8f4ceb8c176518616cb13bdc99ca446b8 *meshes/actors/
 e86bb5f4e8a631fa5448bd9b7a998ef8f4ceb8c176518616cb13bdc99ca446b8 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dwwalkforward_attackright.hkx
 e86bb5f4e8a631fa5448bd9b7a998ef8f4ceb8c176518616cb13bdc99ca446b8 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dwwalkleft_attackright.hkx
 e86bb5f4e8a631fa5448bd9b7a998ef8f4ceb8c176518616cb13bdc99ca446b8 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/dwwalkright_attackright.hkx
+d06b06aef66a88797486949a1f3dbe6095cbd2640528b4d639fc58d7157c4e92 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/maxsu_weaponblockhit.hkx
 e86bb5f4e8a631fa5448bd9b7a998ef8f4ceb8c176518616cb13bdc99ca446b8 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/mco_attack1.hkx
 e86bb5f4e8a631fa5448bd9b7a998ef8f4ceb8c176518616cb13bdc99ca446b8 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/mco_attack10.hkx
 e86bb5f4e8a631fa5448bd9b7a998ef8f4ceb8c176518616cb13bdc99ca446b8 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 30 - Dual Wield/mco_attack2.hkx
@@ -453,10 +563,14 @@ a71cfddeca8a6558e1330a9ec0b63b76ad55a16310b179903ae6ba37728b0b91 *meshes/actors/
 900e13205e3aaa74cc037bd648f23bd6df77d7659886e7af97eaf62c73642832 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_attackpowerright.hkx
 a71cfddeca8a6558e1330a9ec0b63b76ad55a16310b179903ae6ba37728b0b91 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_attackright.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_attackrightintro.hkx
-a71cfddeca8a6558e1330a9ec0b63b76ad55a16310b179903ae6ba37728b0b91 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_blockbash.hkx
-21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_blockbashintro.hkx
-900e13205e3aaa74cc037bd648f23bd6df77d7659886e7af97eaf62c73642832 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_blockbashpower.hkx
-21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_blockidle.hkx
+099619db196120255eba3db43f9c03acc2a3d93beb3050911de2421e2912bded *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_blockanticipate.hkx
+ccd2de2781c94fa34f89544fd65745acdfe9ea1177140930ee386a54213031a9 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_blockbash.hkx
+2c94da99426a1d54b852070f168591058773eac0ceff5fb1fc8aeb9f7387e198 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_blockbashintro.hkx
+6e9762af534cc04af337fd136ef9d2512b8719eb0260f66708347d24d8f1a59d *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_blockbashpower.hkx
+f407557a4948cd100eb09d71887282c73b55d2f4c105bc05bf03be8530148ce9 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_blockhit.hkx
+497382d89d2e22085ac085d0994fbc104c4a91485275d12df3a6a5fd89f931bc *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_blockhita.hkx
+c7685feea86c10ff3085602158e2345c5dd18ca782cd5f4bfcb9302a660c46ef *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_blockhitb.hkx
+fcd2e03148b1377be44938c40d8e1b2901c61f415ee75717c6024d4eeea977d4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_blockidle.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_idle.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_runbackward.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_runbackwardleft.hkx
@@ -518,6 +632,7 @@ a71cfddeca8a6558e1330a9ec0b63b76ad55a16310b179903ae6ba37728b0b91 *meshes/actors/
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_walkrtattackrightintro.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_walkstrafeleft.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/2hm_walkstraferight.hkx
+f407557a4948cd100eb09d71887282c73b55d2f4c105bc05bf03be8530148ce9 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/maxsu_weaponblockhit.hkx
 a71cfddeca8a6558e1330a9ec0b63b76ad55a16310b179903ae6ba37728b0b91 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/mco_attack1.hkx
 a71cfddeca8a6558e1330a9ec0b63b76ad55a16310b179903ae6ba37728b0b91 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/mco_attack10.hkx
 a71cfddeca8a6558e1330a9ec0b63b76ad55a16310b179903ae6ba37728b0b91 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 40 - Greatsword/mco_attack2.hkx
@@ -571,10 +686,16 @@ a71cfddeca8a6558e1330a9ec0b63b76ad55a16310b179903ae6ba37728b0b91 *meshes/actors/
 946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_attackpowerright.hkx
 022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_attackright.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_attackrightintro.hkx
-022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_blockbash.hkx
-21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_blockbashintro.hkx
-946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_blockbashpower.hkx
-21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_blockidle.hkx
+c8beeb76d70a4bce0ebc24859ff1bc5eaa7ec102809c54922334216197c3026e *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_blockanticipate.hkx
+aa7a123b06bbba186150a71862ace5360b91e6960b6ed020ea66c515952a7882 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_blockbash.hkx
+1e6d24f3e5b64f521760c095869ef92928bb48d053fdbf6f364042d05f145557 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_blockbashintro.hkx
+c911ea1197fe9920ddf1214315b9eb8b8a9f53184b0ac02b333a2f94f4a0f76d *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_blockbashpower.hkx
+3a0d18fb237eaa509f1f738aced9508b9509faacc471548baa4250e1ab277cc8 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_blockhit.hkx
+31a735d04d5453d084e1378868c68532b05ae6390e03cfd7f044ab5ffcd20781 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_blockhita.hkx
+d3a1d5ade8a3bc5182c052c4516b8d1850dcaba8eea8b3737ef3718b4b40dcde *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_blockhitb.hkx
+9ec53e3e7e19b5b42abae2fc228116735f9cd882c7bc21606e1eca44789425e5 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_blockidle.hkx
+951e1e4474aabcc7dec452c9005dd2189038689fc8af67d2406129f66e19fca6 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_blockstart.hkx
+d15ef8ace52b9ab96159a74346b412828c6e4325b863d4e0ff300da3d15b5424 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_blockstop.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_idle.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_runarmblend-1.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_runarmblend.hkx
@@ -639,6 +760,7 @@ a71cfddeca8a6558e1330a9ec0b63b76ad55a16310b179903ae6ba37728b0b91 *meshes/actors/
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_walkrtattackrightintro.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_walkstrafeleft.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/2hw_walkstraferight.hkx
+3a0d18fb237eaa509f1f738aced9508b9509faacc471548baa4250e1ab277cc8 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/maxsu_weaponblockhit.hkx
 022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/mco_attack1.hkx
 022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/mco_attack10.hkx
 022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/mco_attack2.hkx
@@ -679,7 +801,144 @@ a71cfddeca8a6558e1330a9ec0b63b76ad55a16310b179903ae6ba37728b0b91 *meshes/actors/
 946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/mco_weaponart.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/scar_1hmreadydummy.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 50 - Axe and Warhammer/sneakrun_forwardroll.hkx
-21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/bow_blockidle.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_attackforwardsprint.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_attackleft.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_attackleftintro.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_attackpower.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_attackpower3slashcombo.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_attackpowerbwd.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_attackpowerforward.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_attackpowerforwardsprint.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_attackpowerfwd.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_attackpowerleft.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_attackpowerright.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_attackright.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_attackrightintro.hkx
+b8a73517b6df3c1c7d5ec130ba28f1ebc8f74c735b73e09f40ff7d5e5229cb80 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_blockanticipate.hkx
+aa7a123b06bbba186150a71862ace5360b91e6960b6ed020ea66c515952a7882 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_blockbash.hkx
+6f164c060538dfd4b91cd88240bc6d0a1700e3b7022f6cfd962f37368a2a67a7 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_blockbashintro.hkx
+9b1c27ae65b0999f07882eb1554b74739efce4a4102e8835ef43753c8f4f365b *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_blockbashpower.hkx
+6103702440bf2f2ee4ff8e9a9ba6aefa3e2221579bb467d8b7bdd27b7edb16ca *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_blockhit.hkx
+31a735d04d5453d084e1378868c68532b05ae6390e03cfd7f044ab5ffcd20781 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_blockhita.hkx
+d3a1d5ade8a3bc5182c052c4516b8d1850dcaba8eea8b3737ef3718b4b40dcde *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_blockhitb.hkx
+f40904ea89b484b7c11370875a884d56007ecceafb1fa254395d6bd1ef36b81c *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_blockidle.hkx
+951e1e4474aabcc7dec452c9005dd2189038689fc8af67d2406129f66e19fca6 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_blockstart.hkx
+d15ef8ace52b9ab96159a74346b412828c6e4325b863d4e0ff300da3d15b5424 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_blockstop.hkx
+9c5e787f76e79e9bfd5583583e025a383bc7bc3860b244b93b2619cba3d8f855 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_equip.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_idle.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runarmblend-1.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runarmblend.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runarmblend2.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runbackward.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runbackwardleft.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runbackwardright.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runbwdattackleft.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runbwdattackleftintro.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runbwdattackright.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runbwdattackrightintro.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runforward.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runforwardleft.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runforwardright.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runfwdattackleft.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runfwdattackleftintro.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runfwdattackright.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runfwdattackrightintro.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runleft.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runleftattackleft.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runleftattackleftintro.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runleftattackright.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runleftattackrightintro.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runright.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runrightattackleft.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runrightattackleftintro.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runrightattackrt.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runrightattackrtintro.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runstrafeleft.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_runstraferight.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_sprint.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_sprintforward.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_sprintforwardsword.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_turnleft180.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_turnleft60.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_turnright180.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_turnright60.hkx
+4cac42bf47db4ce2743dd7ceb89a43c6b185035da6a6280bda65f33183fcb02d *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_unequip.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkarmblend.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkbackward.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkbackwardleft.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkbackwardright.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkbwdattackleft.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkbwdattackleftintro.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkbwdattackright.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkbwdattackrightintro.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkforward.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkforwardleft.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkforwardright.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkfwdattackleft.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkfwdattackleftintro.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkfwdattackright.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkfwdattackrightintro.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkleft.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkleftattackleft.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkleftattackleftintro.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkleftattackright.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkleftattackrightintro.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkright.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkrightattackleft.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkrightattackleftintro.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkrtattackright.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkrtattackrightintro.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkstrafeleft.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/2hw_walkstraferight.hkx
+6103702440bf2f2ee4ff8e9a9ba6aefa3e2221579bb467d8b7bdd27b7edb16ca *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/maxsu_weaponblockhit.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_attack1.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_attack10.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_attack2.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_attack3.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_attack4.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_attack5.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_attack6.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_attack7.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_attack8.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_attack9.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_dodge-b-1.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_dodge-f-1.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_dodge-l-1.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_dodge-lb-1.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_dodge-lf-1.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_dodge-r-1.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_dodge-rb-1.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_dodge-rf-1.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_dodge_attack1.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_dodge_powerattack1.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_dodgeleft1.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_powerattack1.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_powerattack10.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_powerattack2.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_powerattack3.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_powerattack4.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_powerattack5.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_powerattack6.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_powerattack7.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_powerattack8.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_powerattack9.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_powerattackloop1.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_powerattackoutro1.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_powerattackoutro4.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_sprintattack.hkx
+022dec11fbdb7373619058b9b2ad10525db6f7232670bd928650ae9c77239da2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_sprintpoweattackr.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_sprintpowerattack.hkx
+946da738bf126e2d3557fc588f4ec7d020380c3099b3a7ab6db72a5d385bd1f4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/mco_weaponart.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/scar_1hmreadydummy.hkx
+21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 55 - Quarterstaff/sneakrun_forwardroll.hkx
+fe7f9715d61a9d393393b3901135e505440db41d7887a1380f1107afe401188a *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/bow_blockanticipate.hkx
+f9a7b94c373cc36be95d5552a8cc8db27974064c60b94d0f970d2d5d3157cae5 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/bow_blockbash.hkx
+4ddccd2ebc23e28c2a2a55343c46be07808538abd928e3611d2495c9e0b09334 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/bow_blockbashintro.hkx
+1f5424ce827dc152035b97b7e38466b3ac987a73c278106b72f1ab3fb450a5a9 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/bow_blockbashpower.hkx
+db5bcedaccd784bc18f4e1d731234956853b192eb86499e31344e40117335936 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/bow_blockhit.hkx
+4930d92d1896b280f51af8a011113bc36ff6b4e675f99a6771a4eb1d9535ace4 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/bow_blockidle.hkx
+f46810d166fa62a07cdc9d31fc155032e9a7704ab928d6ca5c6e474bd8ace112 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/bow_drawheavy.hkx
+0ef66d1280f960f0e06376edf91efd6a54d1e6edf0b3fc84e6fb5e45737cf4f2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/bow_drawlight.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/bow_idle.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/bow_idledrawn.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/bow_idleheld.hkx
@@ -735,9 +994,15 @@ a71cfddeca8a6558e1330a9ec0b63b76ad55a16310b179903ae6ba37728b0b91 *meshes/actors/
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/bowdrawn_walkright.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/bowdrawn_walkstrafeleft.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/bowdrawn_walkstraferight.hkx
+86fc272023ab919f7d6f7e574af7f2161ae85ca382a295355901eb6afd5c4fa6 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/sneakbow_drawlight.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/sneakbow_idledrawn.hkx
+f46810d166fa62a07cdc9d31fc155032e9a7704ab928d6ca5c6e474bd8ace112 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/xpe0_bow_drawheavy.hkx
+0ef66d1280f960f0e06376edf91efd6a54d1e6edf0b3fc84e6fb5e45737cf4f2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/xpe0_bow_drawlight.hkx
+ae4d5182838e5a6319b6a5488667e9211c33bebc10812ed9f8a03a8566f8453b *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/xpe0_bow_equip.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/xpe0_bow_idledrawn.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/xpe0_bow_idleheld.hkx
+e54af1a0cae9642d65eda0074650cbc4e49d6c87e634dcfb4ddad0db930bc7d0 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/xpe0_bow_unequip.hkx
+86fc272023ab919f7d6f7e574af7f2161ae85ca382a295355901eb6afd5c4fa6 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/xpe0_sneakbow_drawlight.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 60 - Bow/xpe0_sneakbow_idledrawn.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 70 - Crossbow/crossbow_aim.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 70 - Crossbow/crossbow_aimdwarven.hkx
@@ -772,6 +1037,7 @@ a71cfddeca8a6558e1330a9ec0b63b76ad55a16310b179903ae6ba37728b0b91 *meshes/actors/
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 70 - Crossbow/crossbow_walkstrafeleft.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 70 - Crossbow/crossbow_walkstraferight.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 70 - Crossbow/crossbowsprintforward.hkx
+d77b2f1080961d022db283e4fbecfb61255c240ae9aeb848ed48af77b9ace4db *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 70 - Crossbow/dlc01/crossbow_blockbash.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 70 - Crossbow/sneakcrossbow_aim.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 70 - Crossbow/sneakcrossbow_aimdwarven.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 70 - Crossbow/sneakcrossbow_idledrawn.hkx
@@ -889,6 +1155,8 @@ a04d056743a94222bd5a63a3d8fa704a0b27c769108c840c920b029aa2fa32ee *meshes/actors/
 90eefc4d64c3c8b8e7a30247f9cf7b8117e200edf6c798abcae60b17bb8b3f82 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 80 - Magic/ritualspell_charge.hkx
 cf6bb0e684ca8fc0a70908264fb3c83e3106bd9c5f097d34b3f92a9d11b50aae *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 80 - Magic/ritualspell_ready.hkx
 24da418df9a30abaddcced1ee29b59a1436133e73116d05d2466c122e050e9af *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 80 - Magic/ritualspell_release.hkx
+6447b89eabfb5000a2d12d94504824f92474e1305baa5d2d94d2e76693f97f69 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 90 - Staff/staff_bash.hkx
+a246d9a272a8e6abf5146dccaaad391f08e44bf57ae22b0157a46205669ee2b2 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 90 - Staff/staff_bashintro.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 90 - Staff/staff_idle.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 90 - Staff/staffmagic_runarm.hkx
 21fd87df7c0d5d9718183944576dc5510a580d530fbd88d0ecf8c36b3db5f451 *meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight/Flight Base 90 - Staff/staffmagic_walkarm.hkx

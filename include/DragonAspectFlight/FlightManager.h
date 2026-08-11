@@ -23,10 +23,12 @@ namespace DragonAspectFlight
 		[[nodiscard]] bool IsFlying() const;
 		[[nodiscard]] bool IsDescending() const;
 		[[nodiscard]] bool IsFlightCombatActive() const;
+		[[nodiscard]] bool IsFlightBlockRequested() const;
 		[[nodiscard]] bool IsDragonAspectActive() const;
 		[[nodiscard]] static bool ShouldSuppressInput();
 		bool ToggleFlightCombatReady();
 		bool BeginFlightCombat();
+		bool SetFlightBlockRequested(bool a_requested);
 
 		void SetFlightSpeed(float a_speed);
 		void SetVerticalSpeed(float a_speed);
@@ -65,6 +67,10 @@ namespace DragonAspectFlight
 		bool _isFlying{ false };
 		bool _isDescending{ false };
 		bool _flightCombatActive{ false };
+		bool _flightBlockRequested{ false };
+		bool _weaponTransitionPending{ false };
+		bool _weaponTransitionTargetDrawn{ false };
+		bool _weaponTransitionNativeFallbackArmed{ false };
 		bool _useGeneratedCombatTopology{ false };
 		bool _aerialCombatUnsupportedNotified{ false };
 		float _flightSpeed{ 14.0F };
@@ -83,8 +89,11 @@ namespace DragonAspectFlight
 		std::uint64_t _lastDiagnosticEquipmentSignature{ ~std::uint64_t{ 0 } };
 		std::uint64_t _lastDiagnosticStateSignature{ ~std::uint64_t{ 0 } };
 		std::chrono::steady_clock::time_point _lastDiagnosticSnapshot{};
+		std::chrono::steady_clock::time_point _weaponTransitionDeadline{};
+		std::chrono::steady_clock::time_point _weaponTransitionNativeFallbackAt{};
 		std::chrono::steady_clock::time_point _shoutGraphOverrideUntil{};
 		std::chrono::steady_clock::time_point _whirlwindSprintUntil{};
+		std::uint64_t _weaponTransitionSequence{ 0 };
 		bool _whirlwindSprintShoutPending{ false };
 
 		float _originalGravity{ 0.0F };
