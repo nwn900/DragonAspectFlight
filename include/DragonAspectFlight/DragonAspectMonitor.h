@@ -24,8 +24,13 @@ namespace DragonAspectFlight
 		DragonAspectMonitor& operator=(const DragonAspectMonitor&) = delete;
 		DragonAspectMonitor& operator=(DragonAspectMonitor&&) = delete;
 
-		std::jthread _thread;
+		void QueuePoll();
+		void PollOnGameThread();
+
 		std::atomic_bool _running{ false };
 		std::atomic_bool _wasActive{ false };
+		std::atomic_bool _pollQueued{ false };
+		std::atomic_uint64_t _generation{ 0 };
+		std::jthread _thread;
 	};
 }

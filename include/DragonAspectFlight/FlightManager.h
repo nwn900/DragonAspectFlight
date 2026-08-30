@@ -85,6 +85,8 @@ namespace DragonAspectFlight
 		std::jthread _startAfterSheatheThread;
 		std::atomic_bool _startAfterSheatheThreadRunning{ false };
 		std::atomic_bool _threadRunning{ false };
+		std::atomic_bool _updateQueued{ false };
+		std::atomic_uint64_t _updateGeneration{ 0 };
 		std::jthread _updateThread;
 	};
 }

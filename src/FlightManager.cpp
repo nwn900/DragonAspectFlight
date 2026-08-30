@@ -12,7 +12,7 @@
 #include "RE/M/MagicTarget.h"
 #include "RE/T/TES.h"
 #include "RE/U/UI.h"
-#include "RE/U/UI.h"
+#include "RE/U/UserEventEnabled.h"
 
 namespace
 {
@@ -51,6 +51,7 @@ namespace
 	constexpr const char* GraphVarLaunchBoost = "bDAF_LaunchBoost";
 	constexpr const char* GraphVarFlightShout = "bDAF_FlightShout";
 	constexpr const char* GraphVarFlightState = "iDAF_FlightState";
+	std::atomic_bool GraphVariableFailureLogged{ false };
 
 	enum class FlightGraphState : std::int32_t
 	{
@@ -80,6 +81,35 @@ namespace
 	RE::PlayerCharacter* GetPlayer()
 	{
 		return RE::PlayerCharacter::GetSingleton();
+	}
+
+	// CommonLibSSE-NG changed ControlMap::ToggleControls from the local state
+	// update used by the published v1.5 build to a native engine call with an
+	// extra store-state argument. Preserve v1.5's exact state/event semantics
+	// while using the runtime-versioned layout accessor from modern CommonLib.
+	void ToggleControlsLikeV15(RE::ControlMap* a_controlMap, RE::ControlMap::UEFlag a_flags, bool a_enable)
+	{
+		if (!a_controlMap) {
+			return;
+		}
+
+		auto& runtimeData = a_controlMap->GetRuntimeData();
+		const auto oldState = runtimeData.enabledControls;
+
+		if (a_enable) {
+			runtimeData.enabledControls.set(a_flags);
+			if (runtimeData.storedControls != RE::ControlMap::UEFlag::kInvalid) {
+				runtimeData.storedControls.set(a_flags);
+			}
+		} else {
+			runtimeData.enabledControls.reset(a_flags);
+			if (runtimeData.storedControls != RE::ControlMap::UEFlag::kInvalid) {
+				runtimeData.storedControls.reset(a_flags);
+			}
+		}
+
+		RE::UserEventEnabled event{ runtimeData.enabledControls, oldState };
+		a_controlMap->SendEvent(std::addressof(event));
 	}
 
 	// Check if full-power Dragon Aspect is active on the player.
@@ -275,11 +305,18 @@ namespace
 			return;
 		}
 
-		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarDragonAspectActive), a_dragonAspectActive);
-		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarFlightActive), a_flightActive);
-		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarLaunchBoost), a_launchBoost);
-		a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarFlightShout), a_flightShout);
-		a_player->SetGraphVariableInt(RE::BSFixedString(GraphVarFlightState), static_cast<std::int32_t>(a_state));
+		bool allWritten = true;
+		allWritten &= a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarDragonAspectActive), a_dragonAspectActive);
+		allWritten &= a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarFlightActive), a_flightActive);
+		allWritten &= a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarLaunchBoost), a_launchBoost);
+		allWritten &= a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarFlightShout), a_flightShout);
+		allWritten &= a_player->SetGraphVariableInt(RE::BSFixedString(GraphVarFlightState), static_cast<std::int32_t>(a_state));
+
+		if (!allWritten && !GraphVariableFailureLogged.exchange(true)) {
+			logger::error(
+				"Dragon Aspect Flight: one or more v1.5 graph variables were unavailable; "
+				"verify Behavior Data Injector and DragonAspectFlight_BDI.json");
+		}
 	}
 
 	void ClampStopVelocityForSafeRelease(RE::PlayerCharacter* a_player)
@@ -689,6 +726,7 @@ namespace DragonAspectFlight
 			_landingContactTicks = 0;
 			_shoutGraphOverrideUntil = {};
 			_smoothedFlightVelocity = RE::hkVector4{ 0.0F, 0.0F, 0.0F, 0.0F };
+			_updateGeneration.fetch_add(1, std::memory_order_acq_rel);
 			logger::info("Flight started - {}", FlightBuildVersion);
 		}
 
@@ -837,6 +875,7 @@ namespace DragonAspectFlight
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kOff);
 			_landingContactTicks = 0;
 			_smoothedFlightVelocity = RE::hkVector4{ 0.0F, 0.0F, 0.0F, 0.0F };
+			_updateGeneration.fetch_add(1, std::memory_order_acq_rel);
 			logger::info("Flight stopped - {}", FlightBuildVersion);
 		}
 
@@ -989,7 +1028,7 @@ namespace DragonAspectFlight
 		}
 
 		if (shouldEnable && !controlMap->IsFightingControlsEnabled()) {
-			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, true, true);
+			ToggleControlsLikeV15(controlMap, RE::ControlMap::UEFlag::kFighting, true);
 			logger::info("Fighting controls opened for Dragon Aspect flight shout");
 		}
 	}
@@ -1024,7 +1063,7 @@ namespace DragonAspectFlight
 		}
 
 		if (shouldDisable && controlMap->IsFightingControlsEnabled()) {
-			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, false, true);
+			ToggleControlsLikeV15(controlMap, RE::ControlMap::UEFlag::kFighting, false);
 			logger::info("Fighting controls closed after Dragon Aspect flight shout");
 		}
 	}
@@ -1116,7 +1155,7 @@ namespace DragonAspectFlight
 		}
 
 		if (shouldDisable) {
-			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, false, true);
+			ToggleControlsLikeV15(controlMap, RE::ControlMap::UEFlag::kFighting, false);
 			logger::info("Fighting controls suppressed for Dragon Aspect flight");
 		}
 	}
@@ -1139,7 +1178,7 @@ namespace DragonAspectFlight
 		}
 
 		if (shouldRestore) {
-			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, true, true);
+			ToggleControlsLikeV15(controlMap, RE::ControlMap::UEFlag::kFighting, true);
 			logger::info("Fighting controls restored after Dragon Aspect flight");
 		}
 	}
@@ -1174,7 +1213,7 @@ namespace DragonAspectFlight
 		}
 
 		if (controlMap->IsFightingControlsEnabled()) {
-			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, false, true);
+			ToggleControlsLikeV15(controlMap, RE::ControlMap::UEFlag::kFighting, false);
 			if (shouldCloseQueuedShout) {
 				logger::info("Fighting controls closed after vanilla flight shout pass-through");
 			} else {
@@ -1238,9 +1277,32 @@ namespace DragonAspectFlight
 			return;
 		}
 
-		taskInterface->AddTask([this]() {
-			UpdateFlight();
-		});
+		bool expected = false;
+		if (!_updateQueued.compare_exchange_strong(expected, true, std::memory_order_acq_rel)) {
+			return;
+		}
+
+		const auto generation = _updateGeneration.load(std::memory_order_acquire);
+		try {
+			taskInterface->AddTask([this, generation]() {
+				try {
+					if (_updateGeneration.load(std::memory_order_acquire) == generation) {
+						UpdateFlight();
+					}
+				} catch (const std::exception& e) {
+					logger::error("Dragon Aspect Flight: queued update failed: {}", e.what());
+				} catch (...) {
+					logger::error("Dragon Aspect Flight: queued update failed with an unknown exception");
+				}
+				_updateQueued.store(false, std::memory_order_release);
+			});
+		} catch (const std::exception& e) {
+			_updateQueued.store(false, std::memory_order_release);
+			logger::error("Dragon Aspect Flight: failed to queue update: {}", e.what());
+		} catch (...) {
+			_updateQueued.store(false, std::memory_order_release);
+			logger::error("Dragon Aspect Flight: failed to queue update with an unknown exception");
+		}
 	}
 
 	void FlightManager::UpdateFlight()

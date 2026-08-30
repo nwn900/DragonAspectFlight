@@ -55,17 +55,6 @@ namespace
 		return false;
 	}
 
-	void NotifyOnGameThread(std::string a_message)
-	{
-		auto* taskInterface = SKSE::GetTaskInterface();
-		if (!taskInterface) {
-			logger::warn("Dragon Aspect Flight: TaskInterface unavailable; notification skipped");
-			return;
-		}
-		taskInterface->AddTask([message = std::move(a_message)]() {
-			RE::SendHUDMessage::ShowHUDMessage(message.c_str());
-		});
-	}
 }
 
 namespace DragonAspectFlight
@@ -81,39 +70,13 @@ namespace DragonAspectFlight
 		if (_running.exchange(true)) {
 			return;  // already running
 		}
+		_generation.fetch_add(1, std::memory_order_acq_rel);
 
 		_thread = std::jthread([this](std::stop_token stopToken) {
 			logger::info("Dragon Aspect Flight: DA monitor thread started");
 
 			while (!stopToken.stop_requested() && _running.load()) {
-				const bool nowActive = HasDragonAspectActive();
-				const bool wasActive = _wasActive.exchange(nowActive);
-
-				if (nowActive && !wasActive) {
-					// false -> true: full Dragon Aspect shout just applied
-					bool showReady = true;
-					InputBinding activation;
-					{
-						std::shared_lock lock(Settings::GetSingleton().mutex);
-						showReady = Settings::GetSingleton().showReadyNotification;
-						activation = Settings::GetSingleton().activation;
-					}
-					if (showReady) {
-						NotifyOnGameThread("Dragon Aspect Flight ready: press " + UI::DescribeBinding(activation) + " to fly");
-						logger::info("Dragon Aspect Flight: 'ready' notification queued");
-					}
-				} else if (!nowActive && wasActive) {
-					// true -> false: shout expired
-					bool showExpired = true;
-					{
-						std::shared_lock lock(Settings::GetSingleton().mutex);
-						showExpired = Settings::GetSingleton().showExpiredNotification;
-					}
-					if (showExpired) {
-						NotifyOnGameThread("Dragon Aspect Flight exhausted");
-						logger::info("Dragon Aspect Flight: 'exhausted' notification queued");
-					}
-				}
+				QueuePoll();
 
 				// 250 ms tick with stop-token-friendly sleep (25 * 10 ms)
 				for (int i = 0; i < 25; ++i) {
@@ -128,10 +91,78 @@ namespace DragonAspectFlight
 
 	void DragonAspectMonitor::Stop()
 	{
-		_running = false;
+		_running.store(false, std::memory_order_release);
+		_generation.fetch_add(1, std::memory_order_acq_rel);
 		if (_thread.joinable()) {
 			_thread.request_stop();
 			_thread.join();
+		}
+	}
+
+	void DragonAspectMonitor::QueuePoll()
+	{
+		auto* taskInterface = SKSE::GetTaskInterface();
+		if (!taskInterface) {
+			return;
+		}
+
+		bool expected = false;
+		if (!_pollQueued.compare_exchange_strong(expected, true, std::memory_order_acq_rel)) {
+			return;
+		}
+
+		const auto generation = _generation.load(std::memory_order_acquire);
+		try {
+			taskInterface->AddTask([this, generation]() {
+				try {
+					if (_running.load(std::memory_order_acquire) &&
+						_generation.load(std::memory_order_acquire) == generation) {
+						PollOnGameThread();
+					}
+				} catch (const std::exception& e) {
+					logger::error("Dragon Aspect Flight: monitor poll failed: {}", e.what());
+				} catch (...) {
+					logger::error("Dragon Aspect Flight: monitor poll failed with an unknown exception");
+				}
+				_pollQueued.store(false, std::memory_order_release);
+			});
+		} catch (const std::exception& e) {
+			_pollQueued.store(false, std::memory_order_release);
+			logger::error("Dragon Aspect Flight: failed to queue monitor poll: {}", e.what());
+		} catch (...) {
+			_pollQueued.store(false, std::memory_order_release);
+			logger::error("Dragon Aspect Flight: failed to queue monitor poll with an unknown exception");
+		}
+	}
+
+	void DragonAspectMonitor::PollOnGameThread()
+	{
+		const bool nowActive = HasDragonAspectActive();
+		const bool wasActive = _wasActive.exchange(nowActive);
+
+		if (nowActive && !wasActive) {
+			bool showReady = true;
+			InputBinding activation;
+			{
+				std::shared_lock lock(Settings::GetSingleton().mutex);
+				showReady = Settings::GetSingleton().showReadyNotification;
+				activation = Settings::GetSingleton().activation;
+			}
+			if (showReady) {
+				const auto message = "Dragon Aspect Flight ready: press " + UI::DescribeBinding(activation) + " to fly";
+				RE::SendHUDMessage::ShowHUDMessage(message.c_str());
+				logger::info("Dragon Aspect Flight: 'ready' notification shown");
+			}
+		} else if (!nowActive && wasActive) {
+			bool showExpired = true;
+			{
+				std::shared_lock lock(Settings::GetSingleton().mutex);
+				showExpired = Settings::GetSingleton().showExpiredNotification;
+			}
+			if (showExpired) {
+				RE::SendHUDMessage::ShowHUDMessage("Dragon Aspect Flight exhausted");
+				logger::info("Dragon Aspect Flight: 'exhausted' notification shown");
+			}
 		}
 	}
 }
