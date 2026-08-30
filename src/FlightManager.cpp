@@ -52,6 +52,7 @@ namespace
 	constexpr const char* GraphVarFlightShout = "bDAF_FlightShout";
 	constexpr const char* GraphVarFlightState = "iDAF_FlightState";
 	std::atomic_bool GraphVariableFailureLogged{ false };
+	std::atomic_int LastLoggedGraphSnapshot{ -1 };
 
 	enum class FlightGraphState : std::int32_t
 	{
@@ -311,6 +312,57 @@ namespace
 		allWritten &= a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarLaunchBoost), a_launchBoost);
 		allWritten &= a_player->SetGraphVariableBool(RE::BSFixedString(GraphVarFlightShout), a_flightShout);
 		allWritten &= a_player->SetGraphVariableInt(RE::BSFixedString(GraphVarFlightState), static_cast<std::int32_t>(a_state));
+
+		const auto requestedState = static_cast<std::int32_t>(a_state);
+		const auto snapshotKey =
+			(requestedState & 0xFF) |
+			(a_dragonAspectActive ? 1 << 8 : 0) |
+			(a_flightActive ? 1 << 9 : 0) |
+			(a_launchBoost ? 1 << 10 : 0) |
+			(a_flightShout ? 1 << 11 : 0);
+		if (LastLoggedGraphSnapshot.exchange(snapshotKey) != snapshotKey) {
+			bool observedDragonAspect = false;
+			bool observedFlightActive = false;
+			bool observedLaunchBoost = false;
+			bool observedFlightShout = false;
+			bool observedInJumpState = false;
+			std::int32_t observedFlightState = -1;
+			bool readbackSucceeded = true;
+			readbackSucceeded &= a_player->GetGraphVariableBool(RE::BSFixedString(GraphVarDragonAspectActive), observedDragonAspect);
+			readbackSucceeded &= a_player->GetGraphVariableBool(RE::BSFixedString(GraphVarFlightActive), observedFlightActive);
+			readbackSucceeded &= a_player->GetGraphVariableBool(RE::BSFixedString(GraphVarLaunchBoost), observedLaunchBoost);
+			readbackSucceeded &= a_player->GetGraphVariableBool(RE::BSFixedString(GraphVarFlightShout), observedFlightShout);
+			readbackSucceeded &= a_player->GetGraphVariableInt(RE::BSFixedString(GraphVarFlightState), observedFlightState);
+			const bool jumpStateReadable = a_player->GetGraphVariableBool(RE::BSFixedString("bInJumpState"), observedInJumpState);
+
+			std::int32_t controllerCurrentState = -1;
+			std::int32_t controllerWantedState = -1;
+			if (auto* controller = a_player->GetCharController()) {
+				controllerCurrentState = static_cast<std::int32_t>(controller->context.currentState);
+				controllerWantedState = static_cast<std::int32_t>(controller->wantState);
+			}
+
+			logger::info(
+				"Flight graph transition: requested dragon={} active={} launch={} shout={} state={}; "
+				"write_ok={} read_ok={} observed dragon={} active={} launch={} shout={} state={}; "
+				"jump_read_ok={} bInJumpState={} controller_current={} controller_wanted={}",
+				a_dragonAspectActive,
+				a_flightActive,
+				a_launchBoost,
+				a_flightShout,
+				requestedState,
+				allWritten,
+				readbackSucceeded,
+				observedDragonAspect,
+				observedFlightActive,
+				observedLaunchBoost,
+				observedFlightShout,
+				observedFlightState,
+				jumpStateReadable,
+				observedInJumpState,
+				controllerCurrentState,
+				controllerWantedState);
+		}
 
 		if (!allWritten && !GraphVariableFailureLogged.exchange(true)) {
 			logger::error(
