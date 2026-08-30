@@ -63,7 +63,7 @@ namespace
 			return;
 		}
 		taskInterface->AddTask([message = std::move(a_message)]() {
-			RE::DebugNotification(message.c_str());
+			RE::SendHUDMessage::ShowHUDMessage(message.c_str());
 		});
 	}
 }

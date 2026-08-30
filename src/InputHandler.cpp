@@ -140,7 +140,7 @@ namespace
 
 	void ShowMessage(const char* a_msg)
 	{
-		RE::DebugNotification(a_msg);
+		RE::SendHUDMessage::ShowHUDMessage(a_msg);
 		logger::info("{}", a_msg);
 	}
 

@@ -167,7 +167,7 @@ namespace
 		}
 
 		const float restoreAmount = std::min(StaminaRestorePerUpdate, maxStamina - currentStamina);
-		actorValueOwner->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage, RE::ActorValue::kStamina, restoreAmount);
+		actorValueOwner->RestoreActorValue(RE::ActorValue::kStamina, restoreAmount);
 	}
 
 	// Drain magicka while flying. Returns true if magicka is depleted (caller
@@ -196,7 +196,7 @@ namespace
 			return true;
 		}
 
-		actorValueOwner->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage, RE::ActorValue::kMagicka, -cost);
+		actorValueOwner->DamageActorValue(RE::ActorValue::kMagicka, cost);
 		return false;
 	}
 
@@ -989,7 +989,7 @@ namespace DragonAspectFlight
 		}
 
 		if (shouldEnable && !controlMap->IsFightingControlsEnabled()) {
-			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, true);
+			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, true, true);
 			logger::info("Fighting controls opened for Dragon Aspect flight shout");
 		}
 	}
@@ -1024,7 +1024,7 @@ namespace DragonAspectFlight
 		}
 
 		if (shouldDisable && controlMap->IsFightingControlsEnabled()) {
-			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, false);
+			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, false, true);
 			logger::info("Fighting controls closed after Dragon Aspect flight shout");
 		}
 	}
@@ -1116,7 +1116,7 @@ namespace DragonAspectFlight
 		}
 
 		if (shouldDisable) {
-			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, false);
+			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, false, true);
 			logger::info("Fighting controls suppressed for Dragon Aspect flight");
 		}
 	}
@@ -1139,7 +1139,7 @@ namespace DragonAspectFlight
 		}
 
 		if (shouldRestore) {
-			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, true);
+			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, true, true);
 			logger::info("Fighting controls restored after Dragon Aspect flight");
 		}
 	}
@@ -1174,7 +1174,7 @@ namespace DragonAspectFlight
 		}
 
 		if (controlMap->IsFightingControlsEnabled()) {
-			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, false);
+			controlMap->ToggleControls(RE::ControlMap::UEFlag::kFighting, false, true);
 			if (shouldCloseQueuedShout) {
 				logger::info("Fighting controls closed after vanilla flight shout pass-through");
 			} else {
@@ -1319,7 +1319,7 @@ namespace DragonAspectFlight
 
 		if (DrainFlightMagicka(player)) {
 			logger::info("Dragon Aspect Flight: magicka depleted, beginning controlled descent");
-			RE::DebugNotification("Dragon Aspect Flight: magicka exhausted, descending");
+			RE::SendHUDMessage::ShowHUDMessage("Dragon Aspect Flight: magicka exhausted, descending");
 			BeginDescent();
 			return;
 		}
