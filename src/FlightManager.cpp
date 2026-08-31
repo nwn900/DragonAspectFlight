@@ -45,7 +45,7 @@ namespace
 	constexpr auto StartAfterSheatheRetryDelay = 250ms;
 	constexpr auto ShoutGraphOverrideDuration = 1400ms;
 	constexpr auto ShoutControlsCloseDelay = 150ms;
-	constexpr std::string_view FlightBuildVersion = "v1.1.0-dragon-aspect";
+	constexpr std::string_view FlightBuildVersion = "v1.5.0-compat-r5-shout-control-reference-oar";
 	constexpr const char* GraphVarDragonAspectActive = "bDAF_DragonAspectActive";
 	constexpr const char* GraphVarFlightActive = "bDAF_FlightActive";
 	constexpr const char* GraphVarLaunchBoost = "bDAF_LaunchBoost";
@@ -84,11 +84,15 @@ namespace
 		return RE::PlayerCharacter::GetSingleton();
 	}
 
-	// CommonLibSSE-NG changed ControlMap::ToggleControls from the local state
-	// update used by the published v1.5 build to a native engine call with an
-	// extra store-state argument. Preserve v1.5's exact state/event semantics
-	// while using the runtime-versioned layout accessor from modern CommonLib.
-	void ToggleControlsLikeV15(RE::ControlMap* a_controlMap, RE::ControlMap::UEFlag a_flags, bool a_enable)
+	// The published v1.5 CommonLib helper changed both enabledControls and the
+	// engine's stored snapshot. On current runtimes that snapshot is also used
+	// by other input contexts, so repeated shout windows could preserve a stale
+	// disabled fighting bit after landing. Only DAF's live bit is ours to edit.
+	void SetControlFlagPreservingStored(
+		RE::ControlMap* a_controlMap,
+		RE::ControlMap::UEFlag a_flags,
+		bool a_enable,
+		std::string_view a_reason)
 	{
 		if (!a_controlMap) {
 			return;
@@ -96,21 +100,24 @@ namespace
 
 		auto& runtimeData = a_controlMap->GetRuntimeData();
 		const auto oldState = runtimeData.enabledControls;
+		const auto storedBefore = runtimeData.storedControls;
 
 		if (a_enable) {
 			runtimeData.enabledControls.set(a_flags);
-			if (runtimeData.storedControls != RE::ControlMap::UEFlag::kInvalid) {
-				runtimeData.storedControls.set(a_flags);
-			}
 		} else {
 			runtimeData.enabledControls.reset(a_flags);
-			if (runtimeData.storedControls != RE::ControlMap::UEFlag::kInvalid) {
-				runtimeData.storedControls.reset(a_flags);
-			}
 		}
 
 		RE::UserEventEnabled event{ runtimeData.enabledControls, oldState };
 		a_controlMap->SendEvent(std::addressof(event));
+		logger::info(
+			"Fighting control transition: reason={} enable={} enabled=0x{:08X}->0x{:08X} stored=0x{:08X}->0x{:08X}",
+			a_reason,
+			a_enable,
+			oldState.underlying(),
+			runtimeData.enabledControls.underlying(),
+			storedBefore.underlying(),
+			runtimeData.storedControls.underlying());
 	}
 
 	// Check if full-power Dragon Aspect is active on the player.
@@ -770,8 +777,7 @@ namespace DragonAspectFlight
 
 			_isFlying = true;
 			_isDescending = false;
-			_flightShoutControlsOpen = false;
-			_flightShoutControlsCloseAfter = {};
+			(void)detail::ResetFlightShoutControl(_flightShoutControls);
 			_startAfterSheathePending = false;
 			_startAfterSheatheAttempts = 0;
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kIdle);
@@ -854,8 +860,7 @@ namespace DragonAspectFlight
 			_verticalInput = 0.0F;
 			_pendingLaunchBoost = 0.0F;
 			_boostHeld = false;
-			_flightShoutControlsOpen = false;
-			_flightShoutControlsCloseAfter = {};
+			(void)detail::ResetFlightShoutControl(_flightShoutControls);
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kDescent);
 			_landingContactTicks = 0;
 			logger::info("Flight descent started - {}", FlightBuildVersion);
@@ -922,8 +927,7 @@ namespace DragonAspectFlight
 			_strafeInput = 0.0F;
 			_verticalInput = 0.0F;
 			_boostHeld = false;
-			_flightShoutControlsOpen = false;
-			_flightShoutControlsCloseAfter = {};
+			(void)detail::ResetFlightShoutControl(_flightShoutControls);
 			_lastGraphState = static_cast<std::int32_t>(FlightGraphState::kOff);
 			_landingContactTicks = 0;
 			_smoothedFlightVelocity = RE::hkVector4{ 0.0F, 0.0F, 0.0F, 0.0F };
@@ -1064,6 +1068,8 @@ namespace DragonAspectFlight
 		}
 
 		bool shouldEnable = false;
+		bool canceledPendingClose = false;
+		bool wasOpen = false;
 
 		{
 			std::unique_lock lock(_mutex);
@@ -1072,15 +1078,23 @@ namespace DragonAspectFlight
 				return;
 			}
 
-			if (_fightingControlsSuppressed && !_flightShoutControlsOpen) {
-				_flightShoutControlsOpen = true;
-				_flightShoutControlsCloseAfter = {};
+			if (_fightingControlsSuppressed) {
+				wasOpen = _flightShoutControls.open;
+				canceledPendingClose =
+					_flightShoutControls.closeAfter != std::chrono::steady_clock::time_point{};
+				(void)detail::BeginFlightShoutControl(_flightShoutControls);
 				shouldEnable = true;
 			}
 		}
 
+		logger::info(
+			"Flight shout control window begin: was_open={} canceled_pending_close={} fighting_enabled={}",
+			wasOpen,
+			canceledPendingClose,
+			controlMap->IsFightingControlsEnabled());
+
 		if (shouldEnable && !controlMap->IsFightingControlsEnabled()) {
-			ToggleControlsLikeV15(controlMap, RE::ControlMap::UEFlag::kFighting, true);
+			SetControlFlagPreservingStored(controlMap, RE::ControlMap::UEFlag::kFighting, true, "shout_begin");
 			logger::info("Fighting controls opened for Dragon Aspect flight shout");
 		}
 	}
@@ -1089,9 +1103,13 @@ namespace DragonAspectFlight
 	{
 		std::unique_lock lock(_mutex);
 
-		if (_flightShoutControlsOpen) {
-			_flightShoutControlsCloseAfter = std::chrono::steady_clock::now() + ShoutControlsCloseDelay;
-		}
+		const bool wasOpen = _flightShoutControls.open;
+		detail::QueueFlightShoutControlClose(
+			_flightShoutControls, std::chrono::steady_clock::now(), ShoutControlsCloseDelay);
+		logger::info(
+			"Flight shout control close queued: was_open={} deadline_armed={}",
+			wasOpen,
+			_flightShoutControls.closeAfter != std::chrono::steady_clock::time_point{});
 	}
 
 	void FlightManager::EndFlightShoutInput()
@@ -1107,15 +1125,14 @@ namespace DragonAspectFlight
 		{
 			std::unique_lock lock(_mutex);
 
-			if (_flightShoutControlsOpen) {
-				_flightShoutControlsOpen = false;
-				_flightShoutControlsCloseAfter = {};
+			if (detail::ResetFlightShoutControl(_flightShoutControls) ==
+				detail::ShoutControlTransition::kClose) {
 				shouldDisable = _isFlying && _fightingControlsSuppressed;
 			}
 		}
 
 		if (shouldDisable && controlMap->IsFightingControlsEnabled()) {
-			ToggleControlsLikeV15(controlMap, RE::ControlMap::UEFlag::kFighting, false);
+			SetControlFlagPreservingStored(controlMap, RE::ControlMap::UEFlag::kFighting, false, "shout_reset");
 			logger::info("Fighting controls closed after Dragon Aspect flight shout");
 		}
 	}
@@ -1207,7 +1224,7 @@ namespace DragonAspectFlight
 		}
 
 		if (shouldDisable) {
-			ToggleControlsLikeV15(controlMap, RE::ControlMap::UEFlag::kFighting, false);
+			SetControlFlagPreservingStored(controlMap, RE::ControlMap::UEFlag::kFighting, false, "flight_start");
 			logger::info("Fighting controls suppressed for Dragon Aspect flight");
 		}
 	}
@@ -1230,7 +1247,7 @@ namespace DragonAspectFlight
 		}
 
 		if (shouldRestore) {
-			ToggleControlsLikeV15(controlMap, RE::ControlMap::UEFlag::kFighting, true);
+			SetControlFlagPreservingStored(controlMap, RE::ControlMap::UEFlag::kFighting, true, "flight_stop");
 			logger::info("Fighting controls restored after Dragon Aspect flight");
 		}
 	}
@@ -1252,20 +1269,22 @@ namespace DragonAspectFlight
 				return;
 			}
 
-			if (_flightShoutControlsOpen) {
-				if (_flightShoutControlsCloseAfter != std::chrono::steady_clock::time_point{} &&
-					std::chrono::steady_clock::now() >= _flightShoutControlsCloseAfter) {
-					_flightShoutControlsOpen = false;
-					_flightShoutControlsCloseAfter = {};
-					shouldCloseQueuedShout = true;
-				} else {
+			if (_flightShoutControls.open) {
+				shouldCloseQueuedShout = detail::PollFlightShoutControl(
+										   _flightShoutControls, std::chrono::steady_clock::now()) ==
+									   detail::ShoutControlTransition::kClose;
+				if (!shouldCloseQueuedShout) {
 					return;
 				}
 			}
 		}
 
 		if (controlMap->IsFightingControlsEnabled()) {
-			ToggleControlsLikeV15(controlMap, RE::ControlMap::UEFlag::kFighting, false);
+			SetControlFlagPreservingStored(
+				controlMap,
+				RE::ControlMap::UEFlag::kFighting,
+				false,
+				shouldCloseQueuedShout ? "shout_close_deadline" : "flight_enforce");
 			if (shouldCloseQueuedShout) {
 				logger::info("Fighting controls closed after vanilla flight shout pass-through");
 			} else {

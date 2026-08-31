@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.21)
 project(DragonAspectFlight VERSION 1.5.0 LANGUAGES CXX)
 
+include(CTest)
+
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -10,24 +12,6 @@ set(COMMONLIBSSE_NG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../CommonLibSSE-NG"
 option(ENABLE_SKYRIM_SE "Build for Skyrim SE (1.5.97)" ON)
 option(ENABLE_SKYRIM_AE "Build for Skyrim AE (1.6.x)" ON)
 option(ENABLE_SKYRIM_VR "Build for Skyrim VR" ON)
-option(DAF_MATERIALIZE_EXTERNAL_ANIMATION_LINKS
-    "Materialize external More Draconic animation hardlinks into the staged build output"
-    OFF)
-
-set(DAF_MORE_DRACONIC_OAR_ROOT
-    "C:/Games/Nolvus/Instances/Nolvus Awakening/MODS/mods/[NoDelete] [001.00202] More Draconic Aspect Can Fly (With Collisions)/meshes/actors/character/animations/OpenAnimationReplacer/More Dragonic Dragon Aspect Can Fly"
-    CACHE PATH "Path to the installed More Dragonic Dragon Aspect Can Fly OAR root")
-
-if(DAF_MATERIALIZE_EXTERNAL_ANIMATION_LINKS)
-    find_program(POWERSHELL_EXECUTABLE powershell)
-    if(NOT POWERSHELL_EXECUTABLE)
-        find_program(POWERSHELL_EXECUTABLE pwsh)
-    endif()
-
-    if(NOT POWERSHELL_EXECUTABLE)
-        message(FATAL_ERROR "PowerShell is required to materialize external More Draconic animation hardlinks")
-    endif()
-endif()
 
 if(NOT EXISTS "${COMMONLIBSSE_NG_PATH}/CMakeLists.txt")
     message(FATAL_ERROR
@@ -59,6 +43,7 @@ set(SOURCES
 set(HEADERS
     src/PCH.h
     include/DragonAspectFlight/FlightManager.h
+    include/DragonAspectFlight/FlightShoutControlState.h
     include/DragonAspectFlight/InputHandler.h
     include/DragonAspectFlight/Papyrus.h
     include/DragonAspectFlight/Settings.h
@@ -68,6 +53,15 @@ set(HEADERS
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
+
+if(BUILD_TESTING)
+    add_executable(DragonAspectFlightShoutControlTests
+        tests/flight_shout_control_tests.cpp)
+    target_include_directories(DragonAspectFlightShoutControlTests PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include")
+    add_test(NAME DragonAspectFlight.ShoutControlWindow
+        COMMAND DragonAspectFlightShoutControlTests)
+endif()
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
@@ -111,6 +105,10 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E remove_directory
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Bundled Flight Animations"
     COMMAND ${CMAKE_COMMAND} -E remove_directory
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - Nexus v1.5 Compat Flight Animations"
+    COMMAND ${CMAKE_COMMAND} -E rm -f
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/CREDITS.txt"
+    COMMAND ${CMAKE_COMMAND} -E remove_directory
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight - More Draconic External Selectors"
     COMMAND ${CMAKE_COMMAND} -E remove_directory
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data/meshes/actors/character/animations/OpenAnimationReplacer/More Dragonic Dragon Aspect Can Fly"
@@ -130,16 +128,6 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         "${CMAKE_CURRENT_SOURCE_DIR}/Data"
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data"
     COMMENT "Copying DragonAspectFlight.dll to SKSE/Plugins")
-
-if(DAF_MATERIALIZE_EXTERNAL_ANIMATION_LINKS)
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND "${POWERSHELL_EXECUTABLE}" -NoProfile -ExecutionPolicy Bypass
-            -File "${CMAKE_CURRENT_SOURCE_DIR}/tools/MaterializeExternalAnimationLinks.ps1"
-            -ManifestPath "${CMAKE_CURRENT_SOURCE_DIR}/tools/dragon-aspect-flight-animation-links.json"
-            -TargetDataRoot "$<TARGET_FILE_DIR:${PROJECT_NAME}>/../Data"
-            -ExternalOarRoot "${DAF_MORE_DRACONIC_OAR_ROOT}"
-        COMMENT "Materializing optional external More Draconic animation hardlinks")
-endif()
 
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION "Data/SKSE/Plugins"

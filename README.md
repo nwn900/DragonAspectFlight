@@ -16,7 +16,9 @@ Current release: `1.5.0`
 - Behavior Data Injector.
 - Open Animation Replacer.
 - Edmond's More Draconic Aspect - Become The Dragonborn.
-Dragon Aspect Flight bundles the original Flying Mod Beta and Elegant Flying Animations clips used by the Nexus v1.5 release path. The files are byte-identical to the working Skyrim SE clips distributed by More Draconic Aspect Can Fly. See `CREDITS.txt` for authors, links, and redistribution terms.
+- More Draconic Aspect Can Fly, with its `Flying Mod` and `Elegant Flying Animations` OAR folders installed.
+
+Dragon Aspect Flight does not redistribute those animations. Its OAR configs reference the installed sibling folders from More Draconic Aspect Can Fly, matching the published Nexus v1.5 design.
 
 ## Optional: In-Game Settings Panel
 
@@ -24,21 +26,21 @@ Dragon Aspect Flight bundles the original Flying Mod Beta and Elegant Flying Ani
 
 ## Load Order
 
-The release ships a self-contained OAR project under:
+The release installs two config-only patches under More Draconic Aspect Can Fly's OAR project:
 
 ```text
-meshes\actors\character\animations\OpenAnimationReplacer\Dragon Aspect Flight - Nexus v1.5 Compat Flight Animations
+meshes\actors\character\animations\OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly\Dragon Aspect Flight - Flying Mod Patch
+meshes\actors\character\animations\OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly\Dragon Aspect Flight - Elegant Flying Patch
 ```
 
-The submods contain the HKX files directly. They do not depend on OAR resolving `overrideAnimationsFolder` across separate MO2 mods.
+The patches contain no HKX files. OAR's `overrideAnimationsFolder` points each patch at the sibling `Flying Mod` or `Elegant Flying Animations` folder supplied by More Draconic Aspect Can Fly. The dependency can reside in a separate MO2 mod because MO2 presents both mods through one virtual Data tree.
 
 ## What The Release Ships
 
 - `SKSE\Plugins\DragonAspectFlight.dll`
 - `SKSE\Plugins\DragonAspectFlight.ini`
 - `SKSE\Plugins\BehaviorDataInjector\DragonAspectFlight_BDI.json`
-- A self-contained OAR project containing the original flight animation clips.
-- `CREDITS.txt` with animation attribution and redistribution terms.
+- Two config-only OAR patches that reference More Draconic Aspect Can Fly's installed animation folders.
 
 It does not ship:
 
@@ -122,7 +124,7 @@ Behavior Data Injector registers these graph variables:
 - `bDAF_FlightShout`
 - `iDAF_FlightState`
 
-The SKSE plugin drives those variables while Dragon Aspect Flight is active. OAR uses them to select the bundled original flight clips without depending on vanilla jump/sprint animation loops or cross-mod animation-folder indirection.
+The SKSE plugin drives those variables while Dragon Aspect Flight is active. OAR uses them to select More Draconic Aspect Can Fly's installed flight clips without copying or redistributing the HKX files.
 
 Users should not need to run Nemesis or Pandora for this mod.
 
@@ -133,6 +135,7 @@ Install the release ZIP with MO2 or another mod manager. The ZIP root is already
 Make sure:
 
 - Edmond's More Draconic Aspect - Become The Dragonborn is installed and enabled.
+- More Draconic Aspect Can Fly is installed and enabled with its `Flying Mod` and `Elegant Flying Animations` OAR folders intact.
 - Behavior Data Injector and Open Animation Replacer are installed and enabled.
 
 ## Build From Source
@@ -144,4 +147,4 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release
 ```
 
-The build stages the DLL and deployable `Data` files, including the credited HKX animation payloads, under `build/bin`.
+The build stages the DLL and deployable config-only `Data` files under `build/bin`. No HKX animation payload is bundled.

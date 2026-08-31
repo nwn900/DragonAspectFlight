@@ -1,5 +1,7 @@
 #pragma once
 
+#include "DragonAspectFlight/FlightShoutControlState.h"
+
 #include <atomic>
 #include <chrono>
 #include <cstdint>
@@ -63,8 +65,7 @@ namespace DragonAspectFlight
 		bool _isDescending{ false };
 		bool _fightingControlsSuppressed{ false };
 		bool _restoreFightingControls{ false };
-		bool _flightShoutControlsOpen{ false };
-		std::chrono::steady_clock::time_point _flightShoutControlsCloseAfter{};
+		detail::FlightShoutControlState _flightShoutControls{};
 		float _flightSpeed{ 14.0F };
 		float _verticalSpeed{ 24.0F };
 		float _liftScale{ 1.0F };

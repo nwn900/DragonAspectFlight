@@ -1,0 +1,41 @@
+{
+  "name": "Dragon Aspect Flight - Flying Mod Patch",
+  "description": "Uses More Draconic's installed Flying Mod HKX files while Dragon Aspect Flight is active. This submod intentionally contains config only; OAR reads animations from the sibling Flying Mod folder.",
+  "priority": 696969700,
+  "overrideAnimationsFolder": "Flying Mod",
+  "interruptible": true,
+  "conditions": [
+    {
+      "condition": "IsActorBase",
+      "requiredVersion": "1.0.0.0",
+      "Actor base": {
+        "pluginName": "Skyrim.esm",
+        "formID": "7"
+      }
+    },
+    {
+      "condition": "CompareValues",
+      "requiredVersion": "1.0.0.0",
+      "Value A": {
+        "graphVariable": "bDAF_FlightActive",
+        "graphVariableType": "Bool"
+      },
+      "Comparison": "==",
+      "Value B": {
+        "value": 1.0
+      }
+    },
+    {
+      "condition": "CompareValues",
+      "requiredVersion": "1.0.0.0",
+      "Value A": {
+        "graphVariable": "iDAF_FlightState",
+        "graphVariableType": "Int"
+      },
+      "Comparison": ">",
+      "Value B": {
+        "value": 0.0
+      }
+    }
+  ]
+}
