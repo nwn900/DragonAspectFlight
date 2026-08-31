@@ -1,0 +1,28 @@
+Dragon Aspect Flight - bundled animation credits
+================================================
+
+This package is free and must not be sold.
+
+Flying Mod Beta
+Author: PorroOne
+Source: https://www.nexusmods.com/skyrim/mods/15775
+Use: Flying Mod animation clips.
+Permission: the Nexus page allows asset use without prior permission when the
+original creator is credited. The assets may not be used in sold mods/files.
+Permission is required before enabling Donation Points for a mod using them.
+
+Elegant Flying Animations
+Author: RohZima
+Original source: https://www.nexusmods.com/skyrim/mods/81993
+Skyrim Special Edition conversion: Aerathmir
+Conversion source: https://www.nexusmods.com/skyrimspecialedition/mods/14576
+Use: Elegant Flying Animations clips for female player characters.
+Permission: the original author explicitly allows use in a flying mod when
+credit is provided. The SSE conversion refers users to the original terms.
+
+More Draconic Aspect Can Fly (With Collisions)
+Author: RavenKZP
+Source: https://www.nexusmods.com/skyrimspecialedition/mods/135168
+Use: source of the known-working Skyrim Special Edition HKX copies bundled here.
+Permission: the Nexus page allows asset use without prior permission when the
+author is credited. The page credits PorroOne and RohZima for the animations.

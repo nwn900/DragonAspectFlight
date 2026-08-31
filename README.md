@@ -16,9 +16,7 @@ Current release: `1.5.0`
 - Behavior Data Injector.
 - Open Animation Replacer.
 - Edmond's More Draconic Aspect - Become The Dragonborn.
-- More Draconic Aspect Can Fly animation package, installed separately.
-
-Dragon Aspect Flight does not bundle More Draconic `.hkx` animation files. More Draconic remains the owner/provider of the actual animation clips.
+Dragon Aspect Flight bundles the original Flying Mod Beta and Elegant Flying Animations clips used by the Nexus v1.5 release path. The files are byte-identical to the working Skyrim SE clips distributed by More Draconic Aspect Can Fly. See `CREDITS.txt` for authors, links, and redistribution terms.
 
 ## Optional: In-Game Settings Panel
 
@@ -26,26 +24,24 @@ Dragon Aspect Flight does not bundle More Draconic `.hkx` animation files. More 
 
 ## Load Order
 
-Install Dragon Aspect Flight after More Draconic Aspect Can Fly in your mod manager.
-
-The release ships two config-only OAR submods under:
+The release ships a self-contained OAR project under:
 
 ```text
-meshes\actors\character\animations\OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly
+meshes\actors\character\animations\OpenAnimationReplacer\Dragon Aspect Flight - Nexus v1.5 Compat Flight Animations
 ```
 
-Those patches use OAR's `overrideAnimationsFolder` to read HKX files from More Draconic's installed `Flying Mod` and `Elegant Flying Animations` folders. The Dragon Aspect Flight package should contain zero `.hkx` files.
+The submods contain the HKX files directly. They do not depend on OAR resolving `overrideAnimationsFolder` across separate MO2 mods.
 
 ## What The Release Ships
 
 - `SKSE\Plugins\DragonAspectFlight.dll`
 - `SKSE\Plugins\DragonAspectFlight.ini`
 - `SKSE\Plugins\BehaviorDataInjector\DragonAspectFlight_BDI.json`
-- OAR config-only patches for More Draconic's installed animation folders.
+- A self-contained OAR project containing the original flight animation clips.
+- `CREDITS.txt` with animation attribution and redistribution terms.
 
 It does not ship:
 
-- More Draconic animation `.hkx` files.
 - Pandora/Nemesis behavior-generator files.
 - A nested `Data` folder inside the mod root.
 
@@ -126,7 +122,7 @@ Behavior Data Injector registers these graph variables:
 - `bDAF_FlightShout`
 - `iDAF_FlightState`
 
-The SKSE plugin drives those variables while Dragon Aspect Flight is active. OAR uses them to select More Draconic's flight clips without depending on vanilla jump/sprint animation loops.
+The SKSE plugin drives those variables while Dragon Aspect Flight is active. OAR uses them to select the bundled original flight clips without depending on vanilla jump/sprint animation loops or cross-mod animation-folder indirection.
 
 Users should not need to run Nemesis or Pandora for this mod.
 
@@ -137,8 +133,6 @@ Install the release ZIP with MO2 or another mod manager. The ZIP root is already
 Make sure:
 
 - Edmond's More Draconic Aspect - Become The Dragonborn is installed and enabled.
-- More Draconic Aspect Can Fly is installed and enabled.
-- Dragon Aspect Flight is enabled after More Draconic Aspect Can Fly.
 - Behavior Data Injector and Open Animation Replacer are installed and enabled.
 
 ## Build From Source
@@ -150,6 +144,4 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release
 ```
 
-The build stages the DLL and deployable `Data` files under `build/bin` without HKX animation payloads.
-
-For local diagnostics only, `DAF_MATERIALIZE_EXTERNAL_ANIMATION_LINKS=ON` can recreate the old hardlink staging layout from an installed More Draconic folder. Do not use that option for release packaging.
+The build stages the DLL and deployable `Data` files, including the credited HKX animation payloads, under `build/bin`.
