@@ -45,7 +45,7 @@ namespace
 	constexpr auto StartAfterSheatheRetryDelay = 250ms;
 	constexpr auto ShoutGraphOverrideDuration = 1400ms;
 	constexpr auto ShoutControlsCloseDelay = 150ms;
-	constexpr std::string_view FlightBuildVersion = "v1.5.0-compat-r5-shout-control-reference-oar";
+	constexpr std::string_view FlightBuildVersion = "v1.5.0-compat-r6-exact-path-oar-reference";
 	constexpr const char* GraphVarDragonAspectActive = "bDAF_DragonAspectActive";
 	constexpr const char* GraphVarFlightActive = "bDAF_FlightActive";
 	constexpr const char* GraphVarLaunchBoost = "bDAF_LaunchBoost";

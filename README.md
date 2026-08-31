@@ -18,7 +18,7 @@ Current release: `1.5.0`
 - Edmond's More Draconic Aspect - Become The Dragonborn.
 - More Draconic Aspect Can Fly, with its `Flying Mod` and `Elegant Flying Animations` OAR folders installed.
 
-Dragon Aspect Flight does not redistribute those animations. Its OAR configs reference the installed sibling folders from More Draconic Aspect Can Fly, matching the published Nexus v1.5 design.
+Dragon Aspect Flight does not redistribute those animations. Its OAR config-only overlays share the exact virtual folders used by More Draconic Aspect Can Fly, so OAR reads the dependency's installed HKX files directly.
 
 ## Optional: In-Game Settings Panel
 
@@ -26,14 +26,14 @@ Dragon Aspect Flight does not redistribute those animations. Its OAR configs ref
 
 ## Load Order
 
-The release installs two config-only patches under More Draconic Aspect Can Fly's OAR project:
+The release installs two config-only overlays at More Draconic Aspect Can Fly's exact OAR animation paths:
 
 ```text
-meshes\actors\character\animations\OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly\Dragon Aspect Flight - Flying Mod Patch
-meshes\actors\character\animations\OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly\Dragon Aspect Flight - Elegant Flying Patch
+meshes\actors\character\animations\OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly\Flying Mod\config.json
+meshes\actors\character\animations\OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly\Elegant Flying Animations\config.json
 ```
 
-The patches contain no HKX files. OAR's `overrideAnimationsFolder` points each patch at the sibling `Flying Mod` or `Elegant Flying Animations` folder supplied by More Draconic Aspect Can Fly. The dependency can reside in a separate MO2 mod because MO2 presents both mods through one virtual Data tree.
+The overlays contain no HKX files and preserve More Draconic's original magic-effect plus `IsInAir` activation as an alternative to DAF's graph-variable activation. Dragon Aspect Flight must load after More Draconic so only these two `config.json` files win; every animation remains supplied by More Draconic through MO2's merged virtual Data tree.
 
 ## What The Release Ships
 

@@ -61,6 +61,10 @@ if(BUILD_TESTING)
         "${CMAKE_CURRENT_SOURCE_DIR}/include")
     add_test(NAME DragonAspectFlight.ShoutControlWindow
         COMMAND DragonAspectFlightShoutControlTests)
+    add_test(NAME DragonAspectFlight.OarReferenceOverlay
+        COMMAND ${CMAKE_COMMAND}
+            "-DDAF_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
+            -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/verify_oar_reference_overlay.cmake")
 endif()
 
 target_include_directories(${PROJECT_NAME} PRIVATE

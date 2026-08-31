@@ -1,0 +1,71 @@
+{
+  "name": "Dragon Aspect Flight - More Draconic Flying Mod Patch",
+  "description": "Keeps More Draconic's original in-air activation and also uses its installed Flying Mod HKX files while Dragon Aspect Flight is active. This overlay contains config only; More Draconic supplies every animation file.",
+  "priority": 696969700,
+  "interruptible": true,
+  "conditions": [
+    {
+      "condition": "IsActorBase",
+      "requiredVersion": "1.0.0.0",
+      "Actor base": {
+        "pluginName": "Skyrim.esm",
+        "formID": "7"
+      }
+    },
+    {
+      "condition": "OR",
+      "requiredVersion": "1.0.0.0",
+      "Conditions": [
+        {
+          "condition": "AND",
+          "requiredVersion": "1.0.0.0",
+          "Conditions": [
+            {
+              "condition": "HasMagicEffect",
+              "requiredVersion": "1.0.0.0",
+              "Magic effect": {
+                "pluginName": "More Draconic Aspect - Become The Dragonborn ESL.esp",
+                "formID": "804"
+              },
+              "Active effects only": false
+            },
+            {
+              "condition": "IsInAir",
+              "requiredVersion": "1.0.0.0"
+            }
+          ]
+        },
+        {
+          "condition": "AND",
+          "requiredVersion": "1.0.0.0",
+          "Conditions": [
+            {
+              "condition": "CompareValues",
+              "requiredVersion": "1.0.0.0",
+              "Value A": {
+                "graphVariable": "bDAF_FlightActive",
+                "graphVariableType": "Bool"
+              },
+              "Comparison": "==",
+              "Value B": {
+                "value": 1.0
+              }
+            },
+            {
+              "condition": "CompareValues",
+              "requiredVersion": "1.0.0.0",
+              "Value A": {
+                "graphVariable": "iDAF_FlightState",
+                "graphVariableType": "Int"
+              },
+              "Comparison": ">",
+              "Value B": {
+                "value": 0.0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

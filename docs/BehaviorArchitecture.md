@@ -14,9 +14,9 @@ The working 0.8.8 package depended on OAR seeing 351 specific replacement filena
 
 The Dragon Aspect Flight deployable provides the SKSE plugin, BDI graph variable registration, OAR config patches, and INI configuration. It does not ship optional Pandora/Nemesis behavior-generator support.
 
-The OAR config patches are placed as sibling submods under More Draconic's virtual replacer mod path:
+The OAR config patches are placed at More Draconic's exact virtual animation-folder paths:
 
-- `OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly\Dragon Aspect Flight - Flying Mod Patch\config.json`
-- `OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly\Dragon Aspect Flight - Elegant Flying Patch\config.json`
+- `OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly\Flying Mod\config.json`
+- `OpenAnimationReplacer\More Dragonic Dragon Aspect Can Fly\Elegant Flying Animations\config.json`
 
-Those config-only submods use `overrideAnimationsFolder` to point OAR at More Draconic's real `Flying Mod` and `Elegant Flying Animations` animation folders. Dragon Aspect Flight must load after the More Draconic animation mod so its additional submods are visible, while More Draconic's HKX files remain available and owned by More Draconic.
+Dragon Aspect Flight must load after More Draconic so these two config-only files win their loose-file conflicts. OAR then parses the dependency's HKX files from the same merged virtual directories without `overrideAnimationsFolder`. Each overlay preserves More Draconic's original magic-effect plus `IsInAir` condition branch and adds DAF's graph-variable branch, so the dependency's native behavior remains available outside DAF flight.
