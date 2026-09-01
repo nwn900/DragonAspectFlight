@@ -11,6 +11,7 @@ namespace
 	using DragonAspectFlight::detail::PollFlightShoutControl;
 	using DragonAspectFlight::detail::QueueFlightShoutControlClose;
 	using DragonAspectFlight::detail::ResetFlightShoutControl;
+	using DragonAspectFlight::detail::ShouldEnableFlightFightingControls;
 	using DragonAspectFlight::detail::ShoutControlTransition;
 
 	bool Require(bool a_condition, const char* a_message)
@@ -70,6 +71,29 @@ int main()
 			state.closeAfter == std::chrono::steady_clock::time_point{},
 			"flight stop must clear the open window and pending deadline")) {
 		return 9;
+	}
+
+	if (!Require(!ShouldEnableFlightFightingControls(state, false),
+			"flight combat controls must stay suppressed without an active shout path")) {
+		return 10;
+	}
+	if (!Require(ShouldEnableFlightFightingControls(state, true),
+			"Favorites or Magic menu must open the control gate for shout selection")) {
+		return 11;
+	}
+	(void)BeginFlightShoutControl(state);
+	if (!Require(ShouldEnableFlightFightingControls(state, false),
+			"the existing shout-input window must still open the control gate")) {
+		return 12;
+	}
+	if (!Require(ShouldEnableFlightFightingControls(state, true),
+			"overlapping shout input and menu selection must keep the gate open")) {
+		return 13;
+	}
+	(void)ResetFlightShoutControl(state);
+	if (!Require(!ShouldEnableFlightFightingControls(state, false),
+			"closing the final shout path must re-suppress combat controls")) {
+		return 14;
 	}
 
 	return 0;

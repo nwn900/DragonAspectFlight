@@ -78,6 +78,8 @@ CostPerSecond=5.0
 
 Defaults are `B` for activation, `Space` for ascent, and `Left Shift` for descent. Magicka drain is **on by default** at 5 points/sec. Every flight binding stores both a device (`Keyboard` or `Gamepad`) and a code. Keyboard codes are DirectInput scan codes; gamepad codes use CommonLib's gamepad button IDs. For compatibility, legacy `Activation=`, `Ascend=`, and `Descend=` INI entries still load as keyboard bindings.
 
+While flying, the Favorites and Magic menus temporarily reopen only Skyrim's fighting-control gate so a different shout can be assigned. Closing the menu restores the compatibility port's normal weapon and magic suppression.
+
 Supported gamepad bindings are D-Pad Up/Down/Left/Right, Start/Menu, Back/View, Left/Right Stick, Left/Right Bumper, A/Cross, B/Circle, X/Square, Y/Triangle, and Left/Right Trigger. Configure them manually in the INI or through the SMF3 rebinder. Custom bindings take precedence over Skyrim's vanilla semantic input while flying, so controller A, Y, bumpers, and triggers can drive flight instead of their normal action.
 
 ### New v1.2.0 Features

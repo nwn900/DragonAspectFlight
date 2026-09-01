@@ -45,7 +45,7 @@ namespace
 	constexpr auto StartAfterSheatheRetryDelay = 250ms;
 	constexpr auto ShoutGraphOverrideDuration = 1400ms;
 	constexpr auto ShoutControlsCloseDelay = 150ms;
-	constexpr std::string_view FlightBuildVersion = "v1.5.0-compat-r6-exact-path-oar-reference";
+	constexpr std::string_view FlightBuildVersion = "v1.5.0-compat-r7-midflight-shout-selection";
 	constexpr const char* GraphVarDragonAspectActive = "bDAF_DragonAspectActive";
 	constexpr const char* GraphVarFlightActive = "bDAF_FlightActive";
 	constexpr const char* GraphVarLaunchBoost = "bDAF_LaunchBoost";
@@ -82,6 +82,13 @@ namespace
 	RE::PlayerCharacter* GetPlayer()
 	{
 		return RE::PlayerCharacter::GetSingleton();
+	}
+
+	bool IsShoutSelectionMenuOpen()
+	{
+		auto* ui = RE::UI::GetSingleton();
+		return ui &&
+			(ui->IsMenuOpen(RE::FavoritesMenu::MENU_NAME) || ui->IsMenuOpen(RE::MagicMenu::MENU_NAME));
 	}
 
 	// The published v1.5 CommonLib helper changed both enabledControls and the
@@ -1131,7 +1138,7 @@ namespace DragonAspectFlight
 			}
 		}
 
-		if (shouldDisable && controlMap->IsFightingControlsEnabled()) {
+		if (shouldDisable && !IsShoutSelectionMenuOpen() && controlMap->IsFightingControlsEnabled()) {
 			SetControlFlagPreservingStored(controlMap, RE::ControlMap::UEFlag::kFighting, false, "shout_reset");
 			logger::info("Fighting controls closed after Dragon Aspect flight shout");
 		}
@@ -1260,7 +1267,10 @@ namespace DragonAspectFlight
 			return;
 		}
 
+		const bool shoutSelectionMenuOpen = IsShoutSelectionMenuOpen();
 		bool shouldCloseQueuedShout = false;
+		bool shouldEnableFightingControls = false;
+		bool shoutWindowOpen = false;
 
 		{
 			std::unique_lock lock(_mutex);
@@ -1273,18 +1283,29 @@ namespace DragonAspectFlight
 				shouldCloseQueuedShout = detail::PollFlightShoutControl(
 										   _flightShoutControls, std::chrono::steady_clock::now()) ==
 									   detail::ShoutControlTransition::kClose;
-				if (!shouldCloseQueuedShout) {
-					return;
-				}
 			}
+
+			shouldEnableFightingControls =
+				detail::ShouldEnableFlightFightingControls(_flightShoutControls, shoutSelectionMenuOpen);
+			shoutWindowOpen = _flightShoutControls.open;
 		}
 
-		if (controlMap->IsFightingControlsEnabled()) {
+		if (shouldEnableFightingControls && !controlMap->IsFightingControlsEnabled()) {
+			SetControlFlagPreservingStored(
+				controlMap,
+				RE::ControlMap::UEFlag::kFighting,
+				true,
+				shoutSelectionMenuOpen ? "shout_selection_menu_open" : "shout_window_enforce");
+			logger::info(
+				"Fighting controls opened for mid-flight shout selection: menu_open={} shout_window_open={}",
+				shoutSelectionMenuOpen,
+				shoutWindowOpen);
+		} else if (!shouldEnableFightingControls && controlMap->IsFightingControlsEnabled()) {
 			SetControlFlagPreservingStored(
 				controlMap,
 				RE::ControlMap::UEFlag::kFighting,
 				false,
-				shouldCloseQueuedShout ? "shout_close_deadline" : "flight_enforce");
+				shouldCloseQueuedShout ? "shout_close_deadline" : "shout_selection_menu_close_or_flight_enforce");
 			if (shouldCloseQueuedShout) {
 				logger::info("Fighting controls closed after vanilla flight shout pass-through");
 			} else {

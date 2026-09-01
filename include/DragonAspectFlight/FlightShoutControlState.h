@@ -17,6 +17,13 @@ namespace DragonAspectFlight::detail
 		std::chrono::steady_clock::time_point closeAfter{};
 	};
 
+	[[nodiscard]] inline bool ShouldEnableFlightFightingControls(
+		const FlightShoutControlState& a_state,
+		bool a_shoutSelectionMenuOpen) noexcept
+	{
+		return a_state.open || a_shoutSelectionMenuOpen;
+	}
+
 	[[nodiscard]] inline ShoutControlTransition BeginFlightShoutControl(
 		FlightShoutControlState& a_state) noexcept
 	{
