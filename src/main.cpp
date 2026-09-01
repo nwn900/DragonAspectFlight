@@ -122,7 +122,7 @@ extern "C" __declspec(dllexport) SKSE::PluginVersionData SKSEPlugin_Version = []
 	SKSE::PluginVersionData data{};
 
 	data.PluginName("DragonAspectFlight");
-	data.PluginVersion(REL::Version{ 1, 4, 0, 0 });
+	data.PluginVersion(REL::Version{ 1, 6, 0, 0 });
 	data.AuthorName("LvxMagick");
 	data.UsesAddressLibrary();
 	data.UsesUpdatedStructs();

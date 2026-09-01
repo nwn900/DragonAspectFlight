@@ -6,7 +6,7 @@ Flight starts only when the third word of Dragon Aspect is active. The plugin ha
 
 ## Version
 
-Current release: `1.5.0`
+Current release: `1.6.0`
 
 ## Requirements
 
@@ -101,6 +101,12 @@ Supported gamepad bindings are D-Pad Up/Down/Left/Right, Start/Menu, Back/View, 
 ### New v1.5.0 Notification Update
 
 - **Optional shout-required message**: set `ShowShoutRequired=0` in `[Notifications]` to silence the message shown when flight is activated before the full Dragon Aspect shout is active.
+
+### New v1.6.0 Compatibility Update
+
+- **Skyrim 1.7.99 and 1.7.104 support** in the unified SE, AE, and VR DLL.
+- **Mid-flight shout reassignment** through the Favorites or Magic menu.
+- **External More Draconic animations** remain referenced through exact OAR paths and are not bundled.
 
 ### v1.1.0 Features
 
