@@ -1,6 +1,7 @@
 #include "PCH.h"
 
 #include "DragonAspectFlight/DragonAspectMonitor.h"
+#include "DragonAspectFlight/FlightManager.h"
 #include "DragonAspectFlight/InputHandler.h"
 #include "DragonAspectFlight/Papyrus.h"
 #include "DragonAspectFlight/Settings.h"
@@ -58,6 +59,29 @@ namespace
 		}
 
 		switch (a_msg->type) {
+		case SKSE::MessagingInterface::kPreLoadGame:
+			{
+				const auto session = DragonAspectFlight::FlightManager::GetSingleton().ResetForLifecycle("pre_load_game");
+				DragonAspectFlight::InputHandler::GetSingleton()->ResetForLifecycle(session, "pre_load_game");
+				DragonAspectFlight::DragonAspectMonitor::GetSingleton().ResetForLifecycle("pre_load_game");
+				DragonAspectFlight::InputHandler::GetSingleton()->QueueGameThreadStateRefresh();
+			}
+			break;
+
+		case SKSE::MessagingInterface::kNewGame:
+			{
+				const auto session = DragonAspectFlight::FlightManager::GetSingleton().ResetForLifecycle("new_game");
+				DragonAspectFlight::InputHandler::GetSingleton()->ResetForLifecycle(session, "new_game");
+				DragonAspectFlight::DragonAspectMonitor::GetSingleton().ResetForLifecycle("new_game");
+				DragonAspectFlight::InputHandler::GetSingleton()->QueueGameThreadStateRefresh();
+			}
+			break;
+
+		case SKSE::MessagingInterface::kPostLoadGame:
+			DragonAspectFlight::InputHandler::GetSingleton()->QueueGameThreadStateRefresh();
+			logger::info("event=input_state_refresh reason=post_load_game queued=true");
+			break;
+
 		case SKSE::MessagingInterface::kInputLoaded:
 			DragonAspectFlight::InputHandler::GetSingleton()->Register();
 			logger::info("InputLoaded message received");
@@ -109,6 +133,15 @@ extern "C" __declspec(dllexport) bool SKSEPlugin_Load(const SKSE::LoadInterface*
 		runtimeFamily,
 		a_skse->RuntimeVersion().string("."),
 		a_skse->GetReleaseIndex());
+	logger::info(
+		"event=diagnostic_schema schema={} version={} build_label={} runtime_family={} compiled_candidate_identity={}@{}T{} dll_hash=not_computed",
+		DragonAspectFlight::State::StructuredDiagnosticSchemaVersion,
+		DragonAspectFlight::Version,
+		DragonAspectFlight::BuildVersion,
+		runtimeFamily,
+		DragonAspectFlight::BuildVersion,
+		__DATE__,
+		__TIME__);
 
 	InitializePapyrus();
 

@@ -2,6 +2,7 @@
 
 #include "RE/Skyrim.h"
 #include "SKSE/SKSE.h"
+#include "DragonAspectFlight/Compatibility.h"
 
 #include <algorithm>
 #include <atomic>

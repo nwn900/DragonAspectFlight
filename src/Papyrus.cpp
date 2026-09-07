@@ -9,8 +9,18 @@ namespace DragonAspectFlight::Papyrus
 	{
 		constexpr auto SCRIPT_NAME = "DragonAspectFlight";
 
-		void StartFlight(RE::StaticFunctionTag*) { FlightManager::GetSingleton().StartFlight(); }
-		void StopFlight(RE::StaticFunctionTag*) { FlightManager::GetSingleton().StopFlight(); }
+		void StartFlight(RE::StaticFunctionTag*)
+		{
+			const bool queued = FlightManager::GetSingleton().QueueFlightAction(
+				State::FlightInputActionSnapshot{ State::FlightInputAction::kStartFlight });
+			logger::info("event=papyrus_action action=start_flight queued={}", queued);
+		}
+		void StopFlight(RE::StaticFunctionTag*)
+		{
+			const bool queued = FlightManager::GetSingleton().QueueFlightAction(
+				State::FlightInputActionSnapshot{ State::FlightInputAction::kStopFlight });
+			logger::info("event=papyrus_action action=stop_flight queued={}", queued);
+		}
 		bool IsFlying(RE::StaticFunctionTag*) { return FlightManager::GetSingleton().IsFlying(); }
 		void SetFlightSpeed(RE::StaticFunctionTag*, float a_speed) { FlightManager::GetSingleton().SetFlightSpeed(a_speed); }
 		void SetVerticalSpeed(RE::StaticFunctionTag*, float a_speed) { FlightManager::GetSingleton().SetVerticalSpeed(a_speed); }

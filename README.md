@@ -1,18 +1,19 @@
 # Dragon Aspect Flight
 
-Dragon Aspect Flight is an SKSE/CommonLibVR-NG plugin that lets the player manually fly while the full-strength Dragon Aspect shout is active.
+Dragon Aspect Flight is an SKSE/CommonLibSSE-NG plugin that lets the player manually fly while the full-strength Dragon Aspect shout is active.
 
 Flight starts only when the third word of Dragon Aspect is active. The plugin handles flight physics, ascent/descent controls, shout pass-through during flight, weapon and magic combat, and OAR graph variables for animation selection.
 
 ## Version
 
-Current diagnostic candidate: `1.8.1`
+Current diagnostic candidate: `1.8.3`
 
 ## Requirements
 
-- Skyrim Special Edition, Anniversary Edition, or Skyrim VR with matching SKSE. The candidate DLL is built once against the maintained `alandtse/CommonLibVR` `ng` branch with SE, AE, and VR enabled.
+- Skyrim Special Edition 1.5.97, Anniversary Edition 1.6.x or 1.7.104, or Skyrim VR 1.4.15 with matching SKSE. The candidate DLL is built once against a CommonLibSSE-NG capability baseline that supports SE, AE, and VR.
+- The minimum CommonLibSSE-NG project version is 6.5.0. The historical 1.7.99 baseline is commit `c3d106cc14bfbc5db36f92345c0e20aa5dad42b8`; a newer official checkout is required for 1.7.104 and must retain the exact runtime and format-5 capability contract checked by CMake and `include/DragonAspectFlight/Compatibility.h`.
 - SKSE64 for SE/AE, or SKSEVR for VR.
-- Address Library compatible with the target runtime.
+- Address Library compatible with the target runtime. AE 1.7.104 specifically requires the external format-5 `versionlib-1-7-104-0.bin`; DAF never bundles that BIN.
 - Behavior Data Injector.
 - Open Animation Replacer.
 - Edmond's More Draconic Aspect - Become The Dragonborn.
@@ -58,7 +59,7 @@ The bundled namespace covers vanilla originals plus every combat original and al
 - `SKSE\Plugins\DragonAspectFlight-AnimationAliases.txt`
 - `SKSE\Plugins\DragonAspectFlight-AnimationHashes.txt`
 - `SKSE\Plugins\DragonAspectFlight-AnimationCoverage.json`
-- Eleven DAF-owned OAR families with 1,167 flight-scoped HKX aliases (about 107 MiB).
+- Eleven DAF-owned OAR families with 1,171 flight-scoped HKX aliases (about 107 MiB).
 - One credited Flying Mod Beta flight-pose donor used for neutral and equipment locomotion.
 - Credited NickNak aerial melee clips mapped into the OAR families; repository-only source paths are not duplicated into the installed mod.
 - Credited xp32/Neumeria magic and staff clips used by the magic and staff families.
@@ -160,21 +161,29 @@ The withdrawn v1.6.0 design tried to solve this with a small generic OAR set. It
 - **Whirlwind Sprint handoff**: after shout release DAF temporarily stops writing controller velocity, allowing the shout's forward impulse to move the player.
 - **Compact animation layout**: a single root scope and non-duplicated generic locomotion reduce the OAR tree from 4,209 HKX files (about 1.87 GiB) to 899 HKX files (about 90.46 MiB), a 95% reduction.
 - **One authoritative version**: CMake, the modern SKSE export, the legacy SKSE query export, logs, and the settings UI all report `1.8.0`.
-- **Maintained unified runtime base**: the DLL builds against `alandtse/CommonLibVR` `ng` with SE, AE, and VR enabled.
+- **Maintained unified runtime base**: one DLL builds against CommonLibSSE-NG with SE 1.5.97, AE 1.6.x/1.7.104, and VR enabled.
 
 ### New v1.8.1 Native State and Action Composite Fix
 
 - **Restorable baseline**: the user-tested v1.8.0 candidate remains tagged as `v1.8.0-rc-user-tested-20260811`; v1.8.1 is a separate diagnostic candidate.
 - **Actual weapon-state reconciliation**: DAF adopts the useful polling idea from More Draconic Aspect - Flight Combat 2.0.0, but not its Nemesis behavior edits, hard Mid Air Shouts dependency, control disabling, or invisible collision platform.
 - **Cooperative draw/sheathe recovery**: vanilla and equipment-state/input mods see Ready Weapon first. DAF observes `ActorState::WEAPON_STATE`, replaces stale opposite-direction requests atomically, preserves an already-armed compatible fallback, delays while a draw/sheathe transition is progressing, and invokes the relocated SE/AE/VR actor virtual only as a one-shot recovery fallback before timeout.
-- **Flight-owned block intent**: shields, two-handed weapons (including keyword-routed quarterstaves), and a one-handed weapon with an empty off hand receive synchronized `wantBlocking`, `IsBlocking`, `blockStart`, and `blockStop` state while vanilla/MCO gameplay input still passes through.
+- **Metadata-only block intent**: DAF records supported shield/two-handed/empty-off-hand intent and keeps vanilla/MCO/framework gameplay input passthrough. DAF does not write or clear the shared native `wantBlocking`, `IsBlocking`, `blockStart`, or `blockStop` state because the engine exposes no producer token that can prove ownership. Equipment epochs are nonzero and terminal at counter exhaustion; affected actions fail closed rather than reusing an ABA-prone value.
 - **Aerial block and bash**: block, bash, hit, and transition originals use validated lower-body flight composites instead of static flight idle or grounded full-body clips.
 - **Quarterstaff route**: `WeapTypeQtrStaff` has a dedicated priority-`2147483610` family and seven Animated Armoury-derived block/draw composites.
 - **Installed-mod action aliases**: Maxsu block-hit and Dynamic Bow Animation `xpe0_*` originals map to the matching flight composites. They remain inert on modlists that do not request those names.
 - **Aerial draw, sheathe, and shout**: vanilla upper-body timing and annotations are preserved, while the root and lower body come from the flight pose. The upper-body-only crossbow shout offset is intentionally left untouched.
 - **Descent input fix**: attacks, draw/sheathe, and shouts are no longer swallowed during magicka-exhaustion descent. Whirlwind Sprint can temporarily own velocity during descent as well.
 - **Persistent diagnostics**: the SKSE log appends and rotates at 5 MiB x 3 files instead of truncating on launch. Snapshots include weapon transition, attack, block, quarterstaff, graph, controller, velocity, and equipment state.
-- **Compact package**: 1,167 installed HKX aliases occupy about 107 MiB—well below the former 1.87 GiB stack.
+- **Compact package**: 1,171 installed HKX aliases occupy about 107 MiB—well below the former 1.87 GiB stack.
+
+### New v1.8.2 Native State and Action Composite Fix
+
+- **Diagnostic candidate**: v1.8.2 carries the native state, input, animation-routing, and diagnostics changes as one SE/AE/VR build.
+
+### New v1.8.3 Compatibility and State-Routing Fix
+
+- **Diagnostic candidate**: v1.8.3 carries the v1.8.2 native state and action-composite fixes, plus the Skyrim AE 1.7.104 Address Library capability contract and the final SE/AE/VR build metadata.
 
 ### v1.1.0 Features
 
@@ -219,14 +228,26 @@ Jumping Attack may remain installed for other gameplay, but DAF does not enter i
 
 ## Build From Source
 
-This project expects the maintained `alandtse/CommonLibVR` `ng` branch in a sibling folder named `CommonLibVR-NG` by default. Its CMake package dependencies must be available through vcpkg or `CMAKE_PREFIX_PATH`:
+Configure with a provenance-recorded official CommonLibSSE-NG checkout that is version 6.5.0 or newer and provides `REL::IDDB::Format::SSEv5` with the generic `header_v5_t`/`load_v5` parser. DAF keeps its exact 1.7.104 version reference local; an upstream `SKSE::RUNTIME_SSE_1_7_104` name is not required. `COMMONLIBSSE_NG_PATH` is mandatory; there is no implicit sibling lookup. Keep the CommonLib source prefix and the vcpkg dependency prefix separate, for example:
 
 ```powershell
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake -S . -B build -G Ninja `
+  -DCOMMONLIBSSE_NG_PATH=<path-to-CommonLibSSE-NG-6.5.0> `
+  -DCMAKE_TOOLCHAIN_FILE=<path-to-vcpkg>/scripts/buildsystems/vcpkg.cmake `
+  -DCMAKE_PREFIX_PATH=<path-to-vcpkg-installed>
 cmake --build build --config Release
 ```
 
-The build stages the DLL and deployable `Data` files under `build/Data`, including the hash-pinned animation stack. The current candidate manifest contains 1,167 installed HKX assets. The generator checks packfile headers, attempts TAGXML deserialization with `hkxcmd`, and round-trips every generated composite through PyNifly while verifying duration, track count, bone binding, and annotations.
+The build stages the DLL and deployable `Data` files under `build/Data`, including the hash-pinned animation stack. The current candidate manifest contains 1,171 installed HKX assets. The generator checks packfile headers, attempts TAGXML deserialization with `hkxcmd`, and round-trips every generated composite through PyNifly while verifying duration, track count, bone binding, and annotations.
+
+Validate the external AE 1.7.104 Address Library before launch or packaging. Supply the path explicitly or through `DAF_ADDRESS_LIBRARY_BIN`:
+
+```powershell
+py -3 tools\validate_address_library.py `
+  --bin <path-to-Data\SKSE\Plugins\versionlib-1-7-104-0.bin>
+```
+
+This checks the pinned SHA-256, format-5 header, runtime/image metadata, dense table size, and the 16 audited relocation IDs. A successful configure/build and BIN validation establish static 1.7.104 readiness; they do not replace a live launch and gameplay check on that runtime.
 
 Regenerate the eleven DAF-owned equipment families with:
 
@@ -238,3 +259,20 @@ python tools\BuildFlightAnimationStack.py `
 ```
 
 The vanilla source root is a local build input and is not committed. The tool creates flight-safe composites, records exact filename coverage, and refreshes the SHA-256 manifest.
+
+### Source-only diagnosis repair kit
+
+The diagnosis-and-plan work is intentionally delivered as reviewable source
+tools, not as a release or an automatic Data rewrite. `AerializeHkx.py` refuses
+positional track guesses, preserves additive and upper-body-only clips byte for
+byte, checks HKX bindings/metadata/loop seams, rejects unsupported channels, and
+replaces outputs only after a successful round trip. `BuildFlightAnimationStack.py`
+fails closed when an action slot has no exact original source and stages the OAR
+tree before an atomic commit.
+
+Use `rebuild_flight_actions.py` with a reviewed manifest containing the exact
+original action paths and SHA-256 values to produce a separate staging tree.
+Use `apply_daf_source_patch.py` to apply hash-pinned source replacements to a
+separate copy; it preserves CRLF files, can verify Git blob IDs, emits a diff,
+and records that the copy is uncompiled and undeployed. Neither tool edits the
+source checkout, the checked-in animation stack, or a live modlist by default.

@@ -17,7 +17,8 @@ from AerializeHkx import aerialize, load_backend
 
 
 ROOT_SCOPE = pathlib.Path()
-RELEASE_VERSION = "1.8.1"
+RELEASE_VERSION = "1.8.3"
+_STAGED_OUTPUT_ROOT: pathlib.Path | None = None
 
 
 def names(value: str) -> set[str]:
@@ -66,10 +67,13 @@ GENERIC_MOTION = standard_motion("mt_") | names(
     """
 )
 
-UNARMED_MOTION = standard_motion("h2h_") | names("h2h_idle.hkx")
+UNARMED_MOTION = standard_motion("h2h_") | names(
+    "h2h_idle.hkx h2h_sprintforwardsword.hkx 1hm_sprintforwardsword.hkx"
+)
 ONE_HANDED_MOTION = standard_motion("1hm_") | names(
     """
-    1hm_idle.hkx 1hm_blockidle.hkx sneak1hm_idle.hkx shd_blockidle.hkx
+    1hm_idle.hkx 1hm_blockidle.hkx 1hm_sprintforwardsword.hkx
+    sneak1hm_idle.hkx shd_blockidle.hkx
     """
 )
 DUAL_WIELD_MOTION = ONE_HANDED_MOTION | names(
@@ -127,15 +131,6 @@ STAFF_MOTION = names(
 
 COMMON_VANILLA_ACTIONS = names(
     """
-    1hm_boundswordequip.hkx 1hm_equip.hkx 1hm_unequip.hkx
-    2hc_equip.hkx 2hc_unequip.hkx 2hw_equip.hkx 2hw_unequip.hkx
-    axe_equip.hkx axe_unequip.hkx bow_boundbowequip.hkx
-    bow_equip.hkx bow_unequip.hkx dag_equip.hkx dag_unequip.hkx
-    h2h_equip.hkx h2h_unequip.hkx mac_equip.hkx mac_unequip.hkx
-    mlh_1hm_equip.hkx mlh_equip.hkx mlh_unequip.hkx
-    mrh_and_mlh_equip.hkx mrh_and_mlh_forceequip.hkx mrh_and_mlh_unequip.hkx
-    mrh_equip.hkx mrh_unequip.hkx shd_equip_1hmout.hkx
-    staffright_equip.hkx stf_equip.hkx weapsoloequip.hkx
     mt_shout_inhale.hkx mt_shout_exhale.hkx
     mt_shout_exhale_medium.hkx mt_shout_exhale_long.hkx
     1hm_shout_inhale.hkx 1hm_shout_exhale.hkx
@@ -143,9 +138,7 @@ COMMON_VANILLA_ACTIONS = names(
     sneak1hm_shout_inhale.hkx sneak1hm_shout_exhale.hkx
     sneak1hm_shout_exhale_medium.hkx sneak1hm_shout_exhale_long.hkx
     """
-) | {
-    "dlc01/crossbow_equip.hkx",
-}
+)
 
 BLOCK_ACTION_PROFILES: dict[str, set[str]] = {
     "one_handed": names(
@@ -198,7 +191,7 @@ BLOCK_ACTION_PROFILES: dict[str, set[str]] = {
 QUARTERSTAFF_AA_ACTIONS = names(
     """
     2hw_blockanticipate.hkx 2hw_blockbashintro.hkx 2hw_blockbashpower.hkx
-    2hw_blockhit.hkx 2hw_blockidle.hkx 2hw_equip.hkx 2hw_unequip.hkx
+    2hw_blockhit.hkx 2hw_blockidle.hkx
     """
 )
 
@@ -286,9 +279,8 @@ UNARMED_ATTACKS = names(
     h2h_runrightattackleft.hkx h2h_runrightattackright.hkx
     """
 )
-MCO_ATTACKS = (
-    {f"mco_attack{index}.hkx" for index in range(1, 11)}
-    | {f"mco_powerattack{index}.hkx" for index in range(1, 11)}
+MCO_SPECIAL_ATTACKS = (
+    {f"mco_powerattack{index}.hkx" for index in range(1, 11)}
     | names(
         """
         mco_dodge_attack1.hkx mco_dodge_powerattack1.hkx
@@ -359,6 +351,126 @@ def equipped_keyword(editor_id: str, left_hand: bool = False) -> dict[str, objec
     }
 
 
+def equipped_keyword_any(
+    editor_ids: tuple[str, ...], *, hands: tuple[bool, ...] = (False, True)
+) -> dict[str, object]:
+    """Build an OAR OR over proven keyword EditorIDs and hand scopes."""
+    return {
+        "condition": "OR",
+        "requiredVersion": "1.0.0.0",
+        "Conditions": [
+            equipped_keyword(editor_id, left_hand=left_hand)
+            for left_hand in hands
+            for editor_id in editor_ids
+        ],
+    }
+
+
+def equipped_keyword_any_for_types(
+    editor_ids: tuple[str, ...],
+    types: tuple[int, ...],
+    *,
+    hands: tuple[bool, ...] = (False, True),
+) -> dict[str, object]:
+    """Require a keyword and a two-handed/unknown OAR type on the same hand."""
+    return {
+        "condition": "OR",
+        "requiredVersion": "1.0.0.0",
+        "Conditions": [
+            {
+                "condition": "AND",
+                "requiredVersion": "1.0.0.0",
+                "Conditions": [
+                    equipped_keyword(editor_id, left_hand=left_hand),
+                    equipped_any(types, hands=(left_hand,)),
+                ],
+            }
+            for left_hand in hands
+            for editor_id in editor_ids
+        ],
+    }
+
+
+def equipped_form(plugin_name: str, form_id: str, left_hand: bool = False) -> dict[str, object]:
+    """Build an optional IsEquipped form condition.
+
+    OAR evaluates an unresolved plugin/form link as false, so these optional
+    active-load-order fallbacks do not make the stack depend on those plugins.
+    """
+    return {
+        "condition": "IsEquipped",
+        "requiredVersion": "1.0.0.0",
+        "Form": {"pluginName": plugin_name, "formID": form_id},
+        "Left hand": left_hand,
+    }
+
+
+def equipped_form_any(
+    plugin_name: str, form_ids: tuple[str, ...], *, hands: tuple[bool, ...] = (False, True)
+) -> dict[str, object]:
+    """Build an OAR OR over optional active-load-order weapon forms."""
+    return {
+        "condition": "OR",
+        "requiredVersion": "1.0.0.0",
+        "Conditions": [
+            equipped_form(plugin_name, form_id, left_hand=left_hand)
+            for left_hand in hands
+            for form_id in form_ids
+        ],
+    }
+
+
+GENERIC_TWO_HANDED_POLEARM_KEYWORDS = (
+    "WeapTypePike",
+    "WeapTypeSpear",
+    "WeapTypeHalberd",
+)
+EXPLICIT_TWO_HANDED_POLEARM_KEYWORDS = (
+    "OCF_WeapTypePike2H",
+    "OCF_WeapTypeSpear2H",
+    "OCF_WeapTypeHalberd2H",
+    "OCF_WeapTypePole2H_Thrust",
+    "OCF_WeapTypePole2H_Swing",
+)
+EXPLICIT_TWO_HANDED_NODACHI_KEYWORDS = (
+    "WeapTypeNodachi",
+    "OCF_WeapTypeKatana2H",
+)
+ACTIVE_NO_KEYWORD_SPEAR_FORMS = (
+    equipped_form_any(
+        "Spear of Skyrim.esp",
+        tuple(f"{form_id:X}" for form_id in range(0x80B, 0x816)),
+        hands=(False,),
+    ),
+    equipped_form_any("Spear of Omicron.esp", ("D62",), hands=(False,)),
+)
+
+
+def greatsword_equipment_condition() -> dict[str, object]:
+    """Route greatsword, unknown, nodachi, and proven polearms to 2hm.
+
+    OAR's type 6 is indistinguishable from a real battleaxe when a spear has
+    no keyword. The two active plugin/form branches above are therefore kept
+    optional and narrowly scoped; generic type 6 remains Base 50.
+    """
+    return {
+        "condition": "OR",
+        "requiredVersion": "1.0.0.0",
+        "Conditions": [
+            equipped_any((5, -1)),
+            equipped_keyword_any_for_types(
+                GENERIC_TWO_HANDED_POLEARM_KEYWORDS,
+                (5, 6, 10, -1),
+            ),
+            equipped_keyword_any(
+                EXPLICIT_TWO_HANDED_POLEARM_KEYWORDS
+                + EXPLICIT_TWO_HANDED_NODACHI_KEYWORDS
+            ),
+            *ACTIVE_NO_KEYWORD_SPEAR_FORMS,
+        ],
+    }
+
+
 def flight_conditions(*equipment: dict[str, object]) -> list[dict[str, object]]:
     result = [actor_base_condition(), graph_bool("bDAF_FlightActive"), graph_state_active()]
     # Equipment transitions can request their OAR originals before the engine's
@@ -411,18 +523,18 @@ FAMILIES = (
             equipped_any((0,), hands=(False,)),
             equipped_any((0,), hands=(True,)),
         ),
-        UNARMED_ATTACKS | MCO_ATTACKS,
+        UNARMED_ATTACKS | MCO_SPECIAL_ATTACKS,
         "H2h",
     ),
     Family(
         "Flight Base 20 - One Handed",
         "DAF Flight Base - One Handed",
-        "Root-stable one-handed flight locomotion and vanilla/MCO aerial attacks.",
+        "Root-stable one-handed/shield flight locomotion and vanilla/MCO special aerial attacks.",
         2147483602,
         "Flying_Mod_Idle.hkx",
         ONE_HANDED_MOTION,
-        flight_conditions(equipped_any((1, 2, 3, 4))),
-        ONE_HANDED_ATTACKS | MCO_ATTACKS,
+        flight_conditions(equipped_any((1, 2, 3, 4, 11))),
+        ONE_HANDED_ATTACKS | MCO_SPECIAL_ATTACKS,
         "1hm",
         block_profile="one_handed",
         action_aliases=(
@@ -433,7 +545,7 @@ FAMILIES = (
     Family(
         "Flight Base 30 - Dual Wield",
         "DAF Flight Base - Dual Wield",
-        "Root-stable dual-wield flight locomotion and vanilla/MCO aerial attacks.",
+        "Root-stable dual-wield flight locomotion and vanilla/MCO special aerial attacks.",
         2147483603,
         "Flying_Mod_Idle.hkx",
         DUAL_WIELD_MOTION,
@@ -441,7 +553,7 @@ FAMILIES = (
             equipped_any((1, 2, 3, 4), hands=(False,)),
             equipped_any((1, 2, 3, 4), hands=(True,)),
         ),
-        DUAL_WIELD_ATTACKS | MCO_ATTACKS,
+        DUAL_WIELD_ATTACKS | MCO_SPECIAL_ATTACKS,
         "Dw",
         block_profile="dual_wield",
         action_aliases=(("maxsu_weaponblockhit.hkx", "1hm_blockhit.hkx"),),
@@ -449,12 +561,12 @@ FAMILIES = (
     Family(
         "Flight Base 40 - Greatsword",
         "DAF Flight Base - Greatsword",
-        "Root-stable greatsword flight locomotion and vanilla/MCO aerial attacks.",
-        2147483604,
+        "Root-stable greatsword flight locomotion and vanilla/MCO special aerial attacks; explicit fallback for unknown/custom two-handed polearms and nodachi.",
+        2147483605,
         "Flying_Mod_Idle.hkx",
         GREATSWORD_MOTION,
-        flight_conditions(equipped_any((5,))),
-        GREATSWORD_ATTACKS | MCO_ATTACKS,
+        flight_conditions(greatsword_equipment_condition()),
+        GREATSWORD_ATTACKS | MCO_SPECIAL_ATTACKS,
         "2hm",
         block_profile="greatsword",
         action_aliases=(("maxsu_weaponblockhit.hkx", "2hm_blockhit.hkx"),),
@@ -462,12 +574,12 @@ FAMILIES = (
     Family(
         "Flight Base 50 - Axe and Warhammer",
         "DAF Flight Base - Axe and Warhammer",
-        "Root-stable battleaxe/warhammer flight locomotion and vanilla/MCO aerial attacks.",
-        2147483605,
+        "Root-stable battleaxe/warhammer flight locomotion and vanilla/MCO special aerial attacks.",
+        2147483604,
         "Flying_Mod_Idle.hkx",
         AXE_WARHAMMER_MOTION,
         flight_conditions(equipped_any((6, 10))),
-        AXE_WARHAMMER_ATTACKS | MCO_ATTACKS,
+        AXE_WARHAMMER_ATTACKS | MCO_SPECIAL_ATTACKS,
         "2hw",
         block_profile="axe_warhammer",
         action_aliases=(("maxsu_weaponblockhit.hkx", "2hw_blockhit.hkx"),),
@@ -479,8 +591,17 @@ FAMILIES = (
         2147483610,
         "Flying_Mod_Idle.hkx",
         AXE_WARHAMMER_MOTION,
-        flight_conditions(equipped_keyword("WeapTypeQtrStaff")),
-        AXE_WARHAMMER_ATTACKS | MCO_ATTACKS,
+        flight_conditions(
+            equipped_keyword_any(
+                (
+                    "WeapTypeQtrStaff",
+                    "WeapTypeQuarterstaff",
+                    "OCF_WeapTypeQuarterstaff2H",
+                ),
+                hands=(False, True),
+            )
+        ),
+        AXE_WARHAMMER_ATTACKS | MCO_SPECIAL_ATTACKS,
         "2hw",
         block_profile="axe_warhammer",
         quarterstaff_actions=True,
@@ -498,8 +619,6 @@ FAMILIES = (
         action_aliases=(
             ("xpe0_bow_drawheavy.hkx", "bow_drawheavy.hkx"),
             ("xpe0_bow_drawlight.hkx", "bow_drawlight.hkx"),
-            ("xpe0_bow_equip.hkx", "bow_equip.hkx"),
-            ("xpe0_bow_unequip.hkx", "bow_unequip.hkx"),
             ("xpe0_sneakbow_drawlight.hkx", "sneakbow_drawlight.hkx"),
         ),
     ),
@@ -544,13 +663,17 @@ def parse_args() -> argparse.Namespace:
         type=pathlib.Path,
         default=pathlib.Path(__file__).resolve().parents[1],
     )
-    parser.add_argument("--hkxcmd", type=pathlib.Path, required=True)
-    parser.add_argument("--pynifly-hkx-dir", type=pathlib.Path, required=True)
+    parser.add_argument("--hkxcmd", type=pathlib.Path)
+    parser.add_argument("--pynifly-hkx-dir", type=pathlib.Path)
     parser.add_argument(
         "--vanilla-animation-root",
         type=pathlib.Path,
-        required=True,
         help="Extracted Skyrim Data/meshes/actors/character/animations directory",
+    )
+    parser.add_argument(
+        "--refresh-metadata",
+        action="store_true",
+        help="Refresh coverage and hashes after a reviewed output-only alias removal.",
     )
     return parser.parse_args()
 
@@ -572,7 +695,10 @@ def validate_hkx(hkxcmd: pathlib.Path, source: pathlib.Path, output: pathlib.Pat
         diagnostic = "\n".join(part for part in (completed.stdout, completed.stderr) if part)
         raise RuntimeError(f"hkxcmd validation failed ({completed.returncode}): {source}\n{diagnostic}")
     if not output.is_file():
-        print(f"hkxcmd could not deserialize 64-bit source; binary header accepted: {source.name}")
+        raise RuntimeError(
+            "hkxcmd completed without producing decoded XML; refusing to accept a "
+            f"header-only validation result: {source}"
+        )
 
 
 def sha256(path: pathlib.Path) -> str:
@@ -596,11 +722,45 @@ def is_intro_or_recovery(name: str) -> bool:
     )
 
 
+ACTION_OFFSET_SLOT_NAMES = {
+    "dualmagic_idle.hkx",
+    "mlh_idle.hkx",
+    "mrh_idle.hkx",
+    "dmagaimconcharge.hkx",
+    "dmagpreaimconcharge.hkx",
+    "dmagpreselfconcharge.hkx",
+    "dmagselfconcharge.hkx",
+}
+
+
+def is_action_or_offset_slot(name: str) -> bool:
+    """Return whether a source is an action/upper-body slot, not locomotion.
+
+    This list is intentionally conservative.  Only the known magic/staff
+    charge, concentration, idle, and cast-offset families are protected; a
+    normal ``mag_run*`` locomotion source still receives the flight donor.
+    """
+
+    lowered = name.casefold()
+    if lowered in ACTION_OFFSET_SLOT_NAMES:
+        return True
+    if lowered.startswith("staffmagiccast_"):
+        return True
+    if lowered.startswith(("dmag", "mlh_", "mrh_")) and any(
+        token in lowered for token in ("charge", "concentration", "aim", "ward", "idle")
+    ):
+        return True
+    return False
+
+
 def attack_source_name(family: Family, animation_name: str) -> str:
     if family.attack_prefix is None:
         raise ValueError(f"Family has no attack source: {family.display_name}")
     if is_intro_or_recovery(animation_name):
-        return family.base_source
+        raise ValueError(
+            f"{animation_name} requires an exact original action source; "
+            "the flight base is not a valid intro/recovery donor"
+        )
     if family.attack_prefix == "1hm" and ("lefthand" in animation_name or animation_name.startswith("mlh_")):
         prefix = "LH_1hm"
     else:
@@ -637,9 +797,194 @@ def write_hash_manifest(data_root: pathlib.Path) -> int:
     return len(assets)
 
 
-def main() -> int:
+def expected_family_animation_names(
+    family: Family, *, magic_source_names: set[str]
+) -> set[str]:
+    """Return the exact reviewed original paths owned by one OAR family."""
+    result = set(family.motion_names) | set(family.attack_names)
+    if family.common_vanilla_actions:
+        result.update(COMMON_VANILLA_ACTIONS)
+    if family.block_profile:
+        result.update(BLOCK_ACTION_PROFILES[family.block_profile])
+    if family.quarterstaff_actions:
+        result.update(QUARTERSTAFF_AA_ACTIONS)
+    result.update(target for target, _ in family.action_aliases)
+    if family.magic_sources:
+        result.update(name for name in magic_source_names if not name.startswith("staff"))
+        result.update(MAGIC_SOURCE_ALIASES)
+    if family.staff_sources:
+        result.update(name for name in magic_source_names if name.startswith("staff"))
+    return {name.lower() for name in result}
+
+
+def expected_family_output_paths(
+    family: Family, *, magic_source_names: set[str]
+) -> set[str]:
+    """Return the exact reviewed scope/original paths owned by one family."""
+    names_for_family = expected_family_animation_names(
+        family,
+        magic_source_names=magic_source_names,
+    )
+    return {
+        (scope / name).as_posix().lower()
+        for scope in family.scopes
+        for name in names_for_family
+    }
+
+
+def coverage_entry_for_family(family: Family, *, magic_source_names: set[str]) -> dict[str, object]:
+    """Generate metadata from the same contract used to validate OAR files."""
+    source_names = {
+        name
+        for name in magic_source_names
+        if (family.magic_sources and not name.startswith("staff"))
+        or (family.staff_sources and name.startswith("staff"))
+    }
+    action_names: set[str] = set()
+    if family.common_vanilla_actions:
+        action_names.update(COMMON_VANILLA_ACTIONS)
+    if family.block_profile:
+        action_names.update(BLOCK_ACTION_PROFILES[family.block_profile])
+    if family.quarterstaff_actions:
+        action_names.update(QUARTERSTAFF_AA_ACTIONS)
+    action_names.update(target for target, _ in family.action_aliases)
+    base_pose_overrides = {
+        name
+        for name in source_names
+        if name in family.motion_names and not is_action_or_offset_slot(name)
+    }
+    entry: dict[str, object] = {
+        "priority": family.priority,
+        "baseSource": family.base_source,
+        "animationCountPerScope": len(
+            expected_family_animation_names(family, magic_source_names=magic_source_names)
+        ),
+        "motionNames": sorted(family.motion_names),
+        "attackNames": sorted(family.attack_names),
+        "actionNames": sorted(action_names),
+        "scopes": [scope.as_posix() or "." for scope in family.scopes],
+        "aerializedMagicSources": family.magic_sources or family.staff_sources,
+        "blockProfile": family.block_profile,
+        "usesVanillaActionComposites": bool(action_names),
+        "usesAnimatedArmouryQuarterstaffComposites": family.quarterstaff_actions,
+        "actionSourceAliases": dict(sorted(family.action_aliases)),
+    }
+    if source_names - base_pose_overrides:
+        entry["aerializedSourceNames"] = sorted(source_names - base_pose_overrides)
+    if base_pose_overrides:
+        entry["basePoseOverrideNames"] = sorted(base_pose_overrides)
+    if family.magic_sources:
+        entry["aerializedSourceAliases"] = dict(sorted(MAGIC_SOURCE_ALIASES.items()))
+    return entry
+
+
+def validate_reviewed_output_tree(
+    oar_root: pathlib.Path, *, magic_source_names: set[str]
+) -> set[str]:
+    """Reject every addition or deletion outside the checked-in family contract."""
+    expected_paths = {
+        (pathlib.PurePosixPath(family.directory) / relative_path).as_posix().lower()
+        for family in FAMILIES
+        for relative_path in expected_family_output_paths(
+            family,
+            magic_source_names=magic_source_names,
+        )
+    }
+    actual_paths = {
+        path.relative_to(oar_root).as_posix().lower()
+        for path in oar_root.rglob("*.hkx")
+    }
+    unexpected = sorted(actual_paths - expected_paths)
+    missing = sorted(expected_paths - actual_paths)
+    if unexpected or missing:
+        raise RuntimeError(
+            "Reviewed flight stack mismatch: "
+            f"unexpected={len(unexpected)} ({unexpected[:3]}), "
+            f"missing={len(missing)} ({missing[:3]})"
+        )
+    return actual_paths
+
+
+def refresh_metadata(data_root: pathlib.Path) -> int:
+    """Refresh generated metadata without manufacturing or altering HKX clips.
+
+    The checked-in family definitions are the contract. This command never
+    creates or deletes clips: it only rewrites metadata after the entire OAR
+    tree exactly matches that contract.
+    """
+    oar_root = data_root / "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight"
+    coverage_path = data_root / "SKSE/Plugins/DragonAspectFlight-AnimationCoverage.json"
+    magic_source_root = data_root.parent / "third_party/xp32-magic"
+    magic_source_names = {path.name.lower() for path in magic_source_root.glob("*.hkx")}
+    if len(magic_source_names) != 79:
+        raise RuntimeError(f"Expected 79 credited xp32/Neumeria magic sources, found {len(magic_source_names)}")
+
+    actual_paths = validate_reviewed_output_tree(
+        oar_root,
+        magic_source_names=magic_source_names,
+    )
+
+    coverage: dict[str, object] = {}
+    for family in FAMILIES:
+        coverage[family.directory] = coverage_entry_for_family(
+            family,
+            magic_source_names=magic_source_names,
+        )
+    write_json(
+        coverage_path,
+        {
+            "version": RELEASE_VERSION,
+            "scopes": sorted({scope.as_posix() or "." for family in FAMILIES for scope in family.scopes}),
+            "families": coverage,
+            "totalOarHkx": len(actual_paths),
+        },
+    )
+    manifest_count = write_hash_manifest(data_root)
+    print(
+        f"Refreshed output metadata for {len(actual_paths)} DAF OAR aliases "
+        f"and {manifest_count} bundled HKX/NIF assets."
+    )
+    return 0
+
+
+def _atomic_replace_directory(staged_root: pathlib.Path, target_root: pathlib.Path) -> None:
+    """Replace an output directory only after every staged file validates.
+
+    ``os.replace`` cannot portably overwrite a populated directory on Windows.
+    Rename the old tree aside, install the completed staging tree, and restore
+    the old tree if the second rename fails.  The caller owns the staged path
+    and may remove it after this function returns.
+    """
+
+    target_root.parent.mkdir(parents=True, exist_ok=True)
+    backup_root: pathlib.Path | None = None
+    if target_root.exists():
+        backup_root = pathlib.Path(
+            tempfile.mkdtemp(prefix=f".{target_root.name}.backup-", dir=target_root.parent)
+        )
+        backup_root.rmdir()
+        target_root.rename(backup_root)
+    try:
+        staged_root.rename(target_root)
+    except Exception:
+        if backup_root is not None and not target_root.exists():
+            backup_root.rename(target_root)
+            backup_root = None
+        raise
+    finally:
+        if backup_root is not None and backup_root.exists():
+            shutil.rmtree(backup_root)
+
+
+def _main() -> int:
+    global _STAGED_OUTPUT_ROOT
     args = parse_args()
     repo_root = args.repo_root.resolve()
+    data_root = repo_root / "Data"
+    if args.refresh_metadata:
+        return refresh_metadata(data_root)
+    if args.hkxcmd is None or args.pynifly_hkx_dir is None or args.vanilla_animation_root is None:
+        raise ValueError("--hkxcmd, --pynifly-hkx-dir, and --vanilla-animation-root are required to build clips")
     hkxcmd = args.hkxcmd.resolve()
     if not hkxcmd.is_file():
         raise FileNotFoundError(f"hkxcmd not found: {hkxcmd}")
@@ -648,7 +993,6 @@ def main() -> int:
         raise FileNotFoundError(f"Vanilla animation root not found: {vanilla_root}")
     anim_skyrim = load_backend(args.pynifly_hkx_dir)
 
-    data_root = repo_root / "Data"
     nicknak_root = repo_root / "third_party/nicknak/animations"
     flying_root = repo_root / "third_party/flying-mod"
     magic_root = repo_root / "third_party/xp32-magic"
@@ -657,18 +1001,6 @@ def main() -> int:
     magic_sources = {path.name.lower(): path for path in magic_root.glob("*.hkx")}
     if len(magic_sources) != 79:
         raise RuntimeError(f"Expected 79 credited xp32/Neumeria magic sources, found {len(magic_sources)}")
-
-    if oar_root.exists():
-        shutil.rmtree(oar_root)
-    oar_root.mkdir(parents=True)
-    write_json(
-        oar_root / "config.json",
-        {
-            "name": "Dragon Aspect Flight",
-            "author": "nwn900",
-            "description": "Flight-scoped, equipment-aware animation ownership for DAF.",
-        },
-    )
 
     required_sources = {family.base_source for family in FAMILIES}
     for family in FAMILIES:
@@ -685,19 +1017,52 @@ def main() -> int:
         for _, source_name in family.action_aliases:
             required_vanilla_actions.add(source_name)
 
+    # Validate the complete source plan before touching the checked-in Data
+    # tree.  In particular, attack_source_name deliberately fails closed for
+    # intro/outro/loop/dummy/roll slots that need an exact original action
+    # source.  A rejected plan must leave the existing output untouched.
+    source_paths: dict[str, pathlib.Path] = {}
+    for source_name in required_sources:
+        source_path = flying_root / source_name if source_name == "Flying_Mod_Idle.hkx" else nicknak_root / source_name
+        if not source_path.is_file():
+            raise FileNotFoundError(f"Bundled animation source missing: {source_path}")
+        source_paths[source_name] = source_path
+    vanilla_paths: dict[str, pathlib.Path] = {}
+    for action_name in required_vanilla_actions:
+        source_path = vanilla_root.joinpath(*pathlib.PurePosixPath(action_name).parts)
+        if not source_path.is_file():
+            raise FileNotFoundError(f"Required vanilla animation missing: {source_path}")
+        vanilla_paths[action_name] = source_path
+    quarterstaff_paths = {
+        action_name: animated_armoury_root / action_name for action_name in QUARTERSTAFF_AA_ACTIONS
+    }
+    for action_name, source_path in quarterstaff_paths.items():
+        if not source_path.is_file():
+            raise FileNotFoundError(f"Bundled Animated Armoury source missing: {source_path}")
+
+    oar_root.parent.mkdir(parents=True, exist_ok=True)
+    staged_oar_root = pathlib.Path(
+        tempfile.mkdtemp(prefix=f".{oar_root.name}.staging-", dir=oar_root.parent)
+    )
+    _STAGED_OUTPUT_ROOT = staged_oar_root
+    oar_root = staged_oar_root
+    oar_root.mkdir(parents=True, exist_ok=True)
+    write_json(
+        oar_root / "config.json",
+        {
+            "name": "Dragon Aspect Flight",
+            "author": "nwn900",
+            "description": "Flight-scoped, equipment-aware animation ownership for DAF.",
+        },
+    )
+
     built_sources: dict[str, pathlib.Path] = {}
     coverage: dict[str, object] = {}
     expected_outputs: set[pathlib.Path] = set()
     with tempfile.TemporaryDirectory(prefix="daf-flight-stack-") as temporary:
         temp_root = pathlib.Path(temporary)
         for source_name in sorted(required_sources, key=str.lower):
-            source_hkx = (
-                flying_root / source_name
-                if source_name == "Flying_Mod_Idle.hkx"
-                else nicknak_root / source_name
-            )
-            if not source_hkx.is_file():
-                raise FileNotFoundError(f"Bundled animation source missing: {source_hkx}")
+            source_hkx = source_paths[source_name]
             validate_hkx(hkxcmd, source_hkx, temp_root / f"{source_hkx.stem}-validation.xml")
             built_sources[source_name] = source_hkx
             print(f"source {source_name}: sha256={sha256(source_hkx)}")
@@ -717,9 +1082,7 @@ def main() -> int:
 
         aerial_vanilla_actions: dict[str, pathlib.Path] = {}
         for action_name in sorted(required_vanilla_actions):
-            source = vanilla_root.joinpath(*pathlib.PurePosixPath(action_name).parts)
-            if not source.is_file():
-                raise FileNotFoundError(f"Required vanilla animation missing: {source}")
+            source = vanilla_paths[action_name]
             safe_name = action_name.replace("/", "-")
             validate_hkx(hkxcmd, source, temp_root / f"vanilla-{safe_name}-validation.xml")
             composite = temp_root / "aerialized-vanilla" / pathlib.PurePosixPath(action_name)
@@ -737,9 +1100,7 @@ def main() -> int:
 
         aerial_quarterstaff_actions: dict[str, pathlib.Path] = {}
         for action_name in sorted(QUARTERSTAFF_AA_ACTIONS):
-            source = animated_armoury_root / action_name
-            if not source.is_file():
-                raise FileNotFoundError(f"Bundled Animated Armoury source missing: {source}")
+            source = quarterstaff_paths[action_name]
             validate_hkx(hkxcmd, source, temp_root / f"aa-{action_name}-validation.xml")
             composite = temp_root / "aerialized-animated-armoury" / action_name
             replaced_tracks = aerialize(
@@ -766,6 +1127,13 @@ def main() -> int:
                 for target_name, source_name in MAGIC_SOURCE_ALIASES.items():
                     mappings[target_name] = aerial_magic_sources[source_name]
                 for name in family.motion_names:
+                    # Magic idle/charge/concentration clips contain upper-body
+                    # offsets and are not locomotion donors.  Keep their
+                    # aerialized source instead of silently replacing it with
+                    # the flight base.  Ordinary mag_* gait names still use
+                    # the root-stable donor.
+                    if name in aerial_magic_sources and is_action_or_offset_slot(name):
+                        continue
                     mappings[name] = built_sources[family.base_source]
 
             action_names: set[str] = set()
@@ -789,6 +1157,8 @@ def main() -> int:
                     if name.startswith("staff"):
                         mappings[name] = source
                 for name in family.motion_names:
+                    if name in aerial_magic_sources and is_action_or_offset_slot(name):
+                        continue
                     mappings[name] = built_sources[family.base_source]
 
             submod_root = oar_root / family.directory
@@ -810,7 +1180,25 @@ def main() -> int:
                     shutil.copyfile(source, target)
                     expected_outputs.add(target.resolve())
 
-            coverage[family.directory] = {
+            source_names = sorted(
+                name
+                for name in magic_sources
+                if (family.magic_sources and not name.startswith("staff"))
+                or (family.staff_sources and name.startswith("staff"))
+            )
+            # Ground locomotion names are deliberately remapped to the
+            # root-stable flight donor after the credited magic/staff sources
+            # are loaded. Keep provenance truthful: only names still mapped to
+            # an aerialized source belong in aerializedSourceNames; the
+            # intentional donor overrides are recorded separately.
+            base_pose_overrides = sorted(
+                name
+                for name in source_names
+                if name in family.motion_names
+                and not (name in aerial_magic_sources and is_action_or_offset_slot(name))
+            )
+            aerialized_source_names = sorted(set(source_names) - set(base_pose_overrides))
+            coverage_entry = {
                 "priority": family.priority,
                 "baseSource": family.base_source,
                 "animationCountPerScope": len(mappings),
@@ -824,6 +1212,13 @@ def main() -> int:
                 "usesAnimatedArmouryQuarterstaffComposites": family.quarterstaff_actions,
                 "actionSourceAliases": dict(sorted(family.action_aliases)),
             }
+            if aerialized_source_names:
+                coverage_entry["aerializedSourceNames"] = aerialized_source_names
+            if base_pose_overrides:
+                coverage_entry["basePoseOverrideNames"] = base_pose_overrides
+            if family.magic_sources:
+                coverage_entry["aerializedSourceAliases"] = dict(sorted(MAGIC_SOURCE_ALIASES.items()))
+            coverage[family.directory] = coverage_entry
             print(f"{family.directory}: {len(mappings)} originals x {len(family.scopes)} scopes")
 
     existing_outputs = {path.resolve() for path in oar_root.rglob("*.hkx")}
@@ -832,6 +1227,11 @@ def main() -> int:
     if unexpected or missing:
         raise RuntimeError(f"Generated flight stack mismatch: unexpected={len(unexpected)}, missing={len(missing)}")
 
+    # Commit the complete OAR tree only after all source validation, decoding,
+    # compositing, and output accounting succeeded.  Any failure above leaves
+    # the existing checked-in Data tree untouched.
+    _atomic_replace_directory(oar_root, data_root / "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight")
+    _STAGED_OUTPUT_ROOT = None
     coverage_path = data_root / "SKSE/Plugins/DragonAspectFlight-AnimationCoverage.json"
     write_json(
         coverage_path,
@@ -846,6 +1246,18 @@ def main() -> int:
     print(f"Built {len(existing_outputs)} DAF OAR aliases across {len(FAMILIES)} equipment families.")
     print(f"Wrote SHA-256 manifest for {manifest_count} bundled HKX/NIF assets.")
     return 0
+
+
+def main() -> int:
+    """Run the generator and remove an abandoned staging tree on failure."""
+
+    global _STAGED_OUTPUT_ROOT
+    try:
+        return _main()
+    finally:
+        if _STAGED_OUTPUT_ROOT is not None and _STAGED_OUTPUT_ROOT.exists():
+            shutil.rmtree(_STAGED_OUTPUT_ROOT, ignore_errors=True)
+        _STAGED_OUTPUT_ROOT = None
 
 
 if __name__ == "__main__":

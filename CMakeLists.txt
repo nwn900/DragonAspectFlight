@@ -1,24 +1,260 @@
 cmake_minimum_required(VERSION 3.21)
-project(DragonAspectFlight VERSION 1.8.1 LANGUAGES CXX)
+project(DragonAspectFlight VERSION 1.8.3 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(COMMONLIBSSE_NG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../CommonLibVR-NG"
-    CACHE PATH "Path to the maintained CommonLibVR ng root")
+include(CTest)
+find_package(Python3 COMPONENTS Interpreter QUIET)
+
+option(DAF_BUILD_PLUGIN
+    "Build the native Dragon Aspect Flight plugin (disable for dependency-free tests)"
+    ON)
+
+if(BUILD_TESTING)
+	add_executable(DragonAspectFlightFlightStateTests
+		tests/flight_state_tests.cpp)
+	target_include_directories(DragonAspectFlightFlightStateTests PRIVATE
+		"${CMAKE_CURRENT_SOURCE_DIR}/include")
+	add_test(
+		NAME DragonAspectFlight.FlightState
+		COMMAND DragonAspectFlightFlightStateTests)
+	if(Python3_Interpreter_FOUND)
+		add_test(
+			NAME DragonAspectFlight.AddressLibraryValidator
+			COMMAND "${Python3_EXECUTABLE}"
+				"${CMAKE_CURRENT_SOURCE_DIR}/tests/test_validate_address_library.py")
+		add_test(
+			NAME DragonAspectFlight.PEImportValidatorUnit
+			COMMAND "${Python3_EXECUTABLE}"
+				"${CMAKE_CURRENT_SOURCE_DIR}/tests/test_validate_pe_imports.py")
+		add_test(
+			NAME DragonAspectFlight.StructuredLoggingContract
+			COMMAND "${Python3_EXECUTABLE}" -m pytest -q
+				"${CMAKE_CURRENT_SOURCE_DIR}/tests/test_structured_logging_contract.py")
+		add_test(
+			NAME DragonAspectFlight.AnimationStack
+			COMMAND "${Python3_EXECUTABLE}"
+				"${CMAKE_CURRENT_SOURCE_DIR}/tools/test_build_flight_animation_stack.py")
+		add_test(
+			NAME DragonAspectFlight.DiagnosisPlanTools
+			COMMAND "${Python3_EXECUTABLE}"
+				"${CMAKE_CURRENT_SOURCE_DIR}/tests/test_diagnosis_plan_tools.py")
+		add_test(
+			NAME DragonAspectFlight.RuntimeRepairContract
+			COMMAND "${Python3_EXECUTABLE}"
+				"${CMAKE_CURRENT_SOURCE_DIR}/tests/test_runtime_repair_contract.py")
+	endif()
+	add_test(
+		NAME DragonAspectFlight.CommonLibCapabilityGate
+		COMMAND "${CMAKE_COMMAND}"
+			"-DDAF_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
+			"-DDAF_TEST_ROOT=${CMAKE_BINARY_DIR}/commonlib-capability-gate"
+			-P "${CMAKE_CURRENT_SOURCE_DIR}/tests/test_commonlib_capability_gate.cmake")
+endif()
+
+if(DAF_BUILD_PLUGIN)
+    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/DafCommonLibBaseline.cmake")
+    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/DafStaticDependencyGuard.cmake")
+    daf_require_static_md_vcpkg_triplet()
+
+    set(COMMONLIBSSE_NG_PATH ""
+        CACHE PATH "Explicit path to CommonLibSSE-NG ${DAF_MINIMUM_COMMONLIB_VERSION} or newer")
+
+if(COMMONLIBSSE_NG_PATH STREQUAL "")
+    message(FATAL_ERROR
+        "DAF_BUILD_PLUGIN=ON requires an explicit CommonLibSSE-NG ${DAF_MINIMUM_COMMONLIB_VERSION} or newer checkout. "
+        "Configure with -DCOMMONLIBSSE_NG_PATH=<path>. "
+        "For dependency-free reducer tests, configure with -DDAF_BUILD_PLUGIN=OFF.")
+endif()
 
 option(ENABLE_SKYRIM_SE "Build for Skyrim SE (1.5.97)" ON)
-option(ENABLE_SKYRIM_AE "Build for Skyrim AE (1.6.x)" ON)
+option(ENABLE_SKYRIM_AE "Build for Skyrim AE (1.6.x and 1.7.104)" ON)
 option(ENABLE_SKYRIM_VR "Build for Skyrim VR" ON)
 
 if(NOT EXISTS "${COMMONLIBSSE_NG_PATH}/CMakeLists.txt")
     message(FATAL_ERROR
-        "CommonLibVR ng not found at ${COMMONLIBSSE_NG_PATH}. "
-        "Clone the ng branch from https://github.com/alandtse/CommonLibVR")
+        "CommonLibSSE-NG not found at ${COMMONLIBSSE_NG_PATH}. "
+        "Provide a CommonLibSSE-NG ${DAF_MINIMUM_COMMONLIB_VERSION} or newer checkout via -DCOMMONLIBSSE_NG_PATH.")
 endif()
+
+# The 1.7.104 AE runtime uses the Address Library on-disk format 5. Require an
+# official, versioned CommonLib checkout with the generic format-5 parser rather
+# than accepting a stale library that only happens to contain a runtime name.
+# Detect the required capabilities from the public IDDB API and its parser
+# implementation instead of trusting a repository name or a machine-specific
+# checkout path.
+set(_daf_commonlib_version_header "${COMMONLIBSSE_NG_PATH}/include/SKSE/Version.h")
+set(_daf_commonlib_iddb_header "${COMMONLIBSSE_NG_PATH}/include/REL/IDDB.h")
+set(_daf_commonlib_iddb_source "${COMMONLIBSSE_NG_PATH}/src/REL/IDDB.cpp")
+if(NOT EXISTS "${_daf_commonlib_version_header}" OR
+   NOT EXISTS "${_daf_commonlib_iddb_header}" OR
+   NOT EXISTS "${_daf_commonlib_iddb_source}")
+	message(FATAL_ERROR
+		"CommonLib is missing the capability sources SKSE/Version.h, REL/IDDB.h, or src/REL/IDDB.cpp. "
+		"Use an official CommonLibSSE-NG checkout that supports Address Library format 5.")
+endif()
+
+file(READ "${_daf_commonlib_iddb_header}" _daf_commonlib_iddb_header_text)
+file(READ "${_daf_commonlib_iddb_source}" _daf_commonlib_iddb_source_text)
+if(NOT _daf_commonlib_iddb_header_text MATCHES "SSEv5")
+	message(FATAL_ERROR
+		"The selected CommonLib does not declare REL::IDDB::Format::SSEv5. "
+		"It cannot load the 1.7.104 Address Library format-5 BIN.")
+endif()
+
+# Compile the actual public/nested types instead of accepting comments or
+# unrelated identifiers that merely contain the capability names.  The v5
+# parser members are private implementation details in CommonLib; including
+# the module first and temporarily exposing access for this probe lets CMake
+# verify their declarations without changing the consumer headers.
+set(_daf_commonlib_probe_project
+	"${CMAKE_BINARY_DIR}/CMakeFiles/daf_commonlib_capability_probe")
+file(MAKE_DIRECTORY "${_daf_commonlib_probe_project}")
+file(WRITE "${_daf_commonlib_probe_project}/CMakeLists.txt"
+	"cmake_minimum_required(VERSION 3.21)\n"
+	"project(DAFCommonLibCapabilityProbe LANGUAGES CXX)\n"
+	"add_executable(DAFCommonLibCapabilityProbe probe.cpp)\n"
+	"target_include_directories(DAFCommonLibCapabilityProbe PRIVATE \"${COMMONLIBSSE_NG_PATH}/include\")\n"
+	"target_compile_definitions(DAFCommonLibCapabilityProbe PRIVATE ENABLE_SKYRIM_SE=1 ENABLE_SKYRIM_AE=1 ENABLE_SKYRIM_VR=1)\n")
+file(WRITE "${_daf_commonlib_probe_project}/probe.cpp" [=[
+#include <algorithm>
+#include <array>
+#include <atomic>
+#include <bit>
+#include <compare>
+#include <cstddef>
+#include <cstdint>
+#include <cstring>
+#include <filesystem>
+#include <format>
+#include <fstream>
+#include <functional>
+#include <ios>
+#include <iterator>
+#include <memory>
+#include <mutex>
+#include <optional>
+#include <span>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#include <system_error>
+#include <type_traits>
+#include <utility>
+
+#if defined(_MSC_VER)
+#    pragma warning(push)
+#    pragma warning(disable : 4455)
+#endif
+
+namespace SKSE::stl
+{
+    using zstring = std::string_view;
+    using zwstring = std::wstring_view;
+
+    inline void report_and_fail(std::string_view) {}
+    inline bool report_and_error(std::string_view, bool) { return false; }
+    inline std::optional<std::string> utf16_to_utf8(std::wstring_view) { return std::string{}; }
+    inline std::optional<std::wstring> utf8_to_utf16(std::string_view) { return std::wstring{}; }
+}
+namespace stl = SKSE::stl;
+using namespace std::literals;
+
+#define SKYRIM_REL inline
+#define SKYRIM_REL_CONSTEXPR
+#define SKYRIM_REL_VR inline
+#define SKYRIM_REL_VR_CONSTEXPR
+
+#include "REL/Module.h"
+#define private public
+#include "REL/IDDB.h"
+#undef private
+
+#undef SKYRIM_REL
+#undef SKYRIM_REL_CONSTEXPR
+#undef SKYRIM_REL_VR
+#undef SKYRIM_REL_VR_CONSTEXPR
+
+#if defined(_MSC_VER)
+#    pragma warning(pop)
+#endif
+
+using DafAddressLibraryHeader = REL::IDDB::header_v5_t;
+using DafAddressLibraryParser = decltype(&REL::IDDB::load_v5);
+
+static_assert(std::is_class_v<DafAddressLibraryHeader>);
+static_assert(std::is_member_function_pointer_v<DafAddressLibraryParser>);
+constexpr auto DafAddressLibraryFormat = REL::IDDB::Format::SSEv5;
+
+int main()
+{
+    return DafAddressLibraryFormat == REL::IDDB::Format::SSEv5 ? 0 : 1;
+}
+]=])
+try_compile(
+	_daf_commonlib_probe_compiles
+	"${_daf_commonlib_probe_project}/build"
+	"${_daf_commonlib_probe_project}"
+	DAFCommonLibCapabilityProbe
+	CMAKE_FLAGS
+		"-DCMAKE_CXX_STANDARD=23"
+		"-DCMAKE_CXX_STANDARD_REQUIRED=ON"
+	OUTPUT_VARIABLE _daf_commonlib_probe_output)
+if(NOT _daf_commonlib_probe_compiles)
+	message(FATAL_ERROR
+		"The selected CommonLib's generic REL::IDDB format-5 capability probe failed to compile.\n"
+		"${_daf_commonlib_probe_output}")
+endif()
+
+if(NOT _daf_commonlib_iddb_header_text MATCHES "header_v5_t" OR
+   NOT _daf_commonlib_iddb_header_text MATCHES "load_v5" OR
+   NOT _daf_commonlib_iddb_source_text MATCHES "Format::SSEv5" OR
+   NOT _daf_commonlib_iddb_source_text MATCHES "load_v5")
+	message(FATAL_ERROR
+		"The selected CommonLib lacks the generic REL::IDDB format-5 parser "
+		"(header_v5_t/load_v5 dispatch).")
+endif()
+
+# CommonLib's project version is the portable source-level baseline. It is
+# checked before add_subdirectory so a checkout that only happens to contain
+# similarly named capability tokens cannot silently become the build input.
+set(_daf_commonlib_cmake "${COMMONLIBSSE_NG_PATH}/CMakeLists.txt")
+file(READ "${_daf_commonlib_cmake}" _daf_commonlib_cmake_text)
+string(REGEX MATCH
+	"project[ \\t\\r\\n]*\\([^)]*VERSION[ \\t\\r\\n]+([0-9]+\\.[0-9]+\\.[0-9]+)"
+	_daf_commonlib_project_match "${_daf_commonlib_cmake_text}")
+if(NOT _daf_commonlib_project_match)
+	message(FATAL_ERROR
+		"Could not determine the CommonLibSSE-NG project version from ${_daf_commonlib_cmake}. "
+		"Use CommonLibSSE-NG ${DAF_MINIMUM_COMMONLIB_VERSION} or newer with a versioned CMake project.")
+endif()
+set(_daf_commonlib_project_version "${CMAKE_MATCH_1}")
+if(_daf_commonlib_project_version VERSION_LESS DAF_MINIMUM_COMMONLIB_VERSION)
+	message(FATAL_ERROR
+		"CommonLibSSE-NG ${_daf_commonlib_project_version} is too old for DAF; "
+		"minimum supported project version is ${DAF_MINIMUM_COMMONLIB_VERSION} "
+		"(known-good baseline ${DAF_KNOWN_GOOD_COMMONLIB_COMMIT}).")
+endif()
+message(STATUS
+	"DAF CommonLibSSE-NG baseline: project ${_daf_commonlib_project_version} "
+	"(minimum ${DAF_MINIMUM_COMMONLIB_VERSION}; known-good ${DAF_KNOWN_GOOD_COMMONLIB_COMMIT})")
+
+# Resolve the two runtime-sensitive packages at top-level scope so their
+# imported target contracts can be inspected before CommonLib consumes them.
+find_package(spdlog CONFIG REQUIRED)
+find_package(fmt CONFIG REQUIRED)
+daf_require_static_dependency_target(spdlog::spdlog "spdlog")
+daf_require_static_dependency_target(fmt::fmt "fmt")
+daf_require_static_md_package_path(spdlog_DIR)
+daf_require_static_md_package_path(fmt_DIR)
 
 add_subdirectory("${COMMONLIBSSE_NG_PATH}" "${CMAKE_BINARY_DIR}/CommonLibSSE-NG"
     EXCLUDE_FROM_ALL)
+
+daf_require_static_md_package_path(directxtk_DIR)
+daf_require_static_md_package_path(directxmath_DIR)
+daf_require_static_md_package_path(RAPIDCSV_INCLUDE_DIRS)
 
 set(SOURCES
     src/main.cpp
@@ -40,7 +276,9 @@ set(SOURCES
 
 set(HEADERS
     src/PCH.h
-    include/DragonAspectFlight/FlightManager.h
+	include/DragonAspectFlight/FlightManager.h
+	include/DragonAspectFlight/FlightStateHelpers.h
+	include/DragonAspectFlight/Compatibility.h
     include/DragonAspectFlight/InputHandler.h
     include/DragonAspectFlight/Papyrus.h
     include/DragonAspectFlight/Settings.h
@@ -139,3 +377,12 @@ install(TARGETS ${PROJECT_NAME}
 install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Data/"
     DESTINATION "Data"
 )
+
+if(BUILD_TESTING AND Python3_Interpreter_FOUND)
+    add_test(
+        NAME DragonAspectFlight.PEImports
+        COMMAND "${Python3_EXECUTABLE}"
+            "${CMAKE_CURRENT_SOURCE_DIR}/tools/validate_pe_imports.py"
+            --dll "$<TARGET_FILE:${PROJECT_NAME}>")
+endif()
+endif()
