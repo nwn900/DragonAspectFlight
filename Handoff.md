@@ -12,7 +12,7 @@ There are two different artifacts in play:
 
 | Artifact | Current state |
 | --- | --- |
-| Repository branch `agent/flight-combat` | Commit `a1260bb68b58b528a6ad565468c516ec208dadad`, pushed to `origin` and verified on GitHub. |
+| Repository branch `agent/flight-combat` | Current commit `e3efa05c66005d565880f8d5e8e7d09317c62a93`, pushed to `origin`; implementation changes are in its parent `a1260bb68b58b528a6ad565468c516ec208dadad`. |
 | Latest published GitHub release | `v1.6.0` on `main`; five-file, rootless ZIP with no bundled animation HKX files. |
 | Active Nolvus installation | GitHub `v1.6.0` is installed in the enabled Nexus-compat folder. |
 | Diagnosis-plan implementation | Built and statically tested in an isolated build directory, but not packaged as a public release and not deployed to the game. |
@@ -285,7 +285,7 @@ release-package update.
 
 ## Git working-tree boundary
 
-The GitHub branch is clean at `a1260bb` relative to its remote branch. The
+The GitHub branch is clean at `e3efa05` relative to its remote branch. The
 uncommitted Data animation/config edits and generated folders described above
 are local-only. Preserve them for review; do not reset, clean, or force-push
 them without an explicit decision.
