@@ -12,10 +12,10 @@ There are two different artifacts in play:
 
 | Artifact | Current state |
 | --- | --- |
-| Repository branch `agent/flight-combat` | Local commit `3f8096080340c82cd2d2efa5004468b57f15355e`; the diagnosis-plan implementation and reviewed Data candidate are committed locally and have not been pushed in this turn. |
+| Repository branch `agent/flight-combat` | Local tip `ceca036f5f6705d842bb8cecbb8690bf5cb6c272`; diagnosis implementation is in parent `3f8096080340c82cd2d2efa5004468b57f15355e`. These commits are local and have not been pushed in this turn. |
 | Latest published GitHub release | `v1.6.0` on `main`; five-file, rootless ZIP with no bundled animation HKX files. |
 | Active Nolvus installation | GitHub `v1.6.0` is installed in the enabled Nexus-compat folder. |
-| Diagnosis-plan implementation | Committed in `3f80960`, rebuilt and statically tested in an isolated build directory, but not packaged as a public release and not deployed to the game. |
+| Diagnosis-plan implementation | Committed in `3f80960`, rebuilt from final tip `ceca036`, and statically tested in an isolated build directory, but not packaged as a public release and not deployed to the game. |
 | Runtime gameplay validation | Not run for the diagnosis branch or for the `v1.6.0` deployment. |
 
 The current installed variant is:
@@ -145,7 +145,7 @@ Evidence recorded for the rebuilt snapshot:
 - Repository HKX structural scan: 1,045 files (796 compressed and 249
   interleaved-uncompressed), with zero structural rejects.
 - Release DLL: 993,280 bytes,
-  SHA-256 `D443FFE1D612891A2C89314E0542F87FC55E84C681B3CF2D1C3FD5A58288AB17`.
+  SHA-256 `C425D2DECBACBEFFD5466AFAEE6D7460F69D826526E0F672295396AE466FBA4D`.
 - PE validation passed for x64 with zero forbidden imports. `dumpbin` showed
   only `SKSEPlugin_Load`, `SKSEPlugin_Query`, and `SKSEPlugin_Version` exports
   and only CRT/Windows dependents.
@@ -157,7 +157,7 @@ Evidence recorded for the rebuilt snapshot:
 - Release preprocessor definitions include `ENABLE_SKYRIM_SE=1`,
   `ENABLE_SKYRIM_AE=1`, `ENABLE_SKYRIM_VR=1`, and
   `HAS_SKYRIM_MULTI_TARGETING=1`. The embedded candidate identity is source
-  `3f8096080340c82cd2d2efa5004468b57f15355e`, Data manifest
+  `ceca036f5f6705d842bb8cecbb8690bf5cb6c272`, Data manifest
   `448F2EC7A97F41B01BD68B7C60A418EA649D8F26804229ABFD0F5494F82211D7`, and
   CommonLib 6.7.1 revision
   `70c1acd5261210982bd52f6d4468a082fe04d798`.
@@ -304,7 +304,7 @@ release-package update.
 
 ## Git working-tree boundary
 
-The local branch contains commit `3f80960` beyond the remote tip and has not
+The local branch contains commits `3f80960` and `ceca036` beyond the remote tip and has not
 been pushed in this turn. The generated `.claude/` and `help/` directories are
 still untracked and intentionally excluded. Preserve them or remove them only
 with an explicit cleanup decision; do not reset or force-push the branch.
