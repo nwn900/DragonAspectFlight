@@ -97,6 +97,10 @@ themselves prove that every engine animation transition behaves correctly.
 - `tools/rebuild_flight_actions.py` builds a separate action staging tree from
   an exact-original manifest and SHA-256 inputs. It records unresolved inputs
   instead of inventing generic replacements.
+- `tools/AerializeHkx.py` now retains the detected HKX representation on its
+  structural record for decode diagnostics and verifies skeleton identity across
+  all supported PyNifly attribute spellings (`original_skeleton_name`,
+  `skeleton_name`, and `skeletonName`). Regression tests cover both cases.
 - The committed Data tree now matches the reviewed 1,045-file animation
   contract; the clean Git export passes the same animation gate as the working
   tree.
@@ -140,7 +144,7 @@ Evidence recorded for the rebuilt snapshot:
   `SKSEMenuFramework.h:1386`.
 - `ctest --test-dir C:\tmp\DAF-diagnosis-plan-20260907-r1 -C Release --output-on-failure`:
   **9/9 passed**.
-- `py -3 -m unittest discover -s tests -p "test_*.py"`: **51/51 passed**;
+- `py -3 -m unittest discover -s tests -p "test_*.py"`: **53/53 passed**;
   structured logging pytest: **9/9 passed**.
 - Repository HKX structural scan: 1,045 files (796 compressed and 249
   interleaved-uncompressed), with zero structural rejects.

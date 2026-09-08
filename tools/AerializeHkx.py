@@ -246,6 +246,11 @@ def inspect_hkx_animation_channels(path: pathlib.Path, structure: dict[str, Any]
         cursor += 12
     if animation_rel is None or animation_type is None:
         raise ValueError(f"hk_2010 packfile has no supported animation object: {path}")
+    # Keep the representation on the structural record as well as in the
+    # return value.  Callers use the record when reporting a later codec
+    # failure; dropping this field made valid interleaved inputs appear as
+    # ``unknown`` in those diagnostics.
+    structure["animationType"] = animation_type
     base = 2 * ptr_size
     arr_size = ptr_size + 8
     ann_offset = base + 16 + ptr_size
@@ -327,11 +332,20 @@ def _binding_indices(animation: Any, label: str, *, required: bool) -> list[int]
 
 
 def _skeleton_name(animation: Any, label: str) -> str:
+    value = _optional_skeleton_name(animation)
+    if value is not None:
+        return value
+    raise ValueError(f"{label} has no skeleton identity")
+
+
+def _optional_skeleton_name(animation: Any) -> str | None:
+    """Read the skeleton identity across PyNifly naming variants."""
+
     for attribute in ("original_skeleton_name", "skeleton_name", "skeletonName"):
         value = getattr(animation, attribute, None)
         if value:
             return str(value).strip()
-    raise ValueError(f"{label} has no skeleton identity")
+    return None
 
 
 def _normalised_hint(animation: Any) -> object:
@@ -383,16 +397,8 @@ def _extract_motion(animation: Any) -> object | None:
 def _check_optional_skeleton_compatibility(base: Any, action: Any) -> None:
     """Reject an explicit skeleton mismatch even for preserved clip classes."""
 
-    base_name = next(
-        (getattr(base, attribute, None) for attribute in ("original_skeleton_name", "skeleton_name", "skeletonName")
-         if getattr(base, attribute, None)),
-        None,
-    )
-    action_name = next(
-        (getattr(action, attribute, None) for attribute in ("original_skeleton_name", "skeleton_name", "skeletonName")
-         if getattr(action, attribute, None)),
-        None,
-    )
+    base_name = _optional_skeleton_name(base)
+    action_name = _optional_skeleton_name(action)
     if base_name is not None and action_name is not None:
         if str(base_name).strip().casefold() != str(action_name).strip().casefold():
             raise ValueError(
@@ -612,8 +618,8 @@ def _verify_round_trip(action: Any, expected: Any, verified: Any, replaced_indic
     actual_binding = _binding_indices(verified, "written animation", required=False)
     if expected_binding != actual_binding:
         raise RuntimeError("round-trip metadata mismatch (transform-track binding)")
-    expected_skeleton = getattr(expected, "original_skeleton_name", None)
-    actual_skeleton = getattr(verified, "original_skeleton_name", None)
+    expected_skeleton = _optional_skeleton_name(expected)
+    actual_skeleton = _optional_skeleton_name(verified)
     if (expected_skeleton is None) != (actual_skeleton is None):
         raise RuntimeError("round-trip metadata mismatch (skeleton identity)")
     if expected_skeleton is not None and str(expected_skeleton).casefold() != str(actual_skeleton).casefold():
@@ -658,8 +664,8 @@ def aerialize(anim_skyrim: Any, base_path: pathlib.Path, input_path: pathlib.Pat
         raise ValueError("input and output HKX paths must be different")
     base_structure = inspect_hkx_packfile(base_path)
     input_structure = inspect_hkx_packfile(input_path)
-    inspect_hkx_animation_channels(base_path, base_structure)
-    inspect_hkx_animation_channels(input_path, input_structure)
+    base_structure.update(inspect_hkx_animation_channels(base_path, base_structure))
+    input_structure.update(inspect_hkx_animation_channels(input_path, input_structure))
     try:
         base = anim_skyrim.load_skyrim_animation(str(base_path))
         action = anim_skyrim.load_skyrim_animation(str(input_path))
@@ -737,7 +743,7 @@ def aerialize(anim_skyrim: Any, base_path: pathlib.Path, input_path: pathlib.Pat
         if not temporary.is_file() or temporary.stat().st_size == 0:
             raise RuntimeError(f"HKX writer produced no output for {output_path}")
         written_structure = inspect_hkx_packfile(temporary)
-        inspect_hkx_animation_channels(temporary, written_structure)
+        written_structure.update(inspect_hkx_animation_channels(temporary, written_structure))
         try:
             verified = anim_skyrim.load_skyrim_animation(str(temporary))
         except Exception as exc:

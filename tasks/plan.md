@@ -196,7 +196,8 @@ Verification: convert the review probes into regression tests; add valid quatern
 
 ### Task 4 — define and test a real binary codec contract
 
-Status: **partially complete** in `3f80960`: binary channel inspection and
+Status: **partially complete** in `3f80960`, with follow-up diagnostic
+hardening in the current working change. Binary channel inspection and
 fail-closed policy are implemented, but a production-verified interleaved
 codec fixture is still an explicit follow-up.
 
@@ -211,6 +212,12 @@ Acceptance:
 - A real decode/write/reload test validates all Task 3 invariants for each supported format.
 
 Verification: synthetic tests plus separate real-codec integration tests. Record backend revision and fixture hashes; use redistributable fixtures or fetch external fixtures under an explicit provenance policy.
+
+The follow-up also preserves the detected compressed/interleaved
+representation on the structural inspection record, so a later decode failure
+reports the actual representation instead of `unknown`, and verifies skeleton
+identity using every supported backend attribute spelling. These are diagnostic
+integrity fixes; they do not claim interleaved codec support.
 
 Checkpoint A: Tasks 2-4 safety tests are green; production interleaved codec
 support remains intentionally unclaimed.
@@ -292,7 +299,7 @@ Verification: parser/replay tests first. The user performs gameplay testing, ini
 - Rebuilt the unified Release plugin and `DragonAspectFlightFlightStateTests`
   from commit `3f80960` with `/t:Rebuild /m:1`: both exited 0.
 - Fresh CTest invocation at `C:/tmp/DAF-diagnosis-plan-20260907-r1`: **9/9 passed**.
-- `py -3 -m unittest discover -s tests -p "test_*.py"`: **51/51 passed**;
+- `py -3 -m unittest discover -s tests -p "test_*.py"`: **53/53 passed**;
   structured logging pytest: **9/9 passed**.
 - Workspace and exact committed-tree export
   `py -3 tools/test_build_flight_animation_stack.py`: **10/10 passed** each.

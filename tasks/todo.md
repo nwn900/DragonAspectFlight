@@ -17,14 +17,15 @@ Plan: [plan.md](plan.md). Review date: 2026-09-08. Implementation commit:
 - [x] Make duplicate flight activation a no-op and roll back failed worker startup.
 - [x] Bind controller restoration to its owner and abort on replacement/essential gate loss.
 - [x] Embed source/Data/CommonLib candidate identity in startup diagnostics.
-- [x] Checkpoint B: CTest 9/9, Python 51/51, structured logging 9/9, PE, and Address Library gates pass.
+- [x] Checkpoint B: CTest 9/9, Python 53/53, structured logging 9/9, PE, and Address Library gates pass.
+- [x] Preserve HKX representation names in decode diagnostics and verify alternate skeleton metadata spellings.
 
 ## Remaining work before any release
 
 - [ ] Obtain runtime gameplay acceptance on the exact candidate: draw/sheathe, normal/power attacks, weapon swaps, block/bash, repeated shouts and landing, descent, and magicka recovery.
 - [ ] Capture actual OAR requested-original and selected-replacement traces; retain `unknown` when the API/log does not expose them.
 - [ ] Qualify the 1.7.104 layout/input/SkyrimVM paths in-game for SE/AE/VR; static BIN and compilation are not sufficient.
-- [ ] Decide whether to add a verified production interleaved HKX codec or keep rejecting those inputs.
+- [ ] Decide whether to add a verified production interleaved HKX codec or keep rejecting those inputs (diagnostic identification is now covered; support is still unclaimed).
 - [ ] Keep private symbols beside any diagnostic build; never put a PDB in the mod payload.
 - [ ] After gameplay acceptance, package a rootless release, independently extract/verify it, then deploy with a fresh rollback backup.
 

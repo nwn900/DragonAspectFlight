@@ -15,6 +15,7 @@ import sys
 import tempfile
 import unittest
 from dataclasses import dataclass, field
+from types import SimpleNamespace
 from unittest import mock
 
 
@@ -293,6 +294,20 @@ class AerializeContractTests(unittest.TestCase):
             track_value.rotations = [[-value for value in sample] for sample in track_value.rotations]
         self.module._verify_round_trip(action, expected, verified, set(range(len(action.tracks))))
 
+    def test_round_trip_checks_alternate_skeleton_attribute_spellings(self) -> None:
+        base, action = make_base_and_action()
+        del base
+        expected_data = vars(copy.deepcopy(action))
+        verified_data = vars(copy.deepcopy(action))
+        expected_data.pop("original_skeleton_name")
+        verified_data.pop("original_skeleton_name")
+        expected = SimpleNamespace(**expected_data, skeletonName="NPC")
+        verified = SimpleNamespace(**verified_data, skeletonName="DifferentSkeleton")
+        expected.num_tracks = len(expected.tracks)
+        verified.num_tracks = len(verified.tracks)
+        with self.assertRaisesRegex(RuntimeError, "skeleton identity"):
+            self.module._verify_round_trip(action, expected, verified, set())
+
     def test_loop_seam_failure_is_rejected(self) -> None:
         base, action = make_base_and_action()
         base.tracks[0].translations[-1][0] = 100.0
@@ -344,6 +359,40 @@ class AerializeContractTests(unittest.TestCase):
             structure = self.module.inspect_hkx_packfile(path)
             with self.assertRaisesRegex(ValueError, "float tracks"):
                 self.module.inspect_hkx_animation_channels(path, structure)
+
+    def test_channel_inspection_records_representation_for_decode_diagnostics(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = pathlib.Path(temporary) / "interleaved.hkx"
+            raw = bytearray(0x320)
+            raw[:4] = b"\x57\xe0\xe0\x57"
+            raw[0x0C:0x10] = (8).to_bytes(4, "little")
+            raw[0x10] = 8
+            class_abs, types_abs, data_abs = 0xD0, 0x120, 0x140
+            class_blob = b"hkaInterleavedUncompressedAnimation\0"
+            raw[class_abs : class_abs + len(class_blob)] = class_blob
+
+            def section(header: int, name: bytes, start: int, end: int, *, virtual: int = 16, exports: int = 28) -> None:
+                raw[header : header + len(name)] = name
+                raw[header + 0x14 : header + 0x18] = start.to_bytes(4, "little")
+                raw[header + 0x18 : header + 0x1C] = (8).to_bytes(4, "little")
+                raw[header + 0x1C : header + 0x20] = (8).to_bytes(4, "little")
+                raw[header + 0x20 : header + 0x24] = virtual.to_bytes(4, "little")
+                raw[header + 0x24 : header + 0x28] = exports.to_bytes(4, "little")
+                raw[header + 0x2C : header + 0x30] = (end - start).to_bytes(4, "little")
+
+            section(0x40, b"__classnames__\0", class_abs, types_abs, virtual=0, exports=0)
+            section(0x70, b"__types__\0", types_abs, data_abs, virtual=0, exports=0)
+            section(0xA0, b"__data__\0", data_abs, 0x1C0)
+            raw[data_abs + 16 : data_abs + 20] = (32).to_bytes(4, "little")
+            raw[data_abs + 24 : data_abs + 28] = (0).to_bytes(4, "little")
+            object_abs = data_abs + 32
+            raw[object_abs + 28 : object_abs + 32] = (0).to_bytes(4, "little")
+            raw[object_abs + 32 : object_abs + 40] = (0).to_bytes(8, "little")
+            path.write_bytes(raw)
+            structure = self.module.inspect_hkx_packfile(path)
+            info = self.module.inspect_hkx_animation_channels(path, structure)
+            self.assertEqual(info["animationType"], "hkaInterleavedUncompressedAnimation")
+            self.assertEqual(structure["animationType"], "hkaInterleavedUncompressedAnimation")
 
 
 class StackPolicyContractTests(unittest.TestCase):
