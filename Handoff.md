@@ -12,10 +12,10 @@ There are two different artifacts in play:
 
 | Artifact | Current state |
 | --- | --- |
-| Repository branch `agent/flight-combat` | Local tip `ceca036f5f6705d842bb8cecbb8690bf5cb6c272`; diagnosis implementation is in parent `3f8096080340c82cd2d2efa5004468b57f15355e`. These commits are local and have not been pushed in this turn. |
+| Repository branch `agent/flight-combat` | Local tip contains implementation commit `3f8096080340c82cd2d2efa5004468b57f15355e` plus documentation commits; see `git log` for the exact tip. These commits are local and have not been pushed in this turn. |
 | Latest published GitHub release | `v1.6.0` on `main`; five-file, rootless ZIP with no bundled animation HKX files. |
 | Active Nolvus installation | GitHub `v1.6.0` is installed in the enabled Nexus-compat folder. |
-| Diagnosis-plan implementation | Committed in `3f80960`, rebuilt from final tip `ceca036`, and statically tested in an isolated build directory, but not packaged as a public release and not deployed to the game. |
+| Diagnosis-plan implementation | Source/Data implementation is committed in `3f80960`, rebuilt from implementation tip `ceca036` (later commits are documentation-only), and statically tested in an isolated build directory; it is not packaged as a public release or deployed to the game. |
 | Runtime gameplay validation | Not run for the diagnosis branch or for the `v1.6.0` deployment. |
 
 The current installed variant is:
