@@ -12,7 +12,7 @@ There are two different artifacts in play:
 
 | Artifact | Current state |
 | --- | --- |
-| Repository branch `agent/flight-combat` | Local tip contains implementation commit `3f8096080340c82cd2d2efa5004468b57f15355e` plus documentation commits; see `git log` for the exact tip. These commits are local and have not been pushed in this turn. |
+| Repository branch `agent/flight-combat` | Local tip contains implementation commit `3f8096080340c82cd2d2efa5004468b57f15355e` plus the HKX diagnostic follow-up `b63c803` and documentation commits; see `git log` for the exact tip. These commits are local and have not been pushed in this turn. |
 | Latest published GitHub release | `v1.6.0` on `main`; five-file, rootless ZIP with no bundled animation HKX files. |
 | Active Nolvus installation | GitHub `v1.6.0` is installed in the enabled Nexus-compat folder. |
 | Diagnosis-plan implementation | Source/Data implementation is committed in `3f80960`, rebuilt from implementation tip `ceca036` (later commits are documentation-only), and statically tested in an isolated build directory; it is not packaged as a public release or deployed to the game. |
@@ -248,12 +248,14 @@ testing was deliberately not performed.
 - Kept suppression active outside shout-selection menus.
 - Removed bundled animation files from the public package.
 
-### Diagnosis-plan branch (`3f80960`)
+### Diagnosis-plan branch (`3f80960` + `b63c803`)
 
 - Added native graph/lifecycle/controller safety and stale-action protection.
 - Added game-thread monitor polling and structured logging contracts.
 - Added binding-safe HKX composition and atomic animation-stack staging.
 - Added exact-original action rebuild and source-only patch utilities.
+- Preserved detected HKX representation names in decode diagnostics and made
+  round-trip skeleton checks robust to all supported backend attribute spellings.
 - Added CMake/CTest coverage for the above contracts and committed the
   reconciled 1,045-file Data candidate.
 
