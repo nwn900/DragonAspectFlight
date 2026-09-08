@@ -13,7 +13,7 @@ import subprocess
 import tempfile
 from dataclasses import dataclass
 
-from AerializeHkx import aerialize, load_backend
+from AerializeHkx import aerialize, backend_provenance, load_backend
 
 
 ROOT_SCOPE = pathlib.Path()
@@ -777,24 +777,44 @@ def attack_source_name(family: Family, animation_name: str) -> str:
     return f"{prefix}_Air_Attack.hkx"
 
 
-def write_hash_manifest(data_root: pathlib.Path) -> int:
-    assets = sorted(
-        (
-            path
-            for path in (data_root / "meshes").rglob("*")
-            if path.is_file() and path.suffix.lower() in {".hkx", ".nif"}
-        ),
-        key=lambda path: path.relative_to(data_root).as_posix().lower(),
-    )
+def write_hash_manifest(
+    data_root: pathlib.Path,
+    *,
+    output_path: pathlib.Path | None = None,
+    overlay_oar_root: pathlib.Path | None = None,
+) -> int:
+    """Write an asset manifest, optionally overlaying an unpublished OAR tree.
+
+    The overlay lets the caller prepare metadata before publishing the new
+    directory, so a failed metadata write cannot leave an installed tree with
+    stale hashes.
+    """
+
+    oar_target = data_root / "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight"
+    assets: dict[str, pathlib.Path] = {}
+    for path in (data_root / "meshes").rglob("*"):
+        if not path.is_file() or path.suffix.lower() not in {".hkx", ".nif"}:
+            continue
+        if overlay_oar_root is not None and oar_target in path.parents:
+            continue
+        assets[path.relative_to(data_root).as_posix()] = path
+    if overlay_oar_root is not None:
+        for path in overlay_oar_root.rglob("*"):
+            if path.is_file() and path.suffix.lower() in {".hkx", ".nif"}:
+                relative = path.relative_to(overlay_oar_root)
+                virtual = oar_target.relative_to(data_root) / relative
+                assets[virtual.as_posix()] = path
+    ordered_assets = sorted(assets.items(), key=lambda item: item[0].lower())
     lines = [
         f"Dragon Aspect Flight {RELEASE_VERSION} bundled animation/effect asset SHA-256",
         "=================================================================",
         "",
     ]
-    lines.extend(f"{sha256(path).lower()} *{path.relative_to(data_root).as_posix()}" for path in assets)
-    manifest = data_root / "SKSE/Plugins/DragonAspectFlight-AnimationHashes.txt"
+    lines.extend(f"{sha256(path).lower()} *{relative}" for relative, path in ordered_assets)
+    manifest = output_path or (data_root / "SKSE/Plugins/DragonAspectFlight-AnimationHashes.txt")
+    manifest.parent.mkdir(parents=True, exist_ok=True)
     manifest.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
-    return len(assets)
+    return len(ordered_assets)
 
 
 def expected_family_animation_names(
@@ -930,16 +950,33 @@ def refresh_metadata(data_root: pathlib.Path) -> int:
             family,
             magic_source_names=magic_source_names,
         )
-    write_json(
-        coverage_path,
-        {
-            "version": RELEASE_VERSION,
-            "scopes": sorted({scope.as_posix() or "." for family in FAMILIES for scope in family.scopes}),
-            "families": coverage,
-            "totalOarHkx": len(actual_paths),
-        },
-    )
-    manifest_count = write_hash_manifest(data_root)
+    with tempfile.TemporaryDirectory(prefix=".daf-refresh-metadata-", dir=data_root) as metadata_directory:
+        metadata_root = pathlib.Path(metadata_directory)
+        staged_coverage = metadata_root / coverage_path.name
+        staged_hashes = metadata_root / "DragonAspectFlight-AnimationHashes.txt"
+        write_json(
+            staged_coverage,
+            {
+                "version": RELEASE_VERSION,
+                "scopes": sorted({scope.as_posix() or "." for family in FAMILIES for scope in family.scopes}),
+                "families": coverage,
+                "totalOarHkx": len(actual_paths),
+                "provenance": {
+                    "tool": "BuildFlightAnimationStack.py",
+                    "toolVersion": "1",
+                    "mode": "metadata-refresh",
+                    "codec": "not used; existing HKX tree validated by manifest",
+                },
+            },
+        )
+        manifest_count = write_hash_manifest(data_root, output_path=staged_hashes)
+        _atomic_replace_files(
+            [
+                (staged_coverage, coverage_path),
+                (staged_hashes, data_root / "SKSE/Plugins/DragonAspectFlight-AnimationHashes.txt"),
+            ],
+            data_root,
+        )
     print(
         f"Refreshed output metadata for {len(actual_paths)} DAF OAR aliases "
         f"and {manifest_count} bundled HKX/NIF assets."
@@ -958,22 +995,162 @@ def _atomic_replace_directory(staged_root: pathlib.Path, target_root: pathlib.Pa
 
     target_root.parent.mkdir(parents=True, exist_ok=True)
     backup_root: pathlib.Path | None = None
-    if target_root.exists():
-        backup_root = pathlib.Path(
-            tempfile.mkdtemp(prefix=f".{target_root.name}.backup-", dir=target_root.parent)
-        )
-        backup_root.rmdir()
-        target_root.rename(backup_root)
+    published = False
+    try:
+        if target_root.exists():
+            backup_root = pathlib.Path(
+                tempfile.mkdtemp(prefix=f".{target_root.name}.backup-", dir=target_root.parent)
+            )
+            backup_root.rmdir()
+            target_root.rename(backup_root)
+    except Exception:
+        if backup_root is not None and backup_root.exists() and not any(backup_root.iterdir()):
+            backup_root.rmdir()
+        raise
     try:
         staged_root.rename(target_root)
-    except Exception:
+        published = True
+    except Exception as install_error:
         if backup_root is not None and not target_root.exists():
-            backup_root.rename(target_root)
-            backup_root = None
+            try:
+                backup_root.rename(target_root)
+                backup_root = None
+            except Exception as restore_error:
+                # Keep the last known-good tree discoverable.  Never allow the
+                # cleanup path to erase it after a double failure.
+                message = (
+                    "animation stack install and rollback both failed; "
+                    f"intact backup retained at {backup_root}: {restore_error}"
+                )
+                if hasattr(install_error, "add_note"):
+                    install_error.add_note(message)
+                raise install_error from restore_error
         raise
     finally:
-        if backup_root is not None and backup_root.exists():
+        if published and backup_root is not None and backup_root.exists():
             shutil.rmtree(backup_root)
+
+
+def _atomic_replace_files(
+    staged_files: list[tuple[pathlib.Path, pathlib.Path]],
+    transaction_parent: pathlib.Path,
+) -> None:
+    """Replace metadata files together, retaining a transaction on rollback failure."""
+
+    transaction_parent.mkdir(parents=True, exist_ok=True)
+    transaction_root = pathlib.Path(
+        tempfile.mkdtemp(prefix=".dragon-aspect-flight-metadata-", dir=transaction_parent)
+    )
+    previous_root = transaction_root / "previous"
+    failed_root = transaction_root / "failed-candidate"
+    previous_root.mkdir()
+    failed_root.mkdir()
+    backups: list[tuple[pathlib.Path, pathlib.Path]] = []
+    installed: list[pathlib.Path] = []
+    try:
+        for index, (_, target) in enumerate(staged_files):
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if target.exists():
+                backup = previous_root / f"target-{index}"
+                target.rename(backup)
+                backups.append((target, backup))
+        for index, (staged, target) in enumerate(staged_files):
+            staged.rename(target)
+            installed.append(target)
+    except Exception as publish_error:
+        rollback_error: Exception | None = None
+        for index, target in reversed(list(enumerate(installed))):
+            if not target.exists():
+                continue
+            try:
+                target.rename(failed_root / f"target-{index}")
+            except Exception as error:
+                rollback_error = rollback_error or error
+        for target, backup in reversed(backups):
+            if not backup.exists():
+                continue
+            try:
+                backup.rename(target)
+            except Exception as error:
+                rollback_error = rollback_error or error
+        if rollback_error is not None:
+            message = (
+                "metadata replacement and rollback both failed; "
+                f"transaction retained at {transaction_root}: {rollback_error}"
+            )
+            if hasattr(publish_error, "add_note"):
+                publish_error.add_note(message)
+            raise publish_error from rollback_error
+        shutil.rmtree(transaction_root, ignore_errors=True)
+        raise
+    else:
+        shutil.rmtree(transaction_root)
+
+
+def _atomic_publish_candidate(
+    staged_root: pathlib.Path,
+    target_root: pathlib.Path,
+    staged_files: list[tuple[pathlib.Path, pathlib.Path]],
+    transaction_parent: pathlib.Path,
+) -> None:
+    """Publish an OAR tree and its metadata as one recoverable transaction.
+
+    Every existing target is moved into a transaction directory first.  On a
+    failure, newly installed targets are moved aside and the old set is
+    restored.  A rollback failure leaves that transaction directory intact so
+    the last good files remain recoverable instead of being deleted by a
+    ``finally`` block.
+    """
+
+    transaction_parent.mkdir(parents=True, exist_ok=True)
+    transaction_root = pathlib.Path(
+        tempfile.mkdtemp(prefix=".dragon-aspect-flight-publish-", dir=transaction_parent)
+    )
+    backup_root = transaction_root / "previous"
+    failed_root = transaction_root / "failed-candidate"
+    backup_root.mkdir()
+    failed_root.mkdir()
+    targets = [(staged_root, target_root), *staged_files]
+    backups: list[tuple[pathlib.Path, pathlib.Path]] = []
+    installed: list[pathlib.Path] = []
+    try:
+        for index, (_, target) in enumerate(targets):
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if target.exists():
+                backup = backup_root / f"target-{index}"
+                target.rename(backup)
+                backups.append((target, backup))
+        for staged, target in targets:
+            staged.rename(target)
+            installed.append(target)
+    except Exception as publish_error:
+        rollback_error: Exception | None = None
+        for index, target in reversed(list(enumerate(installed))):
+            if not target.exists():
+                continue
+            try:
+                target.rename(failed_root / f"target-{index}")
+            except Exception as error:
+                rollback_error = rollback_error or error
+        for target, backup in reversed(backups):
+            if not backup.exists():
+                continue
+            try:
+                backup.rename(target)
+            except Exception as error:
+                rollback_error = rollback_error or error
+        if rollback_error is not None:
+            message = (
+                "candidate publication and rollback both failed; "
+                f"transaction retained at {transaction_root}: {rollback_error}"
+            )
+            if hasattr(publish_error, "add_note"):
+                publish_error.add_note(message)
+            raise publish_error from rollback_error
+        shutil.rmtree(transaction_root, ignore_errors=True)
+        raise
+    else:
+        shutil.rmtree(transaction_root)
 
 
 def _main() -> int:
@@ -1227,22 +1404,45 @@ def _main() -> int:
     if unexpected or missing:
         raise RuntimeError(f"Generated flight stack mismatch: unexpected={len(unexpected)}, missing={len(missing)}")
 
-    # Commit the complete OAR tree only after all source validation, decoding,
-    # compositing, and output accounting succeeded.  Any failure above leaves
-    # the existing checked-in Data tree untouched.
-    _atomic_replace_directory(oar_root, data_root / "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight")
-    _STAGED_OUTPUT_ROOT = None
+    # Prepare metadata against the unpublished overlay before changing the
+    # checked-in tree.  The directory and both metadata files are then moved as
+    # one recoverable transaction; a late write failure cannot publish stale
+    # coverage alongside a new OAR tree.
     coverage_path = data_root / "SKSE/Plugins/DragonAspectFlight-AnimationCoverage.json"
-    write_json(
-        coverage_path,
-        {
-            "version": RELEASE_VERSION,
-            "scopes": sorted({scope.as_posix() or "." for family in FAMILIES for scope in family.scopes}),
-            "families": coverage,
-            "totalOarHkx": len(existing_outputs),
-        },
-    )
-    manifest_count = write_hash_manifest(data_root)
+    hash_path = data_root / "SKSE/Plugins/DragonAspectFlight-AnimationHashes.txt"
+    with tempfile.TemporaryDirectory(prefix=".daf-metadata-", dir=data_root) as metadata_directory:
+        metadata_root = pathlib.Path(metadata_directory)
+        staged_coverage = metadata_root / coverage_path.name
+        staged_hashes = metadata_root / hash_path.name
+        write_json(
+            staged_coverage,
+            {
+                "version": RELEASE_VERSION,
+                "scopes": sorted({scope.as_posix() or "." for family in FAMILIES for scope in family.scopes}),
+                "families": coverage,
+                "totalOarHkx": len(existing_outputs),
+                "provenance": {
+                    "tool": "BuildFlightAnimationStack.py",
+                    "toolVersion": "1",
+                    "releaseVersion": RELEASE_VERSION,
+                    "codec": backend_provenance(anim_skyrim),
+                    "hkxcmd": hkxcmd.name,
+                    "sourcePolicy": "pinned third-party and exact-original inputs",
+                },
+            },
+        )
+        manifest_count = write_hash_manifest(
+            data_root,
+            output_path=staged_hashes,
+            overlay_oar_root=oar_root,
+        )
+        _atomic_publish_candidate(
+            oar_root,
+            data_root / "meshes/actors/character/animations/OpenAnimationReplacer/Dragon Aspect Flight",
+            [(staged_coverage, coverage_path), (staged_hashes, hash_path)],
+            data_root,
+        )
+    _STAGED_OUTPUT_ROOT = None
     print(f"Built {len(existing_outputs)} DAF OAR aliases across {len(FAMILIES)} equipment families.")
     print(f"Wrote SHA-256 manifest for {manifest_count} bundled HKX/NIF assets.")
     return 0

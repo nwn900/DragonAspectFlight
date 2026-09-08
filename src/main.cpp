@@ -127,17 +127,29 @@ extern "C" __declspec(dllexport) bool SKSEPlugin_Load(const SKSE::LoadInterface*
 
 	const char* runtimeFamily = REL::Module::IsVR() ? "VR" : (REL::Module::IsAE() ? "AE" : "SE");
 	logger::info(
-		"event=plugin_load version={} build_label={} runtime_family={} runtime_version={} skse_release_index={}",
+		"event=plugin_load version={} build_label={} source_revision={} data_manifest_sha256={} "
+		"commonlib_version={} commonlib_revision={} "
+		"runtime_family={} runtime_version={} skse_release_index={}",
 		DragonAspectFlight::Version,
 		DragonAspectFlight::BuildVersion,
+		DragonAspectFlight::SourceRevision,
+		DragonAspectFlight::DataManifestSha256,
+		DragonAspectFlight::CommonLibVersion,
+		DragonAspectFlight::CommonLibRevision,
 		runtimeFamily,
 		a_skse->RuntimeVersion().string("."),
 		a_skse->GetReleaseIndex());
 	logger::info(
-		"event=diagnostic_schema schema={} version={} build_label={} runtime_family={} compiled_candidate_identity={}@{}T{} dll_hash=not_computed",
+		"event=diagnostic_schema schema={} version={} build_label={} source_revision={} "
+		"data_manifest_sha256={} commonlib_version={} commonlib_revision={} runtime_family={} "
+		"compiled_candidate_identity={}@{}T{} dll_hash=not_computed",
 		DragonAspectFlight::State::StructuredDiagnosticSchemaVersion,
 		DragonAspectFlight::Version,
 		DragonAspectFlight::BuildVersion,
+		DragonAspectFlight::SourceRevision,
+		DragonAspectFlight::DataManifestSha256,
+		DragonAspectFlight::CommonLibVersion,
+		DragonAspectFlight::CommonLibRevision,
 		runtimeFamily,
 		DragonAspectFlight::BuildVersion,
 		__DATE__,

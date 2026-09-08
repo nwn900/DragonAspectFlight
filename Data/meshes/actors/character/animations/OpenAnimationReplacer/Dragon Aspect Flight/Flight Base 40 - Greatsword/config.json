@@ -1,7 +1,7 @@
 {
   "name": "DAF Flight Base - Greatsword",
-  "description": "Root-stable greatsword flight locomotion and vanilla/MCO aerial attacks.",
-  "priority": 2147483604,
+  "description": "Root-stable greatsword flight locomotion and vanilla/MCO aerial attacks; explicit fallback for unknown/custom two-handed polearms and nodachi.",
+  "priority": 2147483605,
   "interruptible": true,
   "replaceOnLoop": true,
   "conditions": [
@@ -42,20 +42,598 @@
       "requiredVersion": "1.0.0.0",
       "Conditions": [
         {
-          "condition": "IsEquippedType",
+          "condition": "OR",
           "requiredVersion": "1.0.0.0",
-          "Type": {
-            "value": 5.0
-          },
-          "Left hand": false
+          "Conditions": [
+            {
+              "condition": "IsEquippedType",
+              "requiredVersion": "1.0.0.0",
+              "Type": {
+                "value": 5.0
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquippedType",
+              "requiredVersion": "1.0.0.0",
+              "Type": {
+                "value": -1.0
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquippedType",
+              "requiredVersion": "1.0.0.0",
+              "Type": {
+                "value": 5.0
+              },
+              "Left hand": true
+            },
+            {
+              "condition": "IsEquippedType",
+              "requiredVersion": "1.0.0.0",
+              "Type": {
+                "value": -1.0
+              },
+              "Left hand": true
+            }
+          ]
         },
         {
-          "condition": "IsEquippedType",
+          "condition": "OR",
           "requiredVersion": "1.0.0.0",
-          "Type": {
-            "value": 5.0
-          },
-          "Left hand": true
+          "Conditions": [
+            {
+              "condition": "AND",
+              "requiredVersion": "1.0.0.0",
+              "Conditions": [
+                {
+                  "condition": "IsEquippedHasKeyword",
+                  "requiredVersion": "1.0.0.0",
+                  "Keyword": {
+                    "editorID": "WeapTypePike"
+                  },
+                  "Left hand": false
+                },
+                {
+                  "condition": "OR",
+                  "requiredVersion": "1.0.0.0",
+                  "Conditions": [
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": 5.0
+                      },
+                      "Left hand": false
+                    },
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": 6.0
+                      },
+                      "Left hand": false
+                    },
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": 10.0
+                      },
+                      "Left hand": false
+                    },
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": -1.0
+                      },
+                      "Left hand": false
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "condition": "AND",
+              "requiredVersion": "1.0.0.0",
+              "Conditions": [
+                {
+                  "condition": "IsEquippedHasKeyword",
+                  "requiredVersion": "1.0.0.0",
+                  "Keyword": {
+                    "editorID": "WeapTypeSpear"
+                  },
+                  "Left hand": false
+                },
+                {
+                  "condition": "OR",
+                  "requiredVersion": "1.0.0.0",
+                  "Conditions": [
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": 5.0
+                      },
+                      "Left hand": false
+                    },
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": 6.0
+                      },
+                      "Left hand": false
+                    },
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": 10.0
+                      },
+                      "Left hand": false
+                    },
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": -1.0
+                      },
+                      "Left hand": false
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "condition": "AND",
+              "requiredVersion": "1.0.0.0",
+              "Conditions": [
+                {
+                  "condition": "IsEquippedHasKeyword",
+                  "requiredVersion": "1.0.0.0",
+                  "Keyword": {
+                    "editorID": "WeapTypeHalberd"
+                  },
+                  "Left hand": false
+                },
+                {
+                  "condition": "OR",
+                  "requiredVersion": "1.0.0.0",
+                  "Conditions": [
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": 5.0
+                      },
+                      "Left hand": false
+                    },
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": 6.0
+                      },
+                      "Left hand": false
+                    },
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": 10.0
+                      },
+                      "Left hand": false
+                    },
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": -1.0
+                      },
+                      "Left hand": false
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "condition": "AND",
+              "requiredVersion": "1.0.0.0",
+              "Conditions": [
+                {
+                  "condition": "IsEquippedHasKeyword",
+                  "requiredVersion": "1.0.0.0",
+                  "Keyword": {
+                    "editorID": "WeapTypePike"
+                  },
+                  "Left hand": true
+                },
+                {
+                  "condition": "OR",
+                  "requiredVersion": "1.0.0.0",
+                  "Conditions": [
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": 5.0
+                      },
+                      "Left hand": true
+                    },
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": 6.0
+                      },
+                      "Left hand": true
+                    },
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": 10.0
+                      },
+                      "Left hand": true
+                    },
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": -1.0
+                      },
+                      "Left hand": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "condition": "AND",
+              "requiredVersion": "1.0.0.0",
+              "Conditions": [
+                {
+                  "condition": "IsEquippedHasKeyword",
+                  "requiredVersion": "1.0.0.0",
+                  "Keyword": {
+                    "editorID": "WeapTypeSpear"
+                  },
+                  "Left hand": true
+                },
+                {
+                  "condition": "OR",
+                  "requiredVersion": "1.0.0.0",
+                  "Conditions": [
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": 5.0
+                      },
+                      "Left hand": true
+                    },
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": 6.0
+                      },
+                      "Left hand": true
+                    },
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": 10.0
+                      },
+                      "Left hand": true
+                    },
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": -1.0
+                      },
+                      "Left hand": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "condition": "AND",
+              "requiredVersion": "1.0.0.0",
+              "Conditions": [
+                {
+                  "condition": "IsEquippedHasKeyword",
+                  "requiredVersion": "1.0.0.0",
+                  "Keyword": {
+                    "editorID": "WeapTypeHalberd"
+                  },
+                  "Left hand": true
+                },
+                {
+                  "condition": "OR",
+                  "requiredVersion": "1.0.0.0",
+                  "Conditions": [
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": 5.0
+                      },
+                      "Left hand": true
+                    },
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": 6.0
+                      },
+                      "Left hand": true
+                    },
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": 10.0
+                      },
+                      "Left hand": true
+                    },
+                    {
+                      "condition": "IsEquippedType",
+                      "requiredVersion": "1.0.0.0",
+                      "Type": {
+                        "value": -1.0
+                      },
+                      "Left hand": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "condition": "OR",
+          "requiredVersion": "1.0.0.0",
+          "Conditions": [
+            {
+              "condition": "IsEquippedHasKeyword",
+              "requiredVersion": "1.0.0.0",
+              "Keyword": {
+                "editorID": "OCF_WeapTypePike2H"
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquippedHasKeyword",
+              "requiredVersion": "1.0.0.0",
+              "Keyword": {
+                "editorID": "OCF_WeapTypeSpear2H"
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquippedHasKeyword",
+              "requiredVersion": "1.0.0.0",
+              "Keyword": {
+                "editorID": "OCF_WeapTypeHalberd2H"
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquippedHasKeyword",
+              "requiredVersion": "1.0.0.0",
+              "Keyword": {
+                "editorID": "OCF_WeapTypePole2H_Thrust"
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquippedHasKeyword",
+              "requiredVersion": "1.0.0.0",
+              "Keyword": {
+                "editorID": "OCF_WeapTypePole2H_Swing"
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquippedHasKeyword",
+              "requiredVersion": "1.0.0.0",
+              "Keyword": {
+                "editorID": "WeapTypeNodachi"
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquippedHasKeyword",
+              "requiredVersion": "1.0.0.0",
+              "Keyword": {
+                "editorID": "OCF_WeapTypeKatana2H"
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquippedHasKeyword",
+              "requiredVersion": "1.0.0.0",
+              "Keyword": {
+                "editorID": "OCF_WeapTypePike2H"
+              },
+              "Left hand": true
+            },
+            {
+              "condition": "IsEquippedHasKeyword",
+              "requiredVersion": "1.0.0.0",
+              "Keyword": {
+                "editorID": "OCF_WeapTypeSpear2H"
+              },
+              "Left hand": true
+            },
+            {
+              "condition": "IsEquippedHasKeyword",
+              "requiredVersion": "1.0.0.0",
+              "Keyword": {
+                "editorID": "OCF_WeapTypeHalberd2H"
+              },
+              "Left hand": true
+            },
+            {
+              "condition": "IsEquippedHasKeyword",
+              "requiredVersion": "1.0.0.0",
+              "Keyword": {
+                "editorID": "OCF_WeapTypePole2H_Thrust"
+              },
+              "Left hand": true
+            },
+            {
+              "condition": "IsEquippedHasKeyword",
+              "requiredVersion": "1.0.0.0",
+              "Keyword": {
+                "editorID": "OCF_WeapTypePole2H_Swing"
+              },
+              "Left hand": true
+            },
+            {
+              "condition": "IsEquippedHasKeyword",
+              "requiredVersion": "1.0.0.0",
+              "Keyword": {
+                "editorID": "WeapTypeNodachi"
+              },
+              "Left hand": true
+            },
+            {
+              "condition": "IsEquippedHasKeyword",
+              "requiredVersion": "1.0.0.0",
+              "Keyword": {
+                "editorID": "OCF_WeapTypeKatana2H"
+              },
+              "Left hand": true
+            }
+          ]
+        },
+        {
+          "condition": "OR",
+          "requiredVersion": "1.0.0.0",
+          "Conditions": [
+            {
+              "condition": "IsEquipped",
+              "requiredVersion": "1.0.0.0",
+              "Form": {
+                "pluginName": "Spear of Skyrim.esp",
+                "formID": "80B"
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquipped",
+              "requiredVersion": "1.0.0.0",
+              "Form": {
+                "pluginName": "Spear of Skyrim.esp",
+                "formID": "80C"
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquipped",
+              "requiredVersion": "1.0.0.0",
+              "Form": {
+                "pluginName": "Spear of Skyrim.esp",
+                "formID": "80D"
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquipped",
+              "requiredVersion": "1.0.0.0",
+              "Form": {
+                "pluginName": "Spear of Skyrim.esp",
+                "formID": "80E"
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquipped",
+              "requiredVersion": "1.0.0.0",
+              "Form": {
+                "pluginName": "Spear of Skyrim.esp",
+                "formID": "80F"
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquipped",
+              "requiredVersion": "1.0.0.0",
+              "Form": {
+                "pluginName": "Spear of Skyrim.esp",
+                "formID": "810"
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquipped",
+              "requiredVersion": "1.0.0.0",
+              "Form": {
+                "pluginName": "Spear of Skyrim.esp",
+                "formID": "811"
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquipped",
+              "requiredVersion": "1.0.0.0",
+              "Form": {
+                "pluginName": "Spear of Skyrim.esp",
+                "formID": "812"
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquipped",
+              "requiredVersion": "1.0.0.0",
+              "Form": {
+                "pluginName": "Spear of Skyrim.esp",
+                "formID": "813"
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquipped",
+              "requiredVersion": "1.0.0.0",
+              "Form": {
+                "pluginName": "Spear of Skyrim.esp",
+                "formID": "814"
+              },
+              "Left hand": false
+            },
+            {
+              "condition": "IsEquipped",
+              "requiredVersion": "1.0.0.0",
+              "Form": {
+                "pluginName": "Spear of Skyrim.esp",
+                "formID": "815"
+              },
+              "Left hand": false
+            }
+          ]
+        },
+        {
+          "condition": "OR",
+          "requiredVersion": "1.0.0.0",
+          "Conditions": [
+            {
+              "condition": "IsEquipped",
+              "requiredVersion": "1.0.0.0",
+              "Form": {
+                "pluginName": "Spear of Omicron.esp",
+                "formID": "D62"
+              },
+              "Left hand": false
+            }
+          ]
         }
       ]
     }

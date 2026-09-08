@@ -1,4 +1,4 @@
-Dragon Aspect Flight 1.8.1 - third-party animation attribution
+Dragon Aspect Flight 1.8.3 - third-party animation attribution
 ================================================================
 
 Neutral flight pose
@@ -64,7 +64,7 @@ as a separate source set.
 Release composition
 -------------------
 
-The release contains 1,167 generated, flight-scoped OAR HKX aliases across the
+The release contains 1,045 generated, flight-scoped OAR HKX aliases across the
 fallback, unarmed, one-handed, dual-wield, greatsword, axe/warhammer,
 quarterstaff, bow, crossbow, magic, and staff families. The exact
 original-name coverage is in:

@@ -227,6 +227,72 @@ class AerializeContractTests(unittest.TestCase):
             self.assertEqual(output_path.read_bytes(), b"previous-good-output")
             self.assertEqual(list(root.glob(".*.tmp")), [])
 
+    def test_corrupted_replaced_track_fails_round_trip_verification(self) -> None:
+        base, action = make_base_and_action()
+
+        class CorruptingBackend(FakeBackend):
+            def write_skyrim_animation(self, path: str, animation: FakeAnimation, ptr_size: int = 8) -> None:
+                super().write_skyrim_animation(path, animation, ptr_size)
+                stored = self.animations[str(pathlib.Path(path))]
+                stored.tracks[0].translations[0][0] += 1000.0
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = pathlib.Path(temporary)
+            base_path, input_path, output_path = root / "base.hkx", root / "action.hkx", root / "out.hkx"
+            base_path.write_bytes(b"base")
+            input_path.write_bytes(b"input")
+            backend = CorruptingBackend({str(base_path): base, str(input_path): action})
+            with self.assertRaisesRegex(RuntimeError, "round-trip.*track"):
+                self.module.aerialize(backend, base_path, input_path, output_path)
+            self.assertFalse(output_path.exists())
+
+    def test_nonfinite_written_track_fails_before_replacing_output(self) -> None:
+        base, action = make_base_and_action()
+
+        class NonfiniteBackend(FakeBackend):
+            def write_skyrim_animation(self, path: str, animation: FakeAnimation, ptr_size: int = 8) -> None:
+                super().write_skyrim_animation(path, animation, ptr_size)
+                stored = self.animations[str(pathlib.Path(path))]
+                stored.tracks[0].translations[0][0] = float("nan")
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = pathlib.Path(temporary)
+            base_path, input_path, output_path = root / "base.hkx", root / "action.hkx", root / "out.hkx"
+            base_path.write_bytes(b"base")
+            input_path.write_bytes(b"input")
+            output_path.write_bytes(b"previous-good-output")
+            backend = NonfiniteBackend({str(base_path): base, str(input_path): action})
+            with self.assertRaisesRegex(RuntimeError, "finite"):
+                self.module.aerialize(backend, base_path, input_path, output_path)
+            self.assertEqual(output_path.read_bytes(), b"previous-good-output")
+            self.assertEqual(list(root.glob(".*.tmp")), [])
+
+    def test_nonfinite_transform_is_rejected_before_composition(self) -> None:
+        base, action = make_base_and_action()
+        action.tracks[2].translations[0][0] = float("nan")
+        with self.assertRaisesRegex(ValueError, "finite"):
+            self.module._validate_animation_structure(action, "action animation")
+
+    def test_nonfinite_or_out_of_range_annotation_is_rejected(self) -> None:
+        base, action = make_base_and_action()
+        action.annotations[0].time = float("nan")
+        with self.assertRaisesRegex(ValueError, "annotation"):
+            self.module._validate_animation_structure(action, "action animation")
+        action.annotations[0].time = 2.0
+        with self.assertRaisesRegex(ValueError, "outside"):
+            self.module._validate_animation_structure(action, "action animation")
+        action.annotations[0].time = -0.01
+        with self.assertRaisesRegex(ValueError, "non-negative"):
+            self.module._validate_animation_structure(action, "action animation")
+
+    def test_quaternion_sign_flip_is_a_valid_round_trip(self) -> None:
+        base, action = make_base_and_action()
+        expected = copy.deepcopy(action)
+        verified = copy.deepcopy(action)
+        for track_value in verified.tracks:
+            track_value.rotations = [[-value for value in sample] for sample in track_value.rotations]
+        self.module._verify_round_trip(action, expected, verified, set(range(len(action.tracks))))
+
     def test_loop_seam_failure_is_rejected(self) -> None:
         base, action = make_base_and_action()
         base.tracks[0].translations[-1][0] = 100.0
@@ -245,6 +311,39 @@ class AerializeContractTests(unittest.TestCase):
             path.write_bytes(b"\x57\xe0\xe0\x57" + b"\0" * 8)
             with self.assertRaisesRegex(ValueError, "truncated"):
                 self.module.inspect_hkx_packfile(path)
+
+    def test_interleaved_channels_are_checked_for_float_and_extracted_motion(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = pathlib.Path(temporary) / "interleaved.hkx"
+            raw = bytearray(0x320)
+            raw[:4] = b"\x57\xe0\xe0\x57"
+            raw[0x0C:0x10] = (8).to_bytes(4, "little")
+            raw[0x10] = 8
+            class_abs, types_abs, data_abs = 0xD0, 0x120, 0x140
+            class_blob = b"hkaInterleavedUncompressedAnimation\0"
+            raw[class_abs : class_abs + len(class_blob)] = class_blob
+
+            def section(header: int, name: bytes, start: int, end: int, *, virtual: int = 16, exports: int = 28) -> None:
+                raw[header : header + len(name)] = name
+                raw[header + 0x14 : header + 0x18] = start.to_bytes(4, "little")
+                raw[header + 0x18 : header + 0x1C] = (8).to_bytes(4, "little")
+                raw[header + 0x1C : header + 0x20] = (8).to_bytes(4, "little")
+                raw[header + 0x20 : header + 0x24] = virtual.to_bytes(4, "little")
+                raw[header + 0x24 : header + 0x28] = exports.to_bytes(4, "little")
+                raw[header + 0x2C : header + 0x30] = (end - start).to_bytes(4, "little")
+
+            section(0x40, b"__classnames__\0", class_abs, types_abs, virtual=0, exports=0)
+            section(0x70, b"__types__\0", types_abs, data_abs, virtual=0, exports=0)
+            section(0xA0, b"__data__\0", data_abs, 0x1C0)
+            raw[data_abs + 16 : data_abs + 20] = (32).to_bytes(4, "little")
+            raw[data_abs + 24 : data_abs + 28] = (0).to_bytes(4, "little")
+            object_abs = data_abs + 32
+            raw[object_abs + 28 : object_abs + 32] = (2).to_bytes(4, "little")
+            raw[object_abs + 32 : object_abs + 40] = (1).to_bytes(8, "little")
+            path.write_bytes(raw)
+            structure = self.module.inspect_hkx_packfile(path)
+            with self.assertRaisesRegex(ValueError, "float tracks"):
+                self.module.inspect_hkx_animation_channels(path, structure)
 
 
 class StackPolicyContractTests(unittest.TestCase):
@@ -289,6 +388,88 @@ class StackPolicyContractTests(unittest.TestCase):
             self.assertEqual((target / "new.hkx").read_bytes(), b"new")
             self.assertFalse((target / "old.hkx").exists())
             self.assertFalse(staged.exists())
+
+    def test_oar_directory_commit_retains_backup_when_install_and_restore_fail(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = pathlib.Path(temporary)
+            target = root / "oar"
+            staged = root / "staged"
+            target.mkdir()
+            staged.mkdir()
+            (target / "old.hkx").write_bytes(b"old")
+            (staged / "new.hkx").write_bytes(b"new")
+            original_rename = pathlib.Path.rename
+
+            def faulted_rename(path: pathlib.Path, destination: pathlib.Path):
+                if path == staged or path.name.startswith(".oar.backup-"):
+                    raise PermissionError("simulated rename failure")
+                return original_rename(path, destination)
+
+            with mock.patch.object(pathlib.Path, "rename", faulted_rename):
+                with self.assertRaises(PermissionError):
+                    self.builder._atomic_replace_directory(staged, target)
+            backups = list(root.glob(".oar.backup-*"))
+            self.assertEqual(len(backups), 1)
+            self.assertEqual((backups[0] / "old.hkx").read_bytes(), b"old")
+
+    def test_candidate_publication_restores_assets_and_metadata_together(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = pathlib.Path(temporary)
+            target = root / "oar"
+            staged = root / "staged"
+            coverage = root / "coverage.json"
+            staged_coverage = root / "staged-coverage.json"
+            target.mkdir()
+            staged.mkdir()
+            (target / "old.hkx").write_bytes(b"old")
+            (staged / "new.hkx").write_bytes(b"new")
+            coverage.write_text("old-metadata", encoding="utf-8")
+            staged_coverage.write_text("new-metadata", encoding="utf-8")
+            original_rename = pathlib.Path.rename
+
+            def fail_metadata(path: pathlib.Path, destination: pathlib.Path):
+                if path == staged_coverage:
+                    raise PermissionError("simulated metadata install failure")
+                return original_rename(path, destination)
+
+            with mock.patch.object(pathlib.Path, "rename", fail_metadata):
+                with self.assertRaises(PermissionError):
+                    self.builder._atomic_publish_candidate(
+                        staged,
+                        target,
+                        [(staged_coverage, coverage)],
+                        root,
+                    )
+            self.assertEqual((target / "old.hkx").read_bytes(), b"old")
+            self.assertEqual(coverage.read_text(encoding="utf-8"), "old-metadata")
+            self.assertFalse((target / "new.hkx").exists())
+
+    def test_metadata_replacement_is_atomic(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = pathlib.Path(temporary)
+            staged = root / "staged"
+            staged.mkdir()
+            target_a, target_b = root / "a.json", root / "b.txt"
+            target_a.write_text("old-a", encoding="utf-8")
+            target_b.write_text("old-b", encoding="utf-8")
+            staged_a, staged_b = staged / "a.json", staged / "b.txt"
+            staged_a.write_text("new-a", encoding="utf-8")
+            staged_b.write_text("new-b", encoding="utf-8")
+            original_rename = pathlib.Path.rename
+
+            def fail_second(path: pathlib.Path, destination: pathlib.Path):
+                if path == staged_b:
+                    raise PermissionError("simulated metadata install failure")
+                return original_rename(path, destination)
+
+            with mock.patch.object(pathlib.Path, "rename", fail_second):
+                with self.assertRaises(PermissionError):
+                    self.builder._atomic_replace_files(
+                        [(staged_a, target_a), (staged_b, target_b)], root
+                    )
+            self.assertEqual(target_a.read_text(encoding="utf-8"), "old-a")
+            self.assertEqual(target_b.read_text(encoding="utf-8"), "old-b")
+            self.assertFalse(any(root.glob(".dragon-aspect-flight-metadata-*")))
 
 
 class DeliveryToolTests(unittest.TestCase):
@@ -404,6 +585,89 @@ class DeliveryToolTests(unittest.TestCase):
             )
             with self.assertRaisesRegex(ValueError, "safe relative POSIX"):
                 self.rebuild.load_manifest(path)
+
+    def test_action_manifests_reject_duplicate_targets_case_insensitively(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = pathlib.Path(temporary) / "manifest.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "version": 1,
+                        "clips": [
+                            {"target": "Attack.hkx", "source": "a.hkx", "source_sha256": "0" * 64},
+                            {"target": "attack.hkx", "source": "b.hkx", "source_sha256": "1" * 64},
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "duplicate target"):
+                self.rebuild.load_manifest(path)
+
+    def test_action_manifests_reject_nonhex_hashes(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = pathlib.Path(temporary) / "manifest.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "version": 1,
+                        "clips": [
+                            {"target": "attack.hkx", "source": "a.hkx", "source_sha256": "z" * 64},
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "hexadecimal"):
+                self.rebuild.load_manifest(path)
+
+    def test_action_manifests_reject_generated_report_collisions(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = pathlib.Path(temporary) / "manifest.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "version": 1,
+                        "clips": [
+                            {
+                                "target": "exact-original-action-manifest.json",
+                                "source": "a.hkx",
+                                "source_sha256": "0" * 64,
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "generated report"):
+                self.rebuild.load_manifest(path)
+
+    def test_rebuild_validates_injected_manifest_and_output_boundary(self) -> None:
+        base, action = make_base_and_action()
+        with tempfile.TemporaryDirectory() as temporary:
+            root = pathlib.Path(temporary)
+            source_root = root / "source"
+            source_root.mkdir()
+            source = source_root / "action.hkx"
+            source.write_bytes(b"original")
+            (root / "base.hkx").write_bytes(b"base")
+            backend = FakeBackend({str(source): action})
+            manifest = {
+                "version": 1,
+                "clips": [
+                    {"target": "a.hkx", "source": "action.hkx", "source_sha256": "z" * 64}
+                ],
+            }
+            with self.assertRaisesRegex(ValueError, "hexadecimal"):
+                self.rebuild.rebuild_actions(
+                    backend, root / "base.hkx", source_root, root / "out-invalid", manifest
+                )
+            valid = dict(manifest)
+            valid["clips"] = [dict(manifest["clips"][0], source_sha256=self.rebuild.sha256(source))]
+            with self.assertRaisesRegex(ValueError, "inside"):
+                self.rebuild.rebuild_actions(
+                    backend, root / "base.hkx", source_root, source_root / "nested" / "out", valid
+                )
 
 
 class LegacyBuilderContractTests(unittest.TestCase):

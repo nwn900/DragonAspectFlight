@@ -240,6 +240,19 @@ message(STATUS
 	"DAF CommonLibSSE-NG baseline: project ${_daf_commonlib_project_version} "
 	"(minimum ${DAF_MINIMUM_COMMONLIB_VERSION}; known-good ${DAF_KNOWN_GOOD_COMMONLIB_COMMIT})")
 
+# Capture the actual dependency identity used for this candidate as well as
+# the source/animation identities below.  A copied source tree without Git is
+# still buildable, but its dependency revision is explicitly marked unknown.
+execute_process(
+    COMMAND git -C "${COMMONLIBSSE_NG_PATH}" rev-parse HEAD
+    OUTPUT_VARIABLE DAF_COMMONLIB_REVISION
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+    RESULT_VARIABLE DAF_COMMONLIB_GIT_RESULT)
+if(NOT DAF_COMMONLIB_GIT_RESULT EQUAL 0 OR DAF_COMMONLIB_REVISION STREQUAL "")
+    set(DAF_COMMONLIB_REVISION "unknown-commonlib")
+endif()
+
 # Resolve the two runtime-sensitive packages at top-level scope so their
 # imported target contracts can be inspected before CommonLib consumes them.
 find_package(spdlog CONFIG REQUIRED)
@@ -302,12 +315,38 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 target_link_libraries(${PROJECT_NAME} PUBLIC CommonLibSSE)
 
+# Embed the exact source/animation-manifest identities into the native
+# candidate.  These values are diagnostics only: they do not claim that a
+# runtime layout or gameplay path has been live-qualified.  A source archive
+# without a .git directory deliberately records an explicit unknown value.
+execute_process(
+    COMMAND git -C "${CMAKE_CURRENT_SOURCE_DIR}" rev-parse HEAD
+    OUTPUT_VARIABLE DAF_SOURCE_REVISION
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+    RESULT_VARIABLE DAF_GIT_RESULT)
+if(NOT DAF_GIT_RESULT EQUAL 0 OR DAF_SOURCE_REVISION STREQUAL "")
+    set(DAF_SOURCE_REVISION "unknown-source")
+endif()
+
+set(_daf_data_manifest
+    "${CMAKE_CURRENT_SOURCE_DIR}/Data/SKSE/Plugins/DragonAspectFlight-AnimationCoverage.json")
+if(EXISTS "${_daf_data_manifest}")
+    file(SHA256 "${_daf_data_manifest}" DAF_DATA_MANIFEST_SHA256)
+else()
+    set(DAF_DATA_MANIFEST_SHA256 "not-present")
+endif()
+
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     DAF_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
     DAF_VERSION_MINOR=${PROJECT_VERSION_MINOR}
     DAF_VERSION_PATCH=${PROJECT_VERSION_PATCH}
     DAF_VERSION_STRING="${PROJECT_VERSION}"
     DAF_BUILD_LABEL="v${PROJECT_VERSION}-se-ae-vr-flight-stack"
+    DAF_SOURCE_REVISION="${DAF_SOURCE_REVISION}"
+    DAF_DATA_MANIFEST_SHA256="${DAF_DATA_MANIFEST_SHA256}"
+    DAF_COMMONLIB_VERSION="${_daf_commonlib_project_version}"
+    DAF_COMMONLIB_REVISION="${DAF_COMMONLIB_REVISION}"
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

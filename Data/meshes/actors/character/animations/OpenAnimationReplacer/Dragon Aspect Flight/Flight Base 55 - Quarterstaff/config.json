@@ -38,12 +38,58 @@
       }
     },
     {
-      "condition": "IsEquippedHasKeyword",
+      "condition": "OR",
       "requiredVersion": "1.0.0.0",
-      "Keyword": {
-        "editorID": "WeapTypeQtrStaff"
-      },
-      "Left hand": false
+      "Conditions": [
+        {
+          "condition": "IsEquippedHasKeyword",
+          "requiredVersion": "1.0.0.0",
+          "Keyword": {
+            "editorID": "WeapTypeQtrStaff"
+          },
+          "Left hand": false
+        },
+        {
+          "condition": "IsEquippedHasKeyword",
+          "requiredVersion": "1.0.0.0",
+          "Keyword": {
+            "editorID": "WeapTypeQuarterstaff"
+          },
+          "Left hand": false
+        },
+        {
+          "condition": "IsEquippedHasKeyword",
+          "requiredVersion": "1.0.0.0",
+          "Keyword": {
+            "editorID": "OCF_WeapTypeQuarterstaff2H"
+          },
+          "Left hand": false
+        },
+        {
+          "condition": "IsEquippedHasKeyword",
+          "requiredVersion": "1.0.0.0",
+          "Keyword": {
+            "editorID": "WeapTypeQtrStaff"
+          },
+          "Left hand": true
+        },
+        {
+          "condition": "IsEquippedHasKeyword",
+          "requiredVersion": "1.0.0.0",
+          "Keyword": {
+            "editorID": "WeapTypeQuarterstaff"
+          },
+          "Left hand": true
+        },
+        {
+          "condition": "IsEquippedHasKeyword",
+          "requiredVersion": "1.0.0.0",
+          "Keyword": {
+            "editorID": "OCF_WeapTypeQuarterstaff2H"
+          },
+          "Left hand": true
+        }
+      ]
     }
   ]
 }

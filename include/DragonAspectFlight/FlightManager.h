@@ -71,7 +71,7 @@ namespace DragonAspectFlight
 		FlightManager& operator=(const FlightManager&) = delete;
 		FlightManager& operator=(FlightManager&&) = delete;
 
-		void StartUpdateThread();
+		[[nodiscard]] bool StartUpdateThread();
 		void StopUpdateThread();
 		[[nodiscard]] std::uint64_t AdvanceUpdateTaskGeneration() noexcept;
 		void QueueUpdate();
@@ -181,6 +181,10 @@ namespace DragonAspectFlight
 		// It is consumed by StopFlight so repeated stops cannot overwrite later
 		// vanilla or third-party controller changes.
 		bool _flightWorldStateOwned{ false };
+		// The baseline belongs to this exact controller instance.  A player can
+		// receive a replacement controller during cell/3D transitions; never apply
+		// one controller's saved flags to another controller.
+		RE::bhkCharacterController* _flightOwnedController{ nullptr };
 		float _flightSpeed{ 14.0F };
 		float _verticalSpeed{ 24.0F };
 		float _liftScale{ 1.0F };

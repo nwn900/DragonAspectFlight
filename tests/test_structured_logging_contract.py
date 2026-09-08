@@ -186,11 +186,25 @@ def test_checkpoint_is_emitted_only_after_snapshot_admission() -> None:
 
 def test_startup_identity_is_a_compiled_candidate_not_a_claimed_runtime_hash() -> None:
     main_cpp = (ROOT / "src/main.cpp").read_text(encoding="utf-8")
+    version_h = (ROOT / "include/DragonAspectFlight/Version.h").read_text(encoding="utf-8")
+    cmake = (ROOT / "CMakeLists.txt").read_text(encoding="utf-8")
 
     require(main_cpp, "compiled_candidate_identity", ROOT / "src/main.cpp")
     require(main_cpp, "__DATE__", ROOT / "src/main.cpp")
     require(main_cpp, "__TIME__", ROOT / "src/main.cpp")
     require(main_cpp, "dll_hash=not_computed", ROOT / "src/main.cpp")
+    for needle in ("source_revision", "data_manifest_sha256", "commonlib_version", "commonlib_revision"):
+        require(main_cpp, needle, ROOT / "src/main.cpp")
+    for needle in (
+        "DAF_SOURCE_REVISION",
+        "DAF_DATA_MANIFEST_SHA256",
+        "DAF_COMMONLIB_VERSION",
+        "DAF_COMMONLIB_REVISION",
+    ):
+        require(cmake, needle, ROOT / "CMakeLists.txt")
+        require(version_h, needle, ROOT / "include/DragonAspectFlight/Version.h")
+    for needle in ("SourceRevision", "DataManifestSha256", "CommonLibVersion", "CommonLibRevision"):
+        require(version_h, needle, ROOT / "include/DragonAspectFlight/Version.h")
 
 
 def test_scoped_context_and_deferred_replay_preserve_correlation_contract() -> None:

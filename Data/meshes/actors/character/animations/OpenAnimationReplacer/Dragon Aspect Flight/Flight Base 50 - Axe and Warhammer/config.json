@@ -1,7 +1,7 @@
 {
   "name": "DAF Flight Base - Axe and Warhammer",
   "description": "Root-stable battleaxe/warhammer flight locomotion and vanilla/MCO aerial attacks.",
-  "priority": 2147483605,
+  "priority": 2147483604,
   "interruptible": true,
   "replaceOnLoop": true,
   "conditions": [

@@ -47,9 +47,35 @@ state_snapshot       Equipment FormIDs/types, quarterstaff keyword route, weapon
                      attack state, block state, graph-variable readback, controller
                      state/gravity/velocity, position, magicka, stamina, and inputs.
 
+Correlating one input edge
+--------------------------
+
+All newly structured records use schema=1. A physical input edge receives one
+action_id and input_sequence_domain; its queued and applied manager action also
+carries session and manager_sequence. Follow those values through:
+
+input_received -> input_action_queue/action_enqueued -> flight_action_queue ->
+action_applied -> flight_action_result.
+
+Deferred input, suppressed input, failed release recovery, and queue drops use the
+same fields. Aggregate records declare correlation=aggregate and include their full
+first/last action, session, and input-sequence range. This distinguishes a rejected
+input from a queued action, a stale action, and an action the manager applied.
+
+When draw or sheathe reconciliation is involved, native_call_begin,
+native_call_return, and native_call_postcheck also record action_id, session,
+transition sequence, ready generation, equipment epoch, target draw state, and the
+engine's observed weapon state. This tells us whether Skyrim actually committed the
+draw/sheathe state after DAF issued the fallback call.
+
 The expected_oar_family field is Dragon Aspect Flight's intended route. The actual
 winning replacement and source submod are recorded by OpenAnimationReplacer.log;
 the two logs are deliberately timestamped so they can be compared.
+
+Diagnostic boundary: DAF can reconstruct its own input, queue, state, and native
+draw/sheathe decisions from its log. It cannot observe the animation actually
+rendered or which external MCO behavior consumed an event; OpenAnimationReplacer.log
+is required to establish the winning replacement for that part of a report.
 
 Privacy note: the diagnostics contain game state and equipped FormIDs/names. They do
 not collect account credentials or upload anything automatically.

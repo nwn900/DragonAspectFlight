@@ -518,18 +518,24 @@ namespace
 		}
 
 		bool customVariablesWritten = true;
-		customVariablesWritten &= a_player->SetGraphVariableBool(
+		const bool dragonAspectWritten = a_player->SetGraphVariableBool(
 			RE::BSFixedString(GraphVarDragonAspectActive), a_dragonAspectActive);
-		customVariablesWritten &= a_player->SetGraphVariableBool(
+		const bool flightActiveWritten = a_player->SetGraphVariableBool(
 			RE::BSFixedString(GraphVarFlightActive), a_flightActive);
-		customVariablesWritten &= a_player->SetGraphVariableBool(
+		const bool combatWritten = a_player->SetGraphVariableBool(
 			RE::BSFixedString(GraphVarFlightCombatActive), a_flightCombatActive);
-		customVariablesWritten &= a_player->SetGraphVariableBool(
+		const bool launchWritten = a_player->SetGraphVariableBool(
 			RE::BSFixedString(GraphVarLaunchBoost), a_launchBoost);
-		customVariablesWritten &= a_player->SetGraphVariableBool(
+		const bool shoutWritten = a_player->SetGraphVariableBool(
 			RE::BSFixedString(GraphVarFlightShout), a_flightShout);
-		customVariablesWritten &= a_player->SetGraphVariableInt(
+		const bool stateWritten = a_player->SetGraphVariableInt(
 			RE::BSFixedString(GraphVarFlightState), static_cast<std::int32_t>(a_state));
+		customVariablesWritten = dragonAspectWritten && flightActiveWritten && combatWritten &&
+			launchWritten && shoutWritten && stateWritten;
+		// FlightActive and FlightState are the presentation gates consumed by
+		// OAR.  The other variables are useful state, but their absence must not
+		// silently turn an airborne physics session into an unobserved failure.
+		const bool essentialVariablesWritten = flightActiveWritten && stateWritten;
 
 		if (!customVariablesWritten && !GraphVariableWriteFailureLogged.exchange(true)) {
 			logger::warn(
@@ -549,7 +555,7 @@ namespace
 				RE::BSFixedString(GraphVarVanillaInJumpState),
 				false);
 		}
-		return customVariablesWritten;
+		return essentialVariablesWritten;
 	}
 
 	bool ProbeFlightGraphGates(RE::PlayerCharacter* a_player)
@@ -1013,6 +1019,16 @@ namespace DragonAspectFlight
 
 	void FlightManager::StartFlight()
 	{
+		// An already-active session is a strict no-op.  In particular, do not
+		// probe/reset graph variables on a duplicate Papyrus or input request;
+		// those writes can briefly disable OAR's flight presentation.
+		{
+			std::shared_lock lock(_mutex);
+			if (_isFlying) {
+				logger::debug("event=flight_start_ignored reason=already_flying");
+				return;
+			}
+		}
 		if (!HasDragonAspectActive()) {
 			logger::info("Dragon Aspect not active; flight cancelled");
 			return;
@@ -1107,6 +1123,7 @@ namespace DragonAspectFlight
 			_useGeneratedCombatTopology = false;
 			_aerialCombatUnsupportedNotified = false;
 			_flightWorldStateOwned = controller != nullptr;
+			_flightOwnedController = controller;
 			if (controller) {
 				_originalGravity = controller->gravity;
 				_originalNoFriction = controller->flags.all(RE::CHARACTER_FLAGS::kNoFriction);
@@ -1161,7 +1178,11 @@ namespace DragonAspectFlight
 			if (controller) {
 				ApplyControlledAirState(player, controller);
 			}
-			SetFlightGraphVariables(player, true, true, false, false, false, false, FlightGraphState::kIdle);
+			if (!SetFlightGraphVariables(player, true, true, false, false, false, false, FlightGraphState::kIdle)) {
+				logger::error("event=flight_start_refused reason=essential_graph_gate_write_failed rollback=true");
+				StopFlight();
+				return;
+			}
 			LogWeaponRoutingDiagnostic(player, "flight_start", "none", true, startWithWeaponsDrawn);
 
 			if (startWithWeaponsDrawn && !SetFlightCombatActive(true)) {
@@ -1172,7 +1193,13 @@ namespace DragonAspectFlight
 			}
 		}
 
-		StartUpdateThread();
+		if (!StartUpdateThread()) {
+			logger::error(
+				"event=flight_start_failed reason=update_thread_unavailable rollback=true session={}",
+				_flightSessionId);
+			StopFlight();
+			return;
+		}
 		if (auto* inputHandler = InputHandler::GetSingleton()) {
 			inputHandler->RefreshGameThreadState();
 		}
@@ -1217,7 +1244,7 @@ namespace DragonAspectFlight
 				FlightGraphState::kDescent);
 		}
 
-		StartUpdateThread();
+		(void)StartUpdateThread();
 		if (auto* inputHandler = InputHandler::GetSingleton()) {
 			inputHandler->RefreshGameThreadState();
 		}
@@ -1272,7 +1299,7 @@ namespace DragonAspectFlight
 				FlightGraphState::kIdle);
 		}
 
-		StartUpdateThread();
+		(void)StartUpdateThread();
 		if (auto* inputHandler = InputHandler::GetSingleton()) {
 			inputHandler->RefreshGameThreadState();
 		}
@@ -1282,6 +1309,7 @@ namespace DragonAspectFlight
 	{
 		FlushDiagnosticAggregates("flight_stop");
 		auto* player = GetPlayer();
+		auto* currentController = player ? player->GetCharController() : nullptr;
 		const auto stopEquipmentSnapshot = GetCurrentWeaponEquipmentSnapshot();
 		const bool stopIdentityCaptured = stopEquipmentSnapshot.captured;
 		const auto stopEquipmentIdentity = stopEquipmentSnapshot.identity;
@@ -1315,6 +1343,7 @@ namespace DragonAspectFlight
 		bool originalNoFriction = false;
 		bool transitionTargetDrawn = false;
 		bool worldCleanupOwned = false;
+		bool controllerMatches = false;
 		bool logicalCleanupOwned = false;
 		bool landingTransitionPending = false;
 		bool landingHandoffTargetDrawn = false;
@@ -1330,7 +1359,10 @@ namespace DragonAspectFlight
 			std::unique_lock nativeGate(_readyNativeActionMutex);
 			std::unique_lock lock(_mutex);
 			wasFlying = _isFlying;
-			worldCleanupOwned = State::OwnsWorldStateForStop(_isFlying, _flightWorldStateOwned);
+			controllerMatches = currentController != nullptr &&
+				_flightOwnedController != nullptr && currentController == _flightOwnedController;
+			worldCleanupOwned = State::OwnsWorldStateForStop(_isFlying, _flightWorldStateOwned) &&
+				controllerMatches;
 			logicalCleanupOwned = _isFlying || _flightWorldStateOwned;
 			detailedLogging = _detailedLogging;
 			session = _flightSessionId;
@@ -1378,6 +1410,13 @@ namespace DragonAspectFlight
 			_weaponTransitionNativeFallbackArmed = reduced.weapon.nativeFallbackArmed;
 			_weaponTransitionPostFlight = reduced.weapon.postFlight;
 			_flightWorldStateOwned = reduced.worldStateOwned;
+			if (!controllerMatches) {
+				// The original controller is gone or has been replaced.  Retaining the
+				// ownership bit would permit a later stop to restore stale values onto
+				// an unrelated controller.
+				_flightWorldStateOwned = false;
+			}
+			_flightOwnedController = nullptr;
 			keepTransitionPump = reduced.weapon.pending;
 			hadPendingTransition = landingTransitionPending;
 			// A transition is an actor/3D-owned transaction.  When the actor is
@@ -1561,12 +1600,22 @@ namespace DragonAspectFlight
 				false,
 				FlightGraphState::kOff);
 			if (worldCleanupOwned) {
-				if (auto* controller = player->GetCharController()) {
-					controller->gravity = originalGravity;
+				auto* restoreController = player->GetCharController();
+				if (restoreController != currentController) {
+					// The controller can be replaced between the ownership snapshot and
+					// cleanup.  Never apply controller A's baseline to controller B (or
+					// to a newly absent controller); the next verified flight session must
+					// capture the replacement's own baseline instead.
+					logger::error(
+						"event=flight_cleanup_skipped reason=controller_replaced_before_restore "
+						"session={} world_cleanup=retired",
+						session);
+				} else if (restoreController) {
+					restoreController->gravity = originalGravity;
 					if (originalNoFriction) {
-						controller->flags.set(RE::CHARACTER_FLAGS::kNoFriction);
+						restoreController->flags.set(RE::CHARACTER_FLAGS::kNoFriction);
 					} else {
-						controller->flags.reset(RE::CHARACTER_FLAGS::kNoFriction);
+						restoreController->flags.reset(RE::CHARACTER_FLAGS::kNoFriction);
 					}
 				}
 			}
@@ -1662,7 +1711,7 @@ namespace DragonAspectFlight
 		}
 
 		if (keepTransitionPump || keepRegenObservationPump || landingHandoffQueued) {
-			StartUpdateThread();
+			(void)StartUpdateThread();
 		} else {
 			StopUpdateThread();
 		}
@@ -3144,7 +3193,7 @@ namespace DragonAspectFlight
 			supersededNativeFallback,
 			supersededOppositeTarget);
 		if (started) {
-			StartUpdateThread();
+			(void)StartUpdateThread();
 		}
 	}
 
@@ -5444,6 +5493,7 @@ namespace DragonAspectFlight
 			_useGeneratedCombatTopology = false;
 			_aerialCombatUnsupportedNotified = false;
 			_flightWorldStateOwned = false;
+			_flightOwnedController = nullptr;
 			_forwardInput = 0.0F;
 			_strafeInput = 0.0F;
 			_verticalInput = 0.0F;
@@ -5965,11 +6015,11 @@ namespace DragonAspectFlight
 		}
 	}
 
-	void FlightManager::StartUpdateThread()
+	bool FlightManager::StartUpdateThread()
 	{
 		std::lock_guard lifecycleLock(_threadLifecycleMutex);
 		if (_threadRunning.load(std::memory_order_acquire)) {
-			return;
+			return true;
 		}
 		if (_updateThread.joinable()) {
 			_updateThread.request_stop();
@@ -5977,13 +6027,13 @@ namespace DragonAspectFlight
 				// A worker must never join or detach itself.  Leave the joinable
 				// object for a later game/lifecycle caller to reap.
 				logger::error("Flight update thread start refused from worker thread; join deferred");
-				return;
+				return false;
 			}
 			try {
 				_updateThread.join();
 			} catch (const std::system_error& e) {
 				logger::error("Flight update thread stale join failed: {}; start deferred", e.what());
-				return;
+				return false;
 			}
 		}
 		_threadRunning.store(true, std::memory_order_release);
@@ -6026,10 +6076,13 @@ namespace DragonAspectFlight
 		} catch (const std::exception& e) {
 			_threadRunning.store(false, std::memory_order_release);
 			logger::error("Flight update thread start failed: {}; worker state cleared", e.what());
+			return false;
 		} catch (...) {
 			_threadRunning.store(false, std::memory_order_release);
 			logger::error("Flight update thread start failed with an unknown exception; worker state cleared");
+			return false;
 		}
+		return true;
 	}
 
 	void FlightManager::StopUpdateThread()
@@ -6243,6 +6296,23 @@ namespace DragonAspectFlight
 			logger::warn(
 				"event=flight_abort reason=actor_unloaded worker_cleanup=true graph_write=false "
 				"controller_write=false weapon_fallback=false regen_write=false");
+			StopFlight();
+			return;
+		}
+		// Controller replacement is a lifecycle boundary even when the actor and
+		// its 3D remain loaded. Never apply movement or graph updates under a
+		// baseline captured from a different controller instance.
+		auto* currentController = player->GetCharController();
+		bool controllerOwnershipLost = false;
+		{
+			std::shared_lock lock(_mutex);
+			controllerOwnershipLost = _isFlying && _flightWorldStateOwned &&
+				(_flightOwnedController == nullptr || currentController != _flightOwnedController);
+		}
+		if (controllerOwnershipLost) {
+			logger::error(
+				"event=flight_abort reason=controller_replaced worker_cleanup=true "
+				"physics_write=false graph_write=false weapon_fallback=false");
 			StopFlight();
 			return;
 		}
@@ -6927,7 +6997,7 @@ namespace DragonAspectFlight
 			return;
 		}
 
-		SetFlightGraphVariables(
+		if (!SetFlightGraphVariables(
 			player,
 			true,
 			true,
@@ -6935,7 +7005,16 @@ namespace DragonAspectFlight
 			useGeneratedCombatTopology,
 			graphState == FlightGraphState::kLaunch,
 			flightShoutHeld,
-			graphState);
+			graphState)) {
+			// The two OAR gate variables are essential to the presentation contract.
+			// Once either write is unavailable, continuing to move the controller
+			// would produce invisible/grounded animation with no owner to repair it.
+			logger::error(
+				"event=flight_abort reason=graph_gate_lost worker_cleanup=true "
+				"physics_write=false weapon_fallback=false graph_write_partial=true");
+			StopFlight();
+			return;
+		}
 
 		// Shared native block state is never written by DAF.  UpdateFlight only
 		// reports the engine's values; it must not reconcile wantBlocking/IsBlocking

@@ -1,6 +1,6 @@
 {
   "name": "DAF Flight Base - One Handed",
-  "description": "Root-stable one-handed flight locomotion and vanilla/MCO aerial attacks.",
+  "description": "Root-stable one-handed/shield flight locomotion and vanilla/MCO aerial attacks.",
   "priority": 2147483602,
   "interruptible": true,
   "replaceOnLoop": true,
@@ -77,6 +77,14 @@
           "condition": "IsEquippedType",
           "requiredVersion": "1.0.0.0",
           "Type": {
+            "value": 11.0
+          },
+          "Left hand": false
+        },
+        {
+          "condition": "IsEquippedType",
+          "requiredVersion": "1.0.0.0",
+          "Type": {
             "value": 1.0
           },
           "Left hand": true
@@ -102,6 +110,14 @@
           "requiredVersion": "1.0.0.0",
           "Type": {
             "value": 4.0
+          },
+          "Left hand": true
+        },
+        {
+          "condition": "IsEquippedType",
+          "requiredVersion": "1.0.0.0",
+          "Type": {
+            "value": 11.0
           },
           "Left hand": true
         }

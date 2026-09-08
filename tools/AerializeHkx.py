@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import math
 import os
 import pathlib
@@ -64,6 +65,23 @@ def load_backend(pynifly_hkx_dir: pathlib.Path) -> Any:
     import anim_skyrim  # type: ignore
 
     return anim_skyrim
+
+
+def backend_provenance(anim_skyrim: Any) -> dict[str, object]:
+    """Return stable identity for the codec used to read/write release HKX files."""
+
+    module_path = pathlib.Path(str(getattr(anim_skyrim, "__file__", ""))) if getattr(anim_skyrim, "__file__", None) else None
+    result: dict[str, object] = {
+        "module": module_path.name if module_path else type(anim_skyrim).__name__,
+        "version": str(getattr(anim_skyrim, "__version__", "unknown")),
+    }
+    if module_path is not None and module_path.is_file():
+        digest = hashlib.sha256()
+        with module_path.open("rb") as stream:
+            for block in iter(lambda: stream.read(1024 * 1024), b""):
+                digest.update(block)
+        result["moduleSha256"] = digest.hexdigest().upper()
+    return result
 
 
 def linear(a: list[float], b: list[float], amount: float) -> list[float]:
@@ -142,7 +160,27 @@ def inspect_hkx_packfile(path: pathlib.Path) -> dict[str, Any]:
                 f"out-of-bounds hk_2010 section in {path}: {name!r} "
                 f"start=0x{data_start:X} end=0x{end:X} size=0x{len(raw):X}"
             )
-        sections.append({"name": name, "start": data_start, "end": end})
+        sections.append({
+            "name": name,
+            "start": data_start,
+            "end": end,
+            "header": offset,
+            "local": struct.unpack_from("<I", raw, offset + 0x18)[0],
+            "global": struct.unpack_from("<I", raw, offset + 0x1C)[0],
+            "virtual": struct.unpack_from("<I", raw, offset + 0x20)[0],
+            "exports": struct.unpack_from("<I", raw, offset + 0x24)[0],
+        })
+    ordered_sections = sorted(sections, key=lambda section: (section["start"], section["end"]))
+    for previous, current in zip(ordered_sections, ordered_sections[1:]):
+        if current["start"] < previous["end"]:
+            raise ValueError(
+                f"overlapping hk_2010 sections in {path}: "
+                f"{previous['name']!r} and {current['name']!r}"
+            )
+    for section in sections:
+        section_size = section["end"] - section["start"]
+        if any(section[key] > section_size for key in ("local", "global", "virtual", "exports")):
+            raise ValueError(f"out-of-bounds hk_2010 fixup table in {path}: {section['name']!r}")
     names = {section["name"] for section in sections}
     if not {"__classnames__", "__types__", "__data__"}.issubset(names):
         raise ValueError(f"hk_2010 packfile is missing required sections: {sorted(names)}")
@@ -168,32 +206,29 @@ def inspect_hkx_animation_channels(path: pathlib.Path, structure: dict[str, Any]
     class_abs = int(class_section["start"])
     class_end = int(class_section["end"])
     class_blob = raw[class_abs:class_end]
-    if b"hkaSplineCompressedAnimation" not in class_blob:
-        if b"hkaInterleavedUncompressedAnimation" in class_blob:
-            # Interleaved animations contain only transform tracks.  Any
-            # backend-exposed extracted-motion field is still checked by
-            # _validate_animation_structure after decode; there is no
-            # compressed float-track stream to inspect in this representation.
-            return {
-                "floatTracks": 0,
-                "hasExtractedMotion": False,
-                "animationType": "hkaInterleavedUncompressedAnimation",
-            }
-        raise ValueError(f"hk_2010 packfile has no supported animation object: {path}")
-    header_offset = 0x40 + 2 * 0x30
-    local_offset = data_abs + struct.unpack_from("<I", raw, header_offset + 0x18)[0]
-    virtual_offset = data_abs + struct.unpack_from("<I", raw, header_offset + 0x20)[0]
-    export_offset = data_abs + struct.unpack_from("<I", raw, header_offset + 0x24)[0]
+    local_offset = data_abs + int(data_section["local"])
+    global_offset = data_abs + int(data_section["global"])
+    virtual_offset = data_abs + int(data_section["virtual"])
+    export_offset = data_abs + int(data_section["exports"])
     local_fixups: dict[int, int] = {}
     cursor = local_offset
-    while cursor + 8 <= virtual_offset:
+    while cursor + 8 <= global_offset:
         source = struct.unpack_from("<I", raw, cursor)[0]
         destination = struct.unpack_from("<I", raw, cursor + 4)[0]
         if source == 0xFFFFFFFF:
             break
         local_fixups[source] = destination
         cursor += 8
+    global_fixup_sources: set[int] = set()
+    cursor = global_offset
+    while cursor + 8 <= virtual_offset:
+        source = struct.unpack_from("<I", raw, cursor)[0]
+        if source == 0xFFFFFFFF:
+            break
+        global_fixup_sources.add(source)
+        cursor += 8
     animation_rel: int | None = None
+    animation_type: str | None = None
     cursor = virtual_offset
     while cursor + 12 <= export_offset:
         source = struct.unpack_from("<I", raw, cursor)[0]
@@ -202,12 +237,15 @@ def inspect_hkx_animation_channels(path: pathlib.Path, structure: dict[str, Any]
             break
         absolute_name = class_abs + name_offset
         end = raw.find(b"\0", absolute_name, min(len(raw), absolute_name + 256))
-        if end != -1 and raw[absolute_name:end].decode("ascii", errors="replace") == "hkaSplineCompressedAnimation":
-            animation_rel = source
-            break
+        if end != -1:
+            candidate = raw[absolute_name:end].decode("ascii", errors="replace")
+            if candidate in {"hkaSplineCompressedAnimation", "hkaInterleavedUncompressedAnimation"}:
+                animation_rel = source
+                animation_type = candidate
+                break
         cursor += 12
-    if animation_rel is None:
-        raise ValueError(f"hk_2010 packfile has no hkaSplineCompressedAnimation object: {path}")
+    if animation_rel is None or animation_type is None:
+        raise ValueError(f"hk_2010 packfile has no supported animation object: {path}")
     base = 2 * ptr_size
     arr_size = ptr_size + 8
     ann_offset = base + 16 + ptr_size
@@ -215,12 +253,16 @@ def inspect_hkx_animation_channels(path: pathlib.Path, structure: dict[str, Any]
     num_float_offset = base + 12
     extracted_motion_offset = base + 16
     animation_abs = data_abs + animation_rel
-    if animation_abs + spline_base + 32 > len(raw):
-        raise ValueError(f"truncated hkaSplineCompressedAnimation object: {path}")
+    data_end = int(data_section["end"])
+    if animation_rel < 0 or animation_abs + extracted_motion_offset + ptr_size > data_end:
+        raise ValueError(f"truncated hkaAnimation object: {path}")
     float_tracks = struct.unpack_from("<I", raw, animation_abs + num_float_offset)[0]
     extracted_field_rel = animation_rel + extracted_motion_offset
-    has_extracted_motion = extracted_field_rel in local_fixups or any(
+    has_extracted_motion = (
+        extracted_field_rel in local_fixups or
+        extracted_field_rel in global_fixup_sources or any(
         raw[animation_abs + extracted_motion_offset : animation_abs + extracted_motion_offset + ptr_size]
+        )
     )
     if float_tracks:
         raise ValueError(f"unsupported float tracks in {path}: count={float_tracks}")
@@ -229,7 +271,7 @@ def inspect_hkx_animation_channels(path: pathlib.Path, structure: dict[str, Any]
     return {
         "floatTracks": float_tracks,
         "hasExtractedMotion": has_extracted_motion,
-        "animationType": "hkaSplineCompressedAnimation",
+        "animationType": animation_type,
     }
 
 
@@ -317,6 +359,20 @@ def _annotation_values(animation: Any) -> list[tuple[float, str]]:
     return result
 
 
+def _validate_annotations(animation: Any, label: str, duration: float) -> None:
+    for index, annotation in enumerate(getattr(animation, "annotations", ()) or ()):
+        try:
+            time_value = float(getattr(annotation, "time"))
+        except (AttributeError, TypeError, ValueError, OverflowError) as exc:
+            raise ValueError(f"{label} annotation {index} has a non-numeric time") from exc
+        if not math.isfinite(time_value) or time_value < 0.0:
+            raise ValueError(f"{label} annotation {index} must contain a finite non-negative time")
+        if time_value > duration + ROUND_TRIP_TOLERANCE:
+            raise ValueError(f"{label} annotation {index} lies outside the animation duration")
+        if not hasattr(annotation, "text"):
+            raise ValueError(f"{label} annotation {index} has no text")
+
+
 def _extract_motion(animation: Any) -> object | None:
     for attribute in ("extracted_motion", "extractedMotion"):
         if hasattr(animation, attribute):
@@ -357,9 +413,19 @@ def _validate_animation_structure(animation: Any, label: str) -> None:
         )
     if num_frames <= 0:
         raise ValueError(f"{label} has no transform frames")
-    frame_duration = float(getattr(animation, "frame_duration", 0.0))
-    if num_frames > 1 and (not math.isfinite(frame_duration) or frame_duration <= 0.0):
+    try:
+        frame_duration = float(getattr(animation, "frame_duration", 0.0))
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(f"{label} has an invalid frame duration") from exc
+    if not math.isfinite(frame_duration) or (num_frames > 1 and frame_duration <= 0.0) or frame_duration < 0.0:
         raise ValueError(f"{label} has an invalid frame duration")
+    try:
+        duration = float(getattr(animation, "duration", 0.0))
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(f"{label} has a non-finite or negative duration") from exc
+    if not math.isfinite(duration) or duration < 0.0:
+        raise ValueError(f"{label} has a non-finite or negative duration")
+    _validate_annotations(animation, label, duration)
     float_tracks = getattr(animation, "float_tracks", None)
     if float_tracks:
         raise ValueError(f"{label} contains unsupported float tracks")
@@ -371,6 +437,25 @@ def _validate_animation_structure(animation: Any, label: str) -> None:
             samples = getattr(track, attribute, None)
             if samples is None or len(samples) < num_frames:
                 raise ValueError(f"{label} track {index} has incomplete {attribute} samples")
+            expected_dimensions = 4 if attribute == "rotations" else (3, 4)
+            try:
+                frame_samples = list(samples[:num_frames])
+            except TypeError as exc:
+                raise ValueError(f"{label} track {index} {attribute} samples are not iterable") from exc
+            for frame, sample in enumerate(frame_samples):
+                try:
+                    values = [float(value) for value in sample]
+                except (TypeError, ValueError) as exc:
+                    raise ValueError(f"{label} track {index} {attribute}[{frame}] is not numeric") from exc
+                valid_dimensions = (expected_dimensions,) if isinstance(expected_dimensions, int) else expected_dimensions
+                if len(values) not in valid_dimensions:
+                    raise ValueError(
+                        f"{label} track {index} {attribute}[{frame}] has invalid dimension {len(values)}"
+                    )
+                if not all(math.isfinite(value) for value in values):
+                    raise ValueError(f"{label} track {index} {attribute}[{frame}] must contain finite values")
+                if attribute == "rotations" and math.sqrt(sum(value * value for value in values)) <= 1.0e-8:
+                    raise ValueError(f"{label} track {index} rotation[{frame}] has zero length")
 
 
 def _resolve_track_mapping(base: Any, action: Any) -> list[tuple[int, int, str]]:
@@ -423,7 +508,43 @@ def _resolve_track_mapping(base: Any, action: Any) -> list[tuple[int, int, str]]
 def _max_sample_delta(left: list[float], right: list[float]) -> float:
     if len(left) != len(right):
         return float("inf")
-    return max((abs(float(a) - float(b)) for a, b in zip(left, right)), default=0.0)
+    deltas: list[float] = []
+    for left_value, right_value in zip(left, right):
+        try:
+            left_float = float(left_value)
+            right_float = float(right_value)
+        except (TypeError, ValueError, OverflowError):
+            return float("inf")
+        if not math.isfinite(left_float) or not math.isfinite(right_float):
+            return float("inf")
+        deltas.append(abs(left_float - right_float))
+    return max(deltas, default=0.0)
+
+
+def _rotation_sample_delta(left: list[float], right: list[float]) -> float:
+    """Compare equivalent quaternion signs as the same rotation."""
+
+    direct = _max_sample_delta(left, right)
+    negated = _max_sample_delta(left, [-value for value in right])
+    return min(direct, negated)
+
+
+def _metadata_equal(left: object, right: object) -> bool:
+    if left is right:
+        return True
+    try:
+        result = left == right
+    except Exception:
+        return repr(left) == repr(right)
+    if isinstance(result, bool):
+        return result
+    try:
+        return bool(result.all())
+    except Exception:
+        try:
+            return bool(result)
+        except Exception:
+            return repr(left) == repr(right)
 
 
 def loop_seam_error(animation: Any, names: Iterable[str] | None = None) -> float:
@@ -437,7 +558,12 @@ def loop_seam_error(animation: Any, names: Iterable[str] | None = None) -> float
         for attribute in ("translations", "rotations", "scales"):
             samples = getattr(track, attribute)
             if len(samples) > 1:
-                maximum = max(maximum, _max_sample_delta(list(samples[0]), list(samples[-1])))
+                delta = (
+                    _rotation_sample_delta(list(samples[0]), list(samples[-1]))
+                    if attribute == "rotations"
+                    else _max_sample_delta(list(samples[0]), list(samples[-1]))
+                )
+                maximum = max(maximum, delta)
     return maximum
 
 
@@ -466,48 +592,62 @@ def _atomic_copy(input_path: pathlib.Path, output_path: pathlib.Path) -> None:
             temporary.unlink(missing_ok=True)
 
 
-def _verify_round_trip(action: Any, verified: Any, replaced_indices: set[int]) -> None:
+def _verify_round_trip(action: Any, expected: Any, verified: Any, replaced_indices: set[int]) -> None:
     fields = (
-        ("num_frames", _num_frames(action), _num_frames(verified)),
-        ("num_tracks", _num_tracks(action), _num_tracks(verified)),
-        ("bone_names", _names(action), _names(verified)),
-        ("duration", float(getattr(action, "duration", 0.0)), float(getattr(verified, "duration", 0.0))),
-        ("annotations", _annotation_values(action), _annotation_values(verified)),
+        ("num_frames", _num_frames(expected), _num_frames(verified)),
+        ("num_tracks", _num_tracks(expected), _num_tracks(verified)),
+        ("bone_names", _names(expected), _names(verified)),
+        ("frame_duration", float(getattr(expected, "frame_duration", 0.0)), float(getattr(verified, "frame_duration", 0.0))),
+        ("duration", float(getattr(expected, "duration", 0.0)), float(getattr(verified, "duration", 0.0))),
+        ("annotations", _annotation_values(expected), _annotation_values(verified)),
     )
-    for field, expected, actual in fields:
+    for field, expected_value, actual_value in fields:
         if field == "duration":
-            if abs(expected - actual) > 1.0e-5:
+            if abs(expected_value - actual_value) > 1.0e-5:
                 raise RuntimeError(f"round-trip metadata mismatch ({field})")
-        elif expected != actual:
+        elif expected_value != actual_value:
             raise RuntimeError(f"round-trip metadata mismatch ({field})")
 
-    expected_binding = _binding_indices(action, "action animation", required=False)
+    expected_binding = _binding_indices(expected, "action animation", required=False)
     actual_binding = _binding_indices(verified, "written animation", required=False)
     if expected_binding != actual_binding:
         raise RuntimeError("round-trip metadata mismatch (transform-track binding)")
-    expected_skeleton = getattr(action, "original_skeleton_name", None)
+    expected_skeleton = getattr(expected, "original_skeleton_name", None)
     actual_skeleton = getattr(verified, "original_skeleton_name", None)
-    if expected_skeleton is not None and actual_skeleton is not None:
-        if str(expected_skeleton).casefold() != str(actual_skeleton).casefold():
-            raise RuntimeError("round-trip metadata mismatch (skeleton identity)")
-    if _normalised_hint(action) != _normalised_hint(verified):
+    if (expected_skeleton is None) != (actual_skeleton is None):
+        raise RuntimeError("round-trip metadata mismatch (skeleton identity)")
+    if expected_skeleton is not None and str(expected_skeleton).casefold() != str(actual_skeleton).casefold():
+        raise RuntimeError("round-trip metadata mismatch (skeleton identity)")
+    if _normalised_hint(expected) != _normalised_hint(verified):
         raise RuntimeError("round-trip metadata mismatch (blend hint)")
+    if not _metadata_equal(_extract_motion(expected), _extract_motion(verified)):
+        raise RuntimeError("round-trip metadata mismatch (extracted motion)")
+    expected_float_tracks = getattr(expected, "float_tracks", None)
+    actual_float_tracks = getattr(verified, "float_tracks", None)
+    if not _metadata_equal(expected_float_tracks, actual_float_tracks):
+        raise RuntimeError("round-trip metadata mismatch (float tracks)")
 
-    expected_tracks = _tracks(action)
+    expected_tracks = _tracks(expected)
+    original_tracks = _tracks(action)
     actual_tracks = _tracks(verified)
     if len(expected_tracks) != len(actual_tracks):
         raise RuntimeError("round-trip metadata mismatch (track count)")
     for index, (expected_track, actual_track) in enumerate(zip(expected_tracks, actual_tracks)):
-        if index in replaced_indices:
-            continue
+        expected_track = expected_tracks[index] if index in replaced_indices else original_tracks[index]
         for attribute in ("translations", "rotations", "scales"):
             expected_samples = getattr(expected_track, attribute)
             actual_samples = getattr(actual_track, attribute)
             if len(expected_samples) != len(actual_samples):
                 raise RuntimeError(f"round-trip upper-body track mismatch ({index}/{attribute})")
             for expected, actual in zip(expected_samples, actual_samples):
-                if _max_sample_delta(list(expected), list(actual)) > ROUND_TRIP_TOLERANCE:
-                    raise RuntimeError(f"round-trip upper-body track mismatch ({index}/{attribute})")
+                delta = (
+                    _rotation_sample_delta(list(expected), list(actual))
+                    if attribute == "rotations"
+                    else _max_sample_delta(list(expected), list(actual))
+                )
+                if delta > ROUND_TRIP_TOLERANCE:
+                    scope = "lower-body" if index in replaced_indices else "upper-body"
+                    raise RuntimeError(f"round-trip {scope} track mismatch ({index}/{attribute})")
 
 
 def aerialize(anim_skyrim: Any, base_path: pathlib.Path, input_path: pathlib.Path, output_path: pathlib.Path) -> list[str]:
@@ -520,8 +660,16 @@ def aerialize(anim_skyrim: Any, base_path: pathlib.Path, input_path: pathlib.Pat
     input_structure = inspect_hkx_packfile(input_path)
     inspect_hkx_animation_channels(base_path, base_structure)
     inspect_hkx_animation_channels(input_path, input_structure)
-    base = anim_skyrim.load_skyrim_animation(str(base_path))
-    action = anim_skyrim.load_skyrim_animation(str(input_path))
+    try:
+        base = anim_skyrim.load_skyrim_animation(str(base_path))
+        action = anim_skyrim.load_skyrim_animation(str(input_path))
+    except Exception as exc:
+        base_type = base_structure.get("animationType", "unknown")
+        input_type = input_structure.get("animationType", "unknown")
+        raise RuntimeError(
+            "HKX codec decode failed; representation is unsupported or unverified "
+            f"(base={base_type}, input={input_type}, backend={backend_provenance(anim_skyrim)})"
+        ) from exc
     _validate_animation_structure(base, "base animation")
     _validate_animation_structure(action, "action animation")
     _check_optional_skeleton_compatibility(base, action)
@@ -579,13 +727,29 @@ def aerialize(anim_skyrim: Any, base_path: pathlib.Path, input_path: pathlib.Pat
         ) as stream:
             temporary = pathlib.Path(stream.name)
         # PyNifly owns the binary writer and opens the path itself.
-        anim_skyrim.write_skyrim_animation(str(temporary), composite, ptr_size=8)
+        try:
+            anim_skyrim.write_skyrim_animation(str(temporary), composite, ptr_size=8)
+        except Exception as exc:
+            raise RuntimeError(
+                "HKX codec write failed; representation is unsupported or unverified "
+                f"(backend={backend_provenance(anim_skyrim)})"
+            ) from exc
         if not temporary.is_file() or temporary.stat().st_size == 0:
             raise RuntimeError(f"HKX writer produced no output for {output_path}")
         written_structure = inspect_hkx_packfile(temporary)
         inspect_hkx_animation_channels(temporary, written_structure)
-        verified = anim_skyrim.load_skyrim_animation(str(temporary))
-        _verify_round_trip(action, verified, {entry[0] for entry in replacements})
+        try:
+            verified = anim_skyrim.load_skyrim_animation(str(temporary))
+        except Exception as exc:
+            raise RuntimeError(
+                "HKX codec verification decode failed; representation is unsupported or unverified "
+                f"(backend={backend_provenance(anim_skyrim)})"
+            ) from exc
+        try:
+            _validate_animation_structure(verified, "written animation")
+        except ValueError as exc:
+            raise RuntimeError(f"round-trip output structure invalid: {exc}") from exc
+        _verify_round_trip(action, composite, verified, {entry[0] for entry in replacements})
         os.replace(temporary, output_path)
         temporary = None
     finally:

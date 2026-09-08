@@ -1,10 +1,21 @@
-Dragon Aspect Flight 1.8.1 - generated flight animation stack
+Dragon Aspect Flight 1.8.3 - generated flight animation stack
 ============================================================
 
-The candidate contains 1,167 player-only, flight-only OAR HKX aliases across
-eleven equipment families. Equipment families use OAR's root scope for both
-sexes. The neutral fallback also includes a male scope because some animation
-stacks request Animations\male\MT_* and action paths directly.
+This reviewed static tree contains 1,045 player-only, flight-only OAR HKX
+aliases across eleven equipment families. Equipment families use OAR's root
+scope for both sexes. The neutral fallback also includes a male scope because
+some animation stacks request Animations\male\MT_* and action paths directly.
+
+Ownership boundary
+------------------
+
+DAF deliberately does not own ordinary `mco_attack1.hkx` through
+`mco_attack10.hkx`, or any draw/equip/unequip/sheathe commit original. Those
+slots remain with the installed behavior stack and the OAR rule owner that
+controls the active weapon graph. DAF retains vanilla/non-MCO attacks,
+`mco_powerattack*` and other MCO special attacks, block/bash actions, and
+flight locomotion. This is a static ownership correction, not a gameplay
+compatibility claim.
 
 Neutral and equipment locomotion
 --------------------------------
@@ -17,58 +28,57 @@ flight idle rather than a falling or grounded-walking clip:
 
 Only the fallback family carries generic mt_* locomotion. Equipment families
 carry their requested 1hm_*, 2hm_*, 2hw_*, dw*, bow_*, crossbow_*, mag_*, and
-staff* originals. A separate WeapTypeQtrStaff family overrides the general
-two-handed route at priority 2147483610.
+staff* originals. The Greatsword family is also the explicit aerial fallback
+for OAR types 5 and -1, proven two-handed pike/spear/halberd/nodachi keywords,
+and optional active Spear of Skyrim/Spear of Omicron forms at priority
+2147483605; real type-6/10 axes remain in Base 50 at 2147483604. A separate
+quarterstaff OR (WeapTypeQtrStaff, WeapTypeQuarterstaff,
+OCF_WeapTypeQuarterstaff2H) overrides that fallback at priority 2147483610.
+Shield-only equipment (OAR type 11) is routed through Base 20 so shield
+block/bash originals retain a flight-scoped block profile.
 
-Aerial attacks
---------------
+Aerial attacks and actions
+--------------------------
 
-Vanilla and recognized MCO melee attack originals map to the corresponding
-credited NickNak aerial normal/power clips. The same names remain available
-while descending; DAF no longer consumes attack input in that state.
+DAF routes its vanilla/non-MCO melee attack originals and recognized MCO
+power/special originals to credited NickNak aerial clips. Block, bash, and
+shout action originals keep their source upper-body tracks, duration, binding,
+and annotation events while their root and lower-body tracks are sampled from
+Flying_Mod_Idle.hkx.
 
-Block, bash, draw, sheathe, and shout
-------------------------------------
+The quarterstaff route overrides its block/bash action originals with
+composites made from Animated Armoury's open-permission quarterstaff
+animations. Its normal 2hw_blockbash uses the compatible vanilla source
+because Animated Armoury's normal bash donor uses an unsupported interleaved
+representation. It does not own draw, sheathe, equip, or unequip originals.
 
-These action originals are not static poses. Each generated clip keeps its
-source upper-body tracks, duration, binding, and annotation events, while its
-root and lower-body tracks are sampled from Flying_Mod_Idle.hkx. This preserves
-weapon placement, block/bash timing, and shout release without grounded legs.
-
-The quarterstaff route overrides seven action originals with composites made
-from Animated Armoury's open-permission quarterstaff animations. Its normal
-2hw_blockbash uses the compatible vanilla source because Animated Armoury's
-normal bash donor uses an unsupported interleaved representation. Dawnguard's
-crossbow shout offset has no lower-body tracks and is intentionally left as an
-upper-body overlay.
-
-Optional modlist aliases are also flight-scoped. Maxsu's weapon/shield block-hit
-originals resolve to the matching family composite, and Dynamic Bow Animation's
-xpe0_* draw/equip originals resolve to the matching bow composite. Those mods
-remain optional; the aliases are dormant when their custom originals are not
-requested.
+Optional modlist aliases are flight-scoped. Maxsu's weapon/shield block-hit
+originals resolve to the matching family composite. These aliases are dormant
+when their custom originals are not requested.
 
 Magic and staff
 ---------------
 
-Magic and staff action originals continue to use the credited xp32/Neumeria
-clips with flight lower-body tracks. Their successful v1.8.0 routing was kept.
+Magic and staff action originals use credited xp32/Neumeria clips with flight
+lower-body tracks. Coverage metadata records the xp32/Neumeria source names
+that remain aerialized, plus overlapping ground-locomotion names deliberately
+mapped back to the root-stable flight donor in `basePoseOverrideNames`.
 
 Generated family counts
 -----------------------
 
-  Fallback (root + male)  212
-  Unarmed                  82
-  One Handed              158
-  Dual Wield               97
-  Greatsword              123
-  Axe and Warhammer       128
-  Quarterstaff            130
-  Bow                       73
+  Fallback (root + male)  150
+  Unarmed                  74
+  One Handed              149
+  Dual Wield               88
+  Greatsword              113
+  Axe and Warhammer       118
+  Quarterstaff            118
+  Bow                       71
   Crossbow                  38
   Magic                    113
   Staff                     13
-  Total                  1,167
+  Total                  1,045
 
 The complete original-name coverage and per-family source flags are recorded
 in:
