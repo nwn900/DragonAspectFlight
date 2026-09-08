@@ -1,6 +1,6 @@
 # Dragon Aspect Flight — Handoff
 
-Last updated: 2026-09-07
+Last updated: 2026-09-08
 
 This document records the repository, release, and installed-mod state at the
 time of handoff. It separates static source/build evidence from behavior that
@@ -12,10 +12,10 @@ There are two different artifacts in play:
 
 | Artifact | Current state |
 | --- | --- |
-| Repository branch `agent/flight-combat` | Current commit `e3efa05c66005d565880f8d5e8e7d09317c62a93`, pushed to `origin`; implementation changes are in its parent `a1260bb68b58b528a6ad565468c516ec208dadad`. |
+| Repository branch `agent/flight-combat` | Local commit `3f8096080340c82cd2d2efa5004468b57f15355e`; the diagnosis-plan implementation and reviewed Data candidate are committed locally and have not been pushed in this turn. |
 | Latest published GitHub release | `v1.6.0` on `main`; five-file, rootless ZIP with no bundled animation HKX files. |
 | Active Nolvus installation | GitHub `v1.6.0` is installed in the enabled Nexus-compat folder. |
-| Diagnosis-plan implementation | Built and statically tested in an isolated build directory, but not packaged as a public release and not deployed to the game. |
+| Diagnosis-plan implementation | Committed in `3f80960`, rebuilt and statically tested in an isolated build directory, but not packaged as a public release and not deployed to the game. |
 | Runtime gameplay validation | Not run for the diagnosis branch or for the `v1.6.0` deployment. |
 
 The current installed variant is:
@@ -51,7 +51,7 @@ The intended split is:
 - More Draconic Aspect Can Fly supplies the donor flight animations in the
   public no-bundled-animation package.
 
-## Implemented on `agent/flight-combat` (`a1260bb`)
+## Implemented on `agent/flight-combat` (`3f80960`)
 
 ### Native runtime and lifecycle
 
@@ -74,6 +74,10 @@ The intended split is:
   run on the game thread; the worker only queues a poll and sleeps.
 - Structured diagnostic logging, bounded snapshots, and log rotation are
   present in the source and covered by a logging contract test.
+- Startup records the exact source revision, animation-coverage manifest hash,
+  CommonLib project version/revision, runtime family/version, and SKSE release
+  index. This identifies the candidate in a log without pretending that an
+  animation winner or live runtime layout was measured.
 
 These changes reduce unsafe state and lifetime transitions, but they do not by
 themselves prove that every engine animation transition behaves correctly.
@@ -93,6 +97,9 @@ themselves prove that every engine animation transition behaves correctly.
 - `tools/rebuild_flight_actions.py` builds a separate action staging tree from
   an exact-original manifest and SHA-256 inputs. It records unresolved inputs
   instead of inventing generic replacements.
+- The committed Data tree now matches the reviewed 1,045-file animation
+  contract; the clean Git export passes the same animation gate as the working
+  tree.
 - `tools/apply_daf_source_patch.py` applies hash-pinned source changes to a
   separate copy, preserves CRLF files, optionally checks Git blob IDs, emits a
   diff, and marks the result uncompiled and undeployed.
@@ -126,22 +133,34 @@ The diagnosis branch was built in:
 C:\tmp\DAF-diagnosis-plan-20260907-r1
 ```
 
-Evidence recorded for that snapshot:
+Evidence recorded for the rebuilt snapshot:
 
 - Native Release rebuild completed successfully with MSVC. The only warning
   was the pre-existing `C4099` ImGuiMCP type warning in
   `SKSEMenuFramework.h:1386`.
 - `ctest --test-dir C:\tmp\DAF-diagnosis-plan-20260907-r1 -C Release --output-on-failure`:
   **9/9 passed**.
-- `tests/test_diagnosis_plan_tools.py`: **18/18 passed**.
+- `py -3 -m unittest discover -s tests -p "test_*.py"`: **51/51 passed**;
+  structured logging pytest: **9/9 passed**.
 - Repository HKX structural scan: 1,045 files (796 compressed and 249
   interleaved-uncompressed), with zero structural rejects.
-- Release DLL: 990,208 bytes,
-  SHA-256 `12930DDB676D7FCB493C529102926D7B6AD89FA94C5133C6556FC5544322136E`.
+- Release DLL: 993,280 bytes,
+  SHA-256 `D443FFE1D612891A2C89314E0542F87FC55E84C681B3CF2D1C3FD5A58288AB17`.
 - PE validation passed for x64 with zero forbidden imports. `dumpbin` showed
   only `SKSEPlugin_Load`, `SKSEPlugin_Query`, and `SKSEPlugin_Version` exports
   and only CRT/Windows dependents.
 - No Release PDB was emitted because `GenerateDebugInformation=false`.
+- The clean `git archive HEAD` export passes the animation suite **10/10**.
+- The supplied `versionlib-1-7-104-0.bin` passes the pinned validator: format 5,
+  runtime `1.7.104.0`, 565,759 offsets, and 16/16 required IDs; SHA-256
+  `8AAB3DD251D135B849BD983F86A4A205C920FA3E81F8E30C0E63CCFEF9423842`.
+- Release preprocessor definitions include `ENABLE_SKYRIM_SE=1`,
+  `ENABLE_SKYRIM_AE=1`, `ENABLE_SKYRIM_VR=1`, and
+  `HAS_SKYRIM_MULTI_TARGETING=1`. The embedded candidate identity is source
+  `3f8096080340c82cd2d2efa5004468b57f15355e`, Data manifest
+  `448F2EC7A97F41B01BD68B7C60A418EA649D8F26804229ABFD0F5494F82211D7`, and
+  CommonLib 6.7.1 revision
+  `70c1acd5261210982bd52f6d4468a082fe04d798`.
 
 These are static/build results. They are not evidence that a Skyrim session
 will select the expected OAR winner or that weapon transitions, attacks,
@@ -205,12 +224,11 @@ testing was deliberately not performed.
    Shutdown/reinitialize testing is still needed.
 6. **Release/source divergence.** The deployed public `v1.6.0` package is from
    the `main` release line. It does not contain the newer diagnosis-plan source
-   tools or the `a1260bb` DLL.
-7. **Dirty local asset tree.** The checkout still has many unstaged Data
-   animation/config/manifest edits and deletions, four untracked HKX aliases,
-   plus generated `.claude/` and `help/` directories. They were intentionally
-   excluded from the GitHub commit and must not be included with `git add -A`
-   until their purpose and final hashes are reviewed.
+   tools or the `3f80960` DLL.
+7. **Generated working directories remain untracked.** `.claude/` and `help/`
+   are local generated material and were intentionally excluded from commit;
+   `tasks/` contains the review plan/checklist and is being updated separately.
+   Do not use `git add -A` for a release until those boundaries are reviewed.
 8. **Release symbols are absent.** The Release build has no PDB, so future
    diagnosis must rely on the structured log fields and a separately retained
    symbol-enabled diagnostic build if native stack resolution is required.
@@ -226,13 +244,14 @@ testing was deliberately not performed.
 - Kept suppression active outside shout-selection menus.
 - Removed bundled animation files from the public package.
 
-### Diagnosis-plan branch (`a1260bb`)
+### Diagnosis-plan branch (`3f80960`)
 
 - Added native graph/lifecycle/controller safety and stale-action protection.
 - Added game-thread monitor polling and structured logging contracts.
 - Added binding-safe HKX composition and atomic animation-stack staging.
 - Added exact-original action rebuild and source-only patch utilities.
-- Added CMake/CTest coverage for the above contracts.
+- Added CMake/CTest coverage for the above contracts and committed the
+  reconciled 1,045-file Data candidate.
 
 ### 2026-09-07 deployment
 
@@ -240,14 +259,14 @@ testing was deliberately not performed.
 - Took a restorable backup before copying.
 - Verified release, staging, live hashes, and Housecarl VFS winners.
 - Did not enable the disabled full DAF folder, launch the game, or publish a new
-  release from `a1260bb`.
+  release from `3f80960`.
 
 ## Recommended next steps
 
-1. Treat `a1260bb` as a source snapshot, not as a gameplay-approved release.
-2. Decide whether the dirty Data tree is intended for the next package. Review
-   every deletion and untracked HKX file against an authoritative source
-   manifest before staging it.
+1. Treat `3f80960` as a source snapshot, not as a gameplay-approved release.
+2. Review the committed Data deletions and four sprint aliases against the
+   authoritative coverage manifest before packaging; the clean-export gate is
+   already green, but gameplay ownership remains unproven.
 3. Build a fresh candidate from the reviewed source and validate the exact
    Address Library BIN for the game being tested.
 4. Run a small controlled MO2 profile and capture the actual OAR original,
@@ -285,7 +304,7 @@ release-package update.
 
 ## Git working-tree boundary
 
-The GitHub branch is clean at `e3efa05` relative to its remote branch. The
-uncommitted Data animation/config edits and generated folders described above
-are local-only. Preserve them for review; do not reset, clean, or force-push
-them without an explicit decision.
+The local branch contains commit `3f80960` beyond the remote tip and has not
+been pushed in this turn. The generated `.claude/` and `help/` directories are
+still untracked and intentionally excluded. Preserve them or remove them only
+with an explicit cleanup decision; do not reset or force-push the branch.

@@ -31,7 +31,12 @@ For Skyrim VR, use the corresponding Skyrim VR SKSE log folder.
 Useful DragonAspectFlight.log events
 ------------------------------------
 
-plugin_load          Plugin/build/runtime identity.
+plugin_load          Plugin/build/runtime identity, source revision, Data
+                     coverage-manifest SHA-256, CommonLib version/revision,
+                     runtime family/version, and SKSE release index.
+diagnostic_schema    Schema plus the same candidate identity and build stamp;
+                     `dll_hash=not_computed` is deliberate because the plugin
+                     does not hash its own loaded image at runtime.
 dependency_snapshot  Whether OAR, BDI, and Payload Interpreter DLLs were loaded.
 flight_start/stop    A correlated flight-session boundary.
 input                Ready-weapon, combat, shout, launch, and activation transitions.
