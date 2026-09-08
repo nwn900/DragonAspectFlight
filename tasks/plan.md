@@ -5,7 +5,7 @@ runtime acceptance and any release remain pending**.
 
 ## Scope and evidence boundary
 
-Reviewed `Handoff.md` and the related runtime, animation-generation, validation, and build code in `DragonAspectFlight`, branch `agent/flight-combat`, implementation commit `3f8096080340c82cd2d2efa5004468b57f15355e`. Source line references below refer to this workspace snapshot.
+Reviewed `Handoff.md` and the related runtime, animation-generation, validation, and build code in `DragonAspectFlight`, branch `agent/flight-combat`, implementation commit `3f8096080340c82cd2d2efa5004468b57f15355e` plus follow-up diagnostic hardening `b63c803`. Source line references below refer to this workspace snapshot.
 
 The handoff distinguishes this experimental combat branch from the public `v1.6.0` basic-flight/compatibility release. This review does not establish that the findings occur in that separate public release. Its reported installation was not redeployed or independently re-audited here. Preserve the working port, its external-animation references, and the user's no-bundling requirement for that variant.
 
